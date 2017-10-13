@@ -121,17 +121,24 @@ lay <- t(as.matrix(c(1,2), nrow=1))
 grid.arrange(vis1, vis2, layout_matrix=lay)
 ```
 
+### What if there is no association between smoking and death?
+
+This is harder to detect with two by two tables, but it is easier to detect with the proportional plot.
 
 ```{r}
+tabNoAssoc <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(250, 100, 250, 100), key=c("A", "B","C", "D"))
+
+vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=value))
+
+vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
+  geom_text(aes(label=key))
+
+lay <- t(as.matrix(c(1,2), nrow=1))
+grid.arrange(vis1, vis2, layout_matrix=lay)
 ```
 
-
-
 ```{r letter-b, echo=FALSE}
-question("If someone wears green are they more likely to die?",
-  answer("Yes. Because Lucky the Leprechaun will be angry.", message="Not correct."),
-  answer("No. The two variables are not associated", correct=TRUE, message="Yes, that's correct!")
-)
 ```
 
 
@@ -164,12 +171,13 @@ question("Based on this plot, if you smoke will you be more likely to be alive o
 
 ## The effect of Age on the Data
 
+Let's assess what happens with number of deaths as we look at older patients.
+
 Adjust the slider on the left and see what happens to the number of deaths as we increase the average age of the group.
 
 ```{r}
-sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 80),step = 5)
+sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 83),step = 5)
 plotOutput("distPlot")
-
 ```
 
 ```{r context="server"}
@@ -186,8 +194,33 @@ plotOutput("distPlot")
 ```
 
 ```{r letter-d, echo=FALSE}
-question("What do you notice about the number of deaths?",
+question("What do you notice about the number of deaths as you increase the age of the subgroup?",
   answer("The number of deaths decreases, which means that as you get older, you are less likely to die.", message="Not correct."),
   answer("The number of deaths increases, which means that as you get older, you are more likely to die.", correct=TRUE, message="Yes, that's correct!")
 )
+```
+
+## Not as easy as we thought!
+
+So as you get older, you're more likely to die. This may be messing up our overall results! 
+
+Let's ask the question again, with a younger group: are smokers under 45 more likely to die than non smokers?
+
+```{r}
+sliderInput("slidy2", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(18, 83),step = 5)
+plotOutput("distPlot2")
+```
+
+```{r context="server"}
+  output$distPlot2 <- renderPlot(
+      exMelt() %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black") #+
+        #facet_wrap(facets = ~AgeCat)
+      )
+    
+    exMelt <- reactive({
+      cutoffMax = max(input$slidy2)
+      cutoffMin = min(input$slidy2)
+      Whickham %>% filter(age < cutoffMax & age > cutoffMin) %>% mutate(status="allPatients")
+        #mutate(AgeCat=factor(ifelse(age > cutoff, "older", NA))) 
+    })
 ```
