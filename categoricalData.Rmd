@@ -27,6 +27,8 @@ library(gridExtra)
 + Sometimes they are not desirable:
     + Experimental Artefacts
 
+Visualization is good because we are good at evaluating things visually.
+
 ### Good EDA visualizations tell us something about the data
 
 + Is there an association between smoking and death?
@@ -152,10 +154,10 @@ question("Based on this plot, if you smoke will you be more likely to be alive o
 
 ## The effect of Age on the Data
 
-Adjust the slider 
+Adjust the slider on the left and see what happens to the number of deaths as we increase the average age of the group.
 
 ```{r}
-sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 80),step = 10)
+sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 80),step = 5)
 plotOutput("distPlot")
 
 ```
@@ -171,6 +173,11 @@ plotOutput("distPlot")
       Whickham %>% filter(age > cutoff) %>% mutate(status="allPatients")
         #mutate(AgeCat=factor(ifelse(age > cutoff, "older", NA))) 
     })
+```
 
-
+```{r letter-d, echo=FALSE}
+question("What do you notice about the number of deaths?",
+  answer("The number of deaths decreases, which means that as you get older, you are less likely to die.", message="Not correct."),
+  answer("The number of deaths increases, which means that as you get older, you are more likely to die.", correct=TRUE, message="Yes, that's correct!")
+)
 ```
