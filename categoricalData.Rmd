@@ -7,7 +7,7 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 library(learnr)
 library(gridExtra)
 ```
@@ -52,9 +52,9 @@ question("If someone wears green are they more likely to die?",
 
 ## The Data (Whickham)
 
-We're going to look at some data of from a group study of 1314 female smokers.
+We're going to look at some data of from a group study of 1314 female smokers. It's called the `Whickham` dataset. 
 
-It's called the `Whickham` dataset. 
+Let's take a look at a summary of the data. 
 
 ```{r message=FALSE, warning=FALSE}
 library(mosaic)
@@ -62,6 +62,16 @@ data(Whickham)
 library(tidyverse)
 
 summary(Whickham)
+```
+
+```{r summary, echo=FALSE}
+question("What can we learn from this table?",
+  answer("There are more alive people than dead people in the data.", correct=TRUE, message="Not correct."),
+  answer("There are two variables", message="Not quite. There's `outcome`, `smoker`, and `age`."),
+  answer("You are either considered either a smoker or a non-smoker", correct=TRUE, message="Yes, that's correct!"),
+  answer("The age range of the patients includes minors.", message="Look at the min value for age."),
+  answer("The average age of the participant was around 47 years of age", correct="Yes, you can see it as the mean value for the age" )
+)
 ```
 
 ## Let's look at our Outcome
@@ -142,7 +152,7 @@ Whickham %>% ggplot(aes(x=outcome, fill=smoker)) + geom_bar(color="black")
 ```
 
 ```{r}
-Whickham %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black")
+Whickham %>% ggplot(aes(x=outcome, fill=smoker)) + geom_bar(position="fill", color="black")
 ```
 
 ```{r letter-c, echo=FALSE}
