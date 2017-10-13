@@ -110,7 +110,6 @@ grid.arrange(vis1, vis2, layout_matrix=lay)
 ```
 
 
-
 ```{r}
 ```
 
