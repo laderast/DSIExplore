@@ -46,7 +46,8 @@ Compare it to whether somone wears green. Does this give us any information abou
 ```{r letter-a, echo=FALSE}
 question("If someone wears green are they more likely to die?",
   answer("Yes. Because Lucky the Leprechaun will be angry.", message="Not correct."),
-  answer("No. The two variables are not associated", correct=TRUE, message="Yes, that's correct!")
+  answer("No. The two variables are not associated", correct=TRUE, message="Yes, that's correct!"),
+  allow_retry = TRUE
 )
 ```
 
@@ -66,11 +67,12 @@ summary(Whickham)
 
 ```{r summary, echo=FALSE}
 question("What can we learn from this table?",
-  answer("There are more alive people than dead people in the data.", correct=TRUE, message="Not correct."),
+  answer("There are more alive people than dead people in the data.", correct=TRUE, message="Correct. There are more alive people (945) than dead people (369) in this dataset."),
   answer("There are two variables", message="Not quite. There's `outcome`, `smoker`, and `age`."),
-  answer("You are either considered either a smoker or a non-smoker", correct=TRUE, message="Yes, that's correct!"),
-  answer("The age range of the patients includes minors.", message="Look at the min value for age."),
-  answer("The average age of the participant was around 47 years of age", correct="Yes, you can see it as the mean value for the age" )
+  answer("You are either considered either a smoker or a non-smoker", correct=TRUE, message="Yes, that's correct! This dataset doesn't account for how long you smoked."),
+  answer("The age range of the patients includes minors.", message="Incorrect. Look at the min value for age."),
+  answer("The average age of the participant was around 47 years of age", correct="Yes, the mean age was 46.92 years of age. Yes, you can see it as the mean value for the age" ),
+  allow_retry = TRUE
 )
 ```
 
@@ -82,13 +84,13 @@ Our outcome in our dataset is death. One tool we often use to explore the data i
 table(Whickham$outcome)
 ```
 
-Here's another way to look at the data:
+Here's another way to look at the data, a bar plot. You can instantly see which of the groups is larger.
 
 ```{r}
 Whickham %>% ggplot(aes(x=outcome)) + geom_bar()
 ```
 
-## Let's look at Smoking Status
+### Now let's look at Smoking Status
 
 One way of looking at the data is to make a summary table. 
 
@@ -96,13 +98,19 @@ One way of looking at the data is to make a summary table.
 table(Whickham$smoker)
 ```
 
-Another way is to look at a bar plot, where the height of the bars corresponds to 
+Here's the bar plot: 
 
 ```{r}
 Whickham %>% ggplot(aes(x=smoker)) + geom_bar()
 ```
 
-## In a perfect world
+## Two Variables Walk Into A Bar
+
+Now that we've seen the variables by themselves, we can consider whether these two variables are associated.
+
+Try to phrase the association in terms of the variables, such as "If you smoke, are you more likely to die?"
+
+### Perfect Association
 
 Before we start assessing whether our two variables are associated, let's think about what we're looking for.
 
@@ -204,23 +212,33 @@ question("What do you notice about the number of deaths as you increase the age 
 
 So as you get older, you're more likely to die. This may be messing up our overall results! 
 
-Let's ask the question again, with a younger group: are smokers under 45 more likely to die than non smokers?
+Let's ask the question again, with a younger group: are smokers under 44 more likely to die than non smokers?
 
 ```{r}
-sliderInput("slidy2", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(18, 83),step = 5)
+sliderInput("slidy2", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(18, 83),step = 2)
 plotOutput("distPlot2")
 ```
 
 ```{r context="server"}
   output$distPlot2 <- renderPlot(
-      exMelt() %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black") #+
-        #facet_wrap(facets = ~AgeCat)
+      exMelt() %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black")
       )
     
     exMelt <- reactive({
       cutoffMax = max(input$slidy2)
       cutoffMin = min(input$slidy2)
       Whickham %>% filter(age < cutoffMax & age > cutoffMin) %>% mutate(status="allPatients")
-        #mutate(AgeCat=factor(ifelse(age > cutoff, "older", NA))) 
     })
 ```
+
+At what age group are the smoking and 
+
+How does this change our research question?
+
+Is smoking associated with death for those under 44 years of age?
+
+## Your Turn
+
+We're going to look at another dataset called NHANES (National Health and Nutrition Examination Survey). 
+
+We're going to 
