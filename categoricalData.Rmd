@@ -1,0 +1,177 @@
+---
+title: "Categorical Data"
+author: "Ted Laderas"
+date: "9/28/2017"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(learnr)
+library(gridExtra)
+```
+
+## What is Exploratory Data Analysis?
+
+- Pioneered by Tukey
+- Detective work on your data
+- An attitude towards data, not just techniques
+- 'Find patterns, reveal structure, and make tenative model assessments (Behrens)'
+
+### Why EDA and Visualization?
+
++ We need to become aware of patterns in the data.
++ Sometimes these patterns are desirable:
+    + Associations
++ Sometimes they are not desirable:
+    + Experimental Artefacts
+
+### Good EDA visualizations tell us something about the data
+
++ Is there an association between smoking and death?
++ Is this association due to something related to smoking?
+    + What are some examples?
+
+## What are important associations?
+
+Let's think about this. 
+
+If we know about whether someone smokes, do we know whether they are more likely to die?
+
+Compare it to whether somone wears green. Does this give us any information about whether they are more likely to die?
+
+```{r letter-a, echo=FALSE}
+question("If someone wears green are they more likely to die?",
+  answer("Yes. Because Lucky the Leprechaun will be angry.", message="Not correct."),
+  answer("No. The two variables are not associated", correct=TRUE, message="Yes, that's correct!")
+)
+```
+
+## The Data (Whickham)
+
+We're going to look at some data of from a group study of 1314 female smokers.
+
+It's called the `Whickham` dataset. 
+
+```{r message=FALSE, warning=FALSE}
+library(mosaic)
+data(Whickham)
+library(tidyverse)
+
+summary(Whickham)
+```
+
+## Let's look at our Outcome
+
+Our outcome in our dataset is death. One tool we often use to explore the data is the 
+
+```{r}
+table(Whickham$outcome)
+```
+
+Here's another way to look at the data:
+
+```{r}
+Whickham %>% ggplot(aes(x=outcome)) + geom_bar()
+```
+
+## Let's look at Smoking Status
+
+One way of looking at the data is to make a summary table. 
+
+```{r}
+table(Whickham$smoker)
+```
+
+Another way is to look at a bar plot, where the height of the bars corresponds to 
+
+```{r}
+Whickham %>% ggplot(aes(x=smoker)) + geom_bar()
+```
+
+## In a perfect world
+
+Before we start assessing whether our two variables are associated, let's think about what we're looking for.
+
+One case is that `smoking` would perfectly predict `outcome`. That is, if you smoke, you would die. The association would look like this:
+
+```{r}
+tab <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(500, 10, 7, 300), key=c("A", "B","C", "D"))
+
+vis1 <- tab %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=value))
+
+vis2 <- tab %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
+  geom_text(aes(label=key))
+
+lay <- t(as.matrix(c(1,2), nrow=1))
+grid.arrange(vis1, vis2, layout_matrix=lay)
+```
+
+
+
+```{r}
+```
+
+
+
+```{r letter-b, echo=FALSE}
+question("If someone wears green are they more likely to die?",
+  answer("Yes. Because Lucky the Leprechaun will be angry.", message="Not correct."),
+  answer("No. The two variables are not associated", correct=TRUE, message="Yes, that's correct!")
+)
+```
+
+
+## The 2x2 table
+
+So let's look at how these two variables really predict each other.
+
+```{r}
+testTab <- table(Whickham$outcome, Whickham$smoker) %>% as.data.frame() 
+colnames(testTab) <- c("outcome", "smoker", "Freq")
+
+testTab %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=Freq))
+```
+
+```{r}
+Whickham %>% ggplot(aes(x=outcome, fill=smoker)) + geom_bar(color="black")
+```
+
+```{r}
+Whickham %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black")
+```
+
+```{r letter-c, echo=FALSE}
+question("Based on this plot, if you smoke will you be more likely to be alive or dead?",
+  answer("Dead, because that's what makes common sense.", message="Not correct."),
+  answer("Alive, because that's what the data tells us", correct=TRUE, message="Yes, that's correct!")
+)
+```
+
+## The effect of Age on the Data
+
+Adjust the slider 
+
+```{r}
+sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 80),step = 10)
+plotOutput("distPlot")
+
+```
+
+```{r context="server"}
+  output$distPlot <- renderPlot(
+      exMelt() %>% ggplot(aes(x=status, fill=outcome)) + geom_bar(position="fill", color="black") #+
+        #facet_wrap(facets = ~AgeCat)
+      )
+    
+    exMelt <- reactive({
+      cutoff = min(input$slidy)
+      Whickham %>% filter(age > cutoff) %>% mutate(status="allPatients")
+        #mutate(AgeCat=factor(ifelse(age > cutoff, "older", NA))) 
+    })
+
+
+```
