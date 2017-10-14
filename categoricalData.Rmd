@@ -27,7 +27,7 @@ library(gridExtra)
 + Sometimes they are not desirable:
     + Experimental Artefacts
 
-Visualization is good because we are good at evaluating things visually.
+Visualization is good for exploring data because we are good at evaluating things visually.
 
 ### Good EDA visualizations tell us something about the data
 
@@ -41,7 +41,7 @@ Let's think about this.
 
 If we know about whether someone smokes, do we know whether they are more likely to die?
 
-Compare it to whether somone wears green. Does this give us any information about whether they are more likely to die?
+Compare it to whether somone wears green. 
 
 ```{r letter-a, echo=FALSE}
 question("If someone wears green are they more likely to die?",
@@ -66,7 +66,7 @@ summary(Whickham)
 ```
 
 ```{r summary, echo=FALSE}
-question("What can we learn from this table?",
+question("What can we learn from this summary table?",
   answer("There are more alive people than dead people in the data.", correct=TRUE, message="Correct. There are more alive people (945) than dead people (369) in this dataset."),
   answer("There are two variables", message="Not quite. There's `outcome`, `smoker`, and `age`."),
   answer("You are either considered either a smoker or a non-smoker", correct=TRUE, message="Yes, that's correct! This dataset doesn't account for how long you smoked."),
@@ -76,9 +76,27 @@ question("What can we learn from this table?",
 )
 ```
 
+### What does the data actually look like?
+
+Here are the first 10 rows of the data table. Each row of the data corresponds to a patient.
+
+```{r}
+Whickham[1:10,]
+```
+
+
+```{r datatable, echo=FALSE}
+question("How many patients are Alive (outcome = 'Alive') and didn't smoke (smoker = 'No') from these first 10 rows?",
+  answer("There are 4 patients.", correct=TRUE, message="Correct. There are 4 patients who are alive and not smokers."),
+  answer("There are 5 patients.", message="Not quite. Go back and count."),
+  answer("There are 6 patients.", message="Not quite. Go back and count.."),
+  allow_retry = TRUE
+)
+```
+
 ## Let's look at our Outcome
 
-Our outcome in our dataset is death. One tool we often use to explore the data is the 
+Our outcome in our dataset is death. One tool we often use to explore the data is a table, which counts how much of each category is there. Which group is larger?
 
 ```{r}
 table(Whickham$outcome)
@@ -90,6 +108,8 @@ Here's another way to look at the data, a bar plot. You can instantly see which 
 Whickham %>% ggplot(aes(x=outcome)) + geom_bar()
 ```
 
+Sometimes it is easier to look at a table, but usually a bar chart will make things more obvious.
+
 ### Now let's look at Smoking Status
 
 One way of looking at the data is to make a summary table. 
@@ -98,7 +118,7 @@ One way of looking at the data is to make a summary table.
 table(Whickham$smoker)
 ```
 
-Here's the bar plot: 
+Here's the bar plot. 
 
 ```{r}
 Whickham %>% ggplot(aes(x=smoker)) + geom_bar()
@@ -110,9 +130,9 @@ Now that we've seen the variables by themselves, we can consider whether these t
 
 Try to phrase the association in terms of the variables, such as "If you smoke, are you more likely to die?"
 
-### Perfect Association
+Before we start assessing whether our two variables are associated, let's think about what we're looking for. We're going to talk about two cases first: 1) Perfect Association and 2) No association. Our data is probably somewhere in between these.
 
-Before we start assessing whether our two variables are associated, let's think about what we're looking for.
+### Perfect Association
 
 One case is that `smoking` would perfectly predict `outcome`. That is, if you smoke, you would die. The association would look like this:
 
@@ -184,7 +204,7 @@ Let's assess what happens with number of deaths as we look at older patients.
 Adjust the slider on the left and see what happens to the number of deaths as we increase the average age of the group.
 
 ```{r}
-sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(30, 83),step = 5)
+sliderInput("slidy", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(23, 83),step = 5)
 plotOutput("distPlot")
 ```
 
