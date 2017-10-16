@@ -241,10 +241,10 @@ plotOutput("distPlot2")
 
 ```{r context="server"}
   output$distPlot2 <- renderPlot(
-      exMelt() %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black")
+      exMelt2() %>% ggplot(aes(x=smoker, fill=outcome)) + geom_bar(position="fill", color="black")
       )
     
-    exMelt <- reactive({
+    exMelt2 <- reactive({
       cutoffMax = max(input$slidy2)
       cutoffMin = min(input$slidy2)
       Whickham %>% filter(age < cutoffMax & age > cutoffMin) %>% mutate(status="allPatients")
