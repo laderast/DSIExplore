@@ -134,7 +134,7 @@ Before we start assessing whether our two variables are associated, let's think 
 
 ### Perfect Association
 
-One case is that `smoking` would perfectly predict `outcome`. That is, if you smoke, you would die. The association would look like this:
+One case is that `smoking` would perfectly predict `outcome`. That is, if you smoke, you would die. Here we simulate fake data that shows this. The association would look like this:
 
 ```{r}
 tab <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(500, 10, 7, 300), key=c("A", "B","C", "D"))
@@ -151,7 +151,7 @@ grid.arrange(vis1, vis2, layout_matrix=lay)
 
 ### What if there is no association between smoking and death?
 
-This is harder to detect with two by two tables, but it is easier to detect with the proportional plot.
+This is harder to detect with two by two tables, but it is easier to detect with the proportional plot. Again we simulate some fake data:
 
 ```{r}
 tabNoAssoc <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(250, 100, 250, 100), key=c("A", "B","C", "D"))
@@ -172,7 +172,7 @@ grid.arrange(vis1, vis2, layout_matrix=lay)
 
 ## The 2x2 table
 
-So let's look at how these two variables really predict each other.
+So let's look at how these two variables really predict each other in the `Whickham` dataset.
 
 ```{r}
 testTab <- table(Whickham$outcome, Whickham$smoker) %>% as.data.frame() 
