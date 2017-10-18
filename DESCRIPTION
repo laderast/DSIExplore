@@ -6,7 +6,7 @@ Author: Who wrote it
 Maintainer: Ted Laderas and Jessica Minnier <tedladeras@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-Depends: learnr, shiny, gridExtra, tidyverse
+Depends: learnr, shiny, gridExtra, dplyr, ggplot2, tidyr, mosaic
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
