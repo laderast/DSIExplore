@@ -9,6 +9,6 @@ To run this, you'll need to do the following:
 install.packages("devtools")
 library(devtools)
 install_github("laderast/DSIExplore")
-learnr::run_tutorial("categoricalDats", package = "DSI_explore1")
+learnr::run_tutorial("categoricalData", package = "DSIExplore")
 ```
 This material is released under an Apache 2.0 License
