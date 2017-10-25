@@ -15,3 +15,9 @@ bmi_diabetes %>% ggplot(aes(x=Diabetes, fill=BMIstatus)) +
   geom_bar(position="fill", color="black") + facet_wrap(~Gender)
 
 devtools::use_data(bmi_diabetes)
+
+##Whickham dataset
+library(mosaic)
+data("Whickham")
+
+devtools::use_data(Whickham)
