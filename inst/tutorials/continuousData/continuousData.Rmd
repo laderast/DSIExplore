@@ -1,0 +1,105 @@
+---
+title: "Continuous Data"
+author: "Ted Laderas and Jessica Minnier"
+date: "10/24/2017"
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
+library(tidyverse)
+library(learnr)
+library(gridExtra)
+library(NHANES)
+```
+
+## EDA with continuous variables
+
+We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `Height`.
+
+(Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration we will ignore this detail.)
+
+A common visualization of the distribution of a continuous variable is a histogram: 
+
+```{r}
+data(NHANES)
+
+NHANES %>% ggplot(aes(x=Height))+geom_histogram() +ggtitle("Histogram of NHANES Height")
+```
+
+We can also use a boxplot. The `?geom_boxplot` help tells us what all the parts of the boxplot mean:
+"The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.
+
+The upper whisker extends from the hinge to the largest value no further than 1.5 x IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 x IQR of the hinge. Data beyond the end of the whiskers are called "outlying" points and are plotted individually."
+
+```{r}
+NHANES %>% ggplot(aes(x="All Subjects",y=Height))+geom_boxplot() +ggtitle("Boxplot of NHANES Height")
+```
+
+All those dots piled up on the bottom are people who are outside the 1.5 x IQR, or, in other words, children.
+
+## What is a factor that may influence height?
+
+There are of course many factors that influence someone's height. The first might be age, which is another continuous variable. Can we plot the association of age versus height?
+
+```{r}
+NHANES %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1)
+```
+
+Right away we notice that people under 18 have a rapid increase in height, and then it levels off. Another influence on height is sex. We can separate the data into female and male:
+
+```{r}
+NHANES %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
+```
+
+Is there an association between height and age in adulthood (age >= 20)?
+
+```{r}
+NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
+```
+
+
+What other factors might we separate on? Let's just look at adults (age >= 20):
+
+```{r}
+selectInput("select1", "Factor", choices = c("Gender","Diabetes","Smoke100","Race1","PhysActive"),
+            selected = "Gender")
+plotOutput("pointPlot1")
+plotOutput("boxPlot1")
+```
+
+```{r context="server"}
+  output$pointPlot1 <- renderPlot(
+      NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~get(input$select1))
+      )
+
+  output$boxPlot1 <- renderPlot(
+      NHANES %>% filter(Age >= 18) %>% ggplot(aes(x=get(input$select1),y=Height)) + geom_boxplot() + 
+        xlab(input$select1)
+      )
+```
+
+
+
+```{r ques-a, echo=FALSE}
+question("Why do you think there's a pile up of points at age 80?",
+  answer("Everyone died at age 80.", message="Highly unlikely."),
+  answer("The data was truncated.", correct=TRUE, message="Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?")
+)
+```
+
+
+
+## Prediction
+
+We can visualize a other continuous variables similarly. For instance, total cholesterol (`TotChol`).
+
+Predict weight or total cholesterol?
+Factors to color by: Diabetes, PhysActive, Smoke100?
+
+```{r}
+NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=TotChol,color=Weight)) + geom_point(alpha=0.1) + facet_grid(~Diabetes)
+```
+
+
