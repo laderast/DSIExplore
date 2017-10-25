@@ -59,11 +59,12 @@ Is there an association between height and age in adulthood (age >= 20)?
 NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
 ```
 
+## Other factors
 
 What other factors might we separate on? Let's just look at adults (age >= 20):
 
 ```{r}
-selectInput("select1", "Factor", choices = c("Gender","Diabetes","Smoke100","Race1","PhysActive"),
+selectInput("select1", "Factor", choices = c("Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive"),
             selected = "Gender")
 plotOutput("pointPlot1")
 plotOutput("boxPlot1")
@@ -81,10 +82,18 @@ plotOutput("boxPlot1")
 ```
 
 
+## Suspicious data feature
+
+Did you see something strange in those last plots? It's always important to be on the lookout for red flags about data generation and processing.
+
+```{r}
+NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
+```
 
 ```{r ques-a, echo=FALSE}
 question("Why do you think there's a pile up of points at age 80?",
   answer("Everyone died at age 80.", message="Highly unlikely."),
+  answer("They oversampled from the 80 year olds.", message="Highly unlikely."),
   answer("The data was truncated.", correct=TRUE, message="Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?")
 )
 ```
@@ -101,5 +110,21 @@ Factors to color by: Diabetes, PhysActive, Smoke100?
 ```{r}
 NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=TotChol,color=Weight)) + geom_point(alpha=0.1) + facet_grid(~Diabetes)
 ```
+
+
+## Fit a model
+
+What to do here?
+
+```{r}
+NHANES_adults = NHANES %>% filter( Age >= 20, Age < 80)
+summary(fit1 <- lm(Height~Age+Gender+Race1+ Smoke100n+PhysActive,data=NHANES_adults))
+# throwing in some stuff
+
+# does it make sense to include weight? discuss prediction vs correlation vs causation? independent predictors vs dependent variable, confounders...etc
+
+# talk about putting in smoking vs phys activity, significant but very low coefficients
+```
+
 
 

@@ -52,53 +52,91 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>(Note info about the NHANES data in the NHANES package can be found <a href="https://cran.r-project.org/web/packages/NHANES/NHANES.pdf">here</a> with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration we will ignore this detail.)</p>
 <p>A common visualization of the distribution of a continuous variable is a histogram:</p>
 <pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<pre><code>## Warning: Removed 353 rows containing non-finite values (stat_bin).</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-1-1.png" width="624" /></p>
 <p>We can also use a boxplot. The <code>?geom_boxplot</code> help tells us what all the parts of the boxplot mean: “The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.</p>
 <p>The upper whisker extends from the hinge to the largest value no further than 1.5 x IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 x IQR of the hinge. Data beyond the end of the whiskers are called “outlying” points and are plotted individually.&quot;</p>
-<pre><code>## Warning: Removed 353 rows containing non-finite values (stat_boxplot).</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-2-1.png" width="624" /></p>
 <p>All those dots piled up on the bottom are people who are outside the 1.5 x IQR, or, in other words, children.</p>
+</div>
+<div id="section-what-is-a-factor-that-may-influence-height" class="section level2">
+<h2>What is a factor that may influence height?</h2>
 <p>There are of course many factors that influence someone’s height. The first might be age, which is another continuous variable. Can we plot the association of age versus height?</p>
-<pre><code>## Warning: Removed 353 rows containing missing values (geom_point).</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-3-1.png" width="624" /></p>
 <p>Right away we notice that people under 18 have a rapid increase in height, and then it levels off. Another influence on height is sex. We can separate the data into female and male:</p>
-<pre><code>## Warning: Removed 353 rows containing missing values (geom_point).</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-4-1.png" width="624" /></p>
 <p>Is there an association between height and age in adulthood (age &gt;= 20)?</p>
-<pre><code>## Warning: Removed 53 rows containing missing values (geom_point).</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-5-1.png" width="624" /></p>
+</div>
+<div id="section-other-factors" class="section level2">
+<h2>Other factors</h2>
 <p>What other factors might we separate on? Let’s just look at adults (age &gt;= 20):</p>
 <p><div class="form-group shiny-input-container">
 <label class="control-label" for="select1">Factor</label>
 <div>
 <select id="select1"><option value="Gender" selected>Gender</option>
 <option value="Diabetes">Diabetes</option>
-<option value="Smoke100">Smoke100</option>
+<option value="Smoke100n">Smoke100n</option>
 <option value="Race1">Race1</option>
+<option value="Race3">Race3</option>
 <option value="PhysActive">PhysActive</option></select>
 <script type="application/json" data-for="select1" data-nonempty="">{}</script>
 </div>
 </div><div id="pointPlot1" class="shiny-plot-output" style="width: 100% ; height: 400px"></div><div id="boxPlot1" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
+</div>
+<div id="section-suspicious-data-feature" class="section level2">
+<h2>Suspicious data feature</h2>
+<p>Did you see something strange in those last plots? It’s always important to be on the lookout for red flags about data generation and processing.</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
 
-<div id="htmlwidget-6a613ee40160a1fab002" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-968c8338b44403a4feb4" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-6a613ee40160a1fab002">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-968c8338b44403a4feb4">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-prediction" class="section level2">
 <h2>Prediction</h2>
 <p>We can visualize a other continuous variables similarly. For instance, total cholesterol (<code>TotChol</code>).</p>
 <p>Predict weight or total cholesterol? Factors to color by: Diabetes, PhysActive, Smoke100?</p>
-<pre><code>## Warning: Removed 397 rows containing missing values (geom_point).</code></pre>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
+</div>
+<div id="section-fit-a-model" class="section level2">
+<h2>Fit a model</h2>
+<p>What to do here?</p>
+<pre><code>## 
+## Call:
+## lm(formula = Height ~ Age + Gender + Race1 + Smoke100n + PhysActive, 
+##     data = NHANES_adults)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -26.8665  -4.5299  -0.0491   4.4556  24.1857 
+## 
+## Coefficients:
+##                   Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)     166.330338   0.369803 449.781  &lt; 2e-16 ***
+## Age              -0.087064   0.005434 -16.021  &lt; 2e-16 ***
+## Gendermale       13.505777   0.166569  81.082  &lt; 2e-16 ***
+## Race1Hispanic    -5.279297   0.416539 -12.674  &lt; 2e-16 ***
+## Race1Mexican     -5.861516   0.372049 -15.755  &lt; 2e-16 ***
+## Race1White        1.003795   0.263580   3.808 0.000141 ***
+## Race1Other       -3.869486   0.382799 -10.108  &lt; 2e-16 ***
+## Smoke100nSmoker   0.531817   0.170188   3.125 0.001786 ** 
+## PhysActiveYes     0.459968   0.169943   2.707 0.006815 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.825 on 6848 degrees of freedom
+##   (45 observations deleted due to missingness)
+## Multiple R-squared:  0.535,  Adjusted R-squared:  0.5345 
+## F-statistic: 984.9 on 8 and 6848 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-10-1.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-10-2.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-10-3.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-10-4.png" width="624" /></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
 library(tidyverse)
 library(learnr)
 library(gridExtra)
