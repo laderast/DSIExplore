@@ -261,4 +261,6 @@ question("For patients who are under 49, is smoking associated with death?",
 
 We're going to look at another dataset called NHANES (National Health and Nutrition Examination Survey). 
 
-We're going to look at whether a high BMI (30+) is associated with Diabetes status. 
+We're going to look at whether a high BMI (30+) is associated with Diabetes status. Additionally, we're going to ask whether there is a gender difference between this association.
+
+

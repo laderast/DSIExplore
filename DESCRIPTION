@@ -1,8 +1,8 @@
 Package: DSIExplore
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Exploratory Data Analysis and Statistics for Data Science Institute
 Version: 0.1.0
-Author: Who wrote it
+Author: Ted Laderas and Jessica Minnier
 Maintainer: Ted Laderas and Jessica Minnier <tedladeras@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
