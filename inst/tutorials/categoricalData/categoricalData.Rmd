@@ -84,7 +84,6 @@ Here are the first 10 rows of the data table. Each row of the data corresponds t
 Whickham[1:10,]
 ```
 
-
 ```{r datatable, echo=FALSE}
 question("How many patients are Alive (outcome = 'Alive') and didn't smoke (smoker = 'No') from these first 10 rows?",
   answer("There are 4 patients.", correct=TRUE, message="Correct. There are 4 patients who are alive and not smokers."),
@@ -96,7 +95,7 @@ question("How many patients are Alive (outcome = 'Alive') and didn't smoke (smok
 
 ## Let's look at our Outcome
 
-Our outcome in our dataset is death. One tool we often use to explore the data is a table, which counts how much of each category is there. Which group is larger?
+Our `outcome` in our dataset is death. One tool we often use to explore the data is a table, which counts how much of each category is there. Which group is larger?
 
 ```{r}
 table(Whickham$outcome)
@@ -251,14 +250,15 @@ plotOutput("distPlot2")
     })
 ```
 
-At what age group are the smoking and 
-
-How does this change our research question?
-
-Is smoking associated with death for those under 44 years of age?
+```{r letter-d, echo=FALSE}
+question("For patients who are under 49, is smoking associated with death?",
+  answer("Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 49 years.", correct=TRUE, message="Yes, correct."),
+  answer("No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 49 years.", message="Go back and look at the proportions.")
+)
+```
 
 ## Your Turn
 
 We're going to look at another dataset called NHANES (National Health and Nutrition Examination Survey). 
 
-We're going to 
+We're going to look at whether a high BMI (30+) is associated with Diabetes status. 
