@@ -27,7 +27,9 @@ library(gridExtra)
 + Sometimes they are not desirable:
     + Experimental Artefacts
 
-Visualization is good for exploring data because we are good at evaluating things visually.
+Visualization is good for exploring data because we are really good at evaluating things visually.
+
+![Broad street pump map]()
 
 ### Good EDA visualizations tell us something about the data
 
@@ -59,7 +61,7 @@ Let's take a look at a summary of the data.
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
-data("Whickham")
+data("Whickham",package = "DSIExplore")
 summary(Whickham)
 ```
 
@@ -248,7 +250,7 @@ plotOutput("distPlot2")
     })
 ```
 
-```{r letter-d, echo=FALSE}
+```{r letter-e, echo=FALSE}
 question("For patients who are under 49, is smoking associated with death?",
   answer("Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 49 years.", correct=TRUE, message="Yes, correct."),
   answer("No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 49 years.", message="Go back and look at the proportions.")
