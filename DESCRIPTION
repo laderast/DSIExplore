@@ -1,11 +1,12 @@
 Package: DSIExplore
 Type: Package
-Title: Exploratory Data Analysis and Statistics for Data Science Institute
+Title: Exploratory Data Analysis and Statistics for OHSU Data Science Institute
 Version: 0.1.0
 Author: Ted Laderas and Jessica Minnier
-Maintainer: Ted Laderas and Jessica Minnier <tedladeras@gmail.com>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Maintainer: Ted Laderas <tedladeras@gmail.com> and Jessica Minnier <jessica.minnier@gmail.com>
+Description: This is a shiny/learnR based tutorial introducing beginners to concepts in 
+Exploratory Data Analysis (EDA) and Simple statistics for both categorical and continuous data. 
+It is not meant to be a complete course, but rather an introduction to these concepts.
 Depends: learnr, shiny, gridExtra, dplyr, ggplot2, tidyr
 License: What license is it under?
 Encoding: UTF-8

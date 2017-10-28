@@ -257,13 +257,32 @@ question("For patients who are under 49, is smoking associated with death?",
 )
 ```
 
-## Test of Proportion
+## Statistical Testing on Proportions
 
 Now let's talk about statistics. We have discovered that there is a difference in the proportions of alive to dead people between smokers and non-smokers. So how likely is this a random result?
 
 We can assess whether the difference between the proportion of deaths is statistically significant between smokers and non-smokers.
 
-Our test statistic is 
+Our test statistic is known as the *Z-statistic*. 
+
+### Our null hypothesis and alternative hypothesis
+
+What we call our *null hypothesis* represents what we think of results that are the result of complete random chance.
+
+Our null hypothesis for proportions is there is no difference between our two ratios. To make things concrete:
+
+> Null hypothesis (Ho): No difference between proportion of deaths between smokers and non smokers
+> Alternative hypothesis (Ha): there is a difference 
+
+Remember the case where there was no association between smoking and death?
+
+### How does our test statistic increase with N?
+
+One thing our test statistic is dependent on is *n*, the total number of subjects in the study.
+
+
+
+### Alpha value
 
 Talk about chi-square as an extension
 
