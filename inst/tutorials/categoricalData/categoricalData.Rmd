@@ -280,8 +280,6 @@ Our null hypothesis for proportions is there is no difference between our two ra
 Remember the case where there was no association between smoking and death?
 
 ```{r}
-tabNoAssoc <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(250, 100, 250, 100), key=c("A", "B","C", "D"))
-
 library(tidyverse)
 sampSize <- 997
 
@@ -323,13 +321,47 @@ Every statistic has an underlying model of randomness.
 
 For the test of proportions, we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
 
-### 
+In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
+
+### P-values
+
+There is a straightforward interpretation to the p-value.
+
+Number in our null that are equal to our rare case / Total Number of cases. 
 
 ### How does our test statistic increase with N?
 
 One thing our test statistic is dependent on is *n*, the total number of subjects in the study.
 
+```{r}
+sliderInput(inputId = "samp_n", label = "N in study",min = 10, max=1000, value = 500)
+plotOutput("plot_n_bar")
+plotOutput("tab_n_out")
+```
 
+```{r context="server"}
+data_n_example <- reactive({
+  sampSize <- input$samp_n
+  noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
+  noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
+                          outcome=ifelse(probDeath < .2, "Dead", "Alive"))
+
+  return(noAssocSmoking)
+})
+
+tab_assoc <- reactive({
+  noAssocSmoking <- data_n_example()
+  tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, 
+                                 noAssocSmoking$outcome))
+  colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
+  tabNoAssoc
+})
+
+t_stat_n <- reactive({
+  tt <- tidy(prop.test(tab_assoc()))
+})
+
+```
 
 ### Alpha value
 
@@ -355,3 +387,7 @@ One thing we haven't talked about is missing values.
 
 
 
+## References
+
+[Test on Proportions](https://onlinecourses.science.psu.edu/statprogram/node/164)
+[Null Distribution](https://en.wikipedia.org/wiki/Null_distribution)
