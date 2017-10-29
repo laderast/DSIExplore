@@ -19,6 +19,8 @@ library(gridExtra)
 - An attitude towards data, not just techniques
 - 'Find patterns, reveal structure, and make tenative model assessments (Behrens)'
 
+Being a good analyst requires you to look at the data and notice the weird things about it, and follow the thread to the end.
+
 ### Why EDA and Visualization?
 
 + We need to become aware of patterns in the data.
@@ -43,7 +45,7 @@ Let's think about this.
 
 If we know about whether someone smokes, do we know whether they are more likely to die?
 
-Compare it to whether somone wears green. 
+Compare it to whether someone wears green. 
 
 ```{r letter-a, echo=FALSE}
 question("If someone wears green are they more likely to die?",
@@ -55,7 +57,7 @@ question("If someone wears green are they more likely to die?",
 
 ## The Data (Whickham)
 
-We're going to look at some data of from a group study of 1314 female smokers. It's called the `Whickham` dataset. 
+We're going to look at some data of from a group study of 1314 female smokers. It's called the `Whickham` dataset. The version of the dataset is actually modeled on the original study, but are a group of synthetic patients.
 
 Let's take a look at a summary of the data. 
 
@@ -272,9 +274,56 @@ What we call our *null hypothesis* represents what we think of results that are 
 Our null hypothesis for proportions is there is no difference between our two ratios. To make things concrete:
 
 > Null hypothesis (Ho): No difference between proportion of deaths between smokers and non smokers
-> Alternative hypothesis (Ha): there is a difference 
+> Alternative hypothesis (Ha): there is a difference between the proportion between smokers 
+> and non-smokers.
 
 Remember the case where there was no association between smoking and death?
+
+```{r}
+tabNoAssoc <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(250, 100, 250, 100), key=c("A", "B","C", "D"))
+
+library(tidyverse)
+sampSize <- 997
+
+noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
+noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
+                          outcome=ifelse(probDeath < .2, "Dead", "Alive"))
+
+tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, noAssocSmoking$outcome))
+
+colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
+
+noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
+  geom_bar(color="black")
+
+noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
+  geom_bar(position="fill", color="black")
+
+vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + 
+  geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=value))
+
+vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
+  geom_text(aes(label=key))
+
+lay <- t(as.matrix(c(1,2,3,4), nrow=2))
+grid.arrange(vis1, vis2, layout_matrix=lay)
+```
+
+```{r letter-q, echo=FALSE}
+question("What do you think about the proportions between smokers and non-smokers? Are they the same?",
+  answer("No, they are not the same.", message="Look at the proportions."),
+  answer("Yes, they look very similar.", correct=TRUE, message="Go back and look at the proportions.")
+)
+```
+
+### In statistics we model randomness
+
+Every statistic has an underlying model of randomness. 
+
+For the test of proportions, we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
+
+### 
 
 ### How does our test statistic increase with N?
 
