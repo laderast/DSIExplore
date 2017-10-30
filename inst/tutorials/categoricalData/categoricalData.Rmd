@@ -321,7 +321,13 @@ Every statistic has an underlying model of randomness.
 
 For the test of proportions, we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
 
+If there 
+
 In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
+
+### Association
+
+Association is where we see overlap (mutual information) between two variables.
 
 ### P-values
 
@@ -391,3 +397,6 @@ One thing we haven't talked about is missing values.
 
 [Test on Proportions](https://onlinecourses.science.psu.edu/statprogram/node/164)
 [Null Distribution](https://en.wikipedia.org/wiki/Null_distribution)
+https://en.wikipedia.org/wiki/Chi-squared_test
+http://www.stat.wmich.edu/s216/book/node115.html
+https://stats.stackexchange.com/questions/2391/what-is-the-relationship-between-a-chi-squared-test-and-test-of-equal-proportion
