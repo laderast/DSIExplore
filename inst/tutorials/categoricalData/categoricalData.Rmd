@@ -10,6 +10,11 @@ runtime: shiny_prerendered
 knitr::opts_chunk$set(echo = FALSE)
 library(learnr)
 library(gridExtra)
+library(tidyverse)
+```
+
+```{r context="server"}
+library(tidyverse)
 ```
 
 ## What is Exploratory Data Analysis?
@@ -273,9 +278,9 @@ What we call our *null hypothesis* represents what we think of results that are 
 
 Our null hypothesis for proportions is there is no difference between our two ratios. To make things concrete:
 
-> Null hypothesis (Ho): No difference between proportion of deaths between smokers and non smokers
-> Alternative hypothesis (Ha): there is a difference between the proportion between smokers 
-> and non-smokers.
+Null hypothesis (Ho): No difference between proportion of deaths between smokers and non smokers
+
+Alternative hypothesis (Ha): there is a difference between the proportion between smokers and non-smokers.
 
 Remember the case where there was no association between smoking and death?
 
@@ -301,8 +306,8 @@ vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) +
   geom_tile(fill="white", colour="black") + 
   geom_text(aes(label=value))
 
-vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
-  geom_text(aes(label=key))
+vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoking, y=value)) + geom_bar(color="black",stat="identity") #+
+  #geom_text(aes(label=key))
 
 lay <- t(as.matrix(c(1,2,3,4), nrow=2))
 grid.arrange(vis1, vis2, layout_matrix=lay)
@@ -317,23 +322,21 @@ question("What do you think about the proportions between smokers and non-smoker
 
 ### In statistics we model randomness
 
-Every statistic has an underlying model of randomness. 
+Every statistic has an underlying model of randomness. Our random model is based on the case with no association.
 
-For the test of proportions, we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
-
-If there 
+For the test of proportions we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
 
 In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
 
-### Association
-
-Association is where we see overlap (mutual information) between two variables.
+For our test of proportions, the appropriate null distribution (or random model) is called a `Chi-Square` Distribution. We won't explore all of the parameters, but it represents a random process for which there is no association between variables.
 
 ### P-values
 
-There is a straightforward interpretation to the p-value.
+There is a straightforward interpretation to the p-value, and it has to do with how unique or rare our case is compared to our distribution of randomly generated cases. 
 
-Number in our null that are equal to our rare case / Total Number of cases. 
+$$\frac{# null}{# Total}$$ 
+
+So the p-value is interpreted as the probability that we will see a random case with the same exact configuration.
 
 ### How does our test statistic increase with N?
 
@@ -367,6 +370,15 @@ t_stat_n <- reactive({
   tt <- tidy(prop.test(tab_assoc()))
 })
 
+output$plot_n_bar <- renderPlot({
+  data_n_example() %>%
+    ggplot(aes(x=smoking, fill=outcome)) +
+    geom_bar(color="black")
+})
+
+output$z_dist <- renderPlot({
+  
+})
 ```
 
 ### Alpha value
@@ -392,6 +404,11 @@ One thing we haven't talked about is missing values.
 [Missing data explorer]
 
 
+## Be proud of yourself!
+
+### Association
+
+Association is where we see overlap (mutual information) between two variables.
 
 ## References
 
