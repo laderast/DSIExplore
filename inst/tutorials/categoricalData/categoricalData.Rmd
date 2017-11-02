@@ -11,10 +11,12 @@ knitr::opts_chunk$set(echo = FALSE)
 library(learnr)
 library(gridExtra)
 library(tidyverse)
+library(DSIExplore)
 ```
 
 ```{r context="server"}
 library(tidyverse)
+library(DSIExplore)
 ```
 
 ## What is Exploratory Data Analysis?
@@ -264,23 +266,59 @@ question("For patients who are under 49, is smoking associated with death?",
 )
 ```
 
-## Statistical Testing on Proportions
+## Statistical Testing on Association: Chi-Squared Test
 
-Now let's talk about statistics. We have discovered that there is a difference in the proportions of alive to dead people between smokers and non-smokers. So how likely is this a random result?
+Now let's talk about statistics. We have discovered that there is a difference in the proportions of alive to dead people between smokers and non-smokers. So how likely is this a random result? 
 
-We can assess whether the difference between the proportion of deaths is statistically significant between smokers and non-smokers.
+In other words, how likely is the association between smoking and outcome just something that we could observe by chance?
 
-Our test statistic is known as the *Z-statistic*. 
+Our test statistic is known as the *Chi-Squared-statistic*. 
+
+### In statistics we model randomness
+
+Every statistic has an underlying model of randomness. Our random model is based on the case with no association between our two variables, `smoking` and `death`.
+
+In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
+
+For our test of proportions, the appropriate null distribution (or random model) is called a `Chi-Square` Distribution. We won't explore all of the parameters, but it represents a random process for which there is no association between variables.
+
+### Observed versus Expected
+
+What are the expected values? They are the values in the cells we expect in the case of no association between our two variables. In other words, they are the values that we expect if there is no association between `smoking` and `outcome`.
+
+We calculate these expected values by looking at the column and row totals for each cell. 
+
+### What does Chi-squared represent?
+
+The chi-squared statistic summarizes the total deviation from the expected values in each cell. We have 4 cells, so we sum up our calculation over each of these.
+
+We're going to do a little calculation using R. 
+
+```{r }
+under60 <- Whickham %>% filter(age < 60) %>%
+  select(smoker, outcome) %>% table
+
+##these are the observed values  
+under60
+
+##we can calculate expected values using chisq.test()
+chisq60 <- chisq.test(under60)
+
+## show expected values
+chisq60$expected
+
+## show observed - expected
+chisq60$observed - chisq60$expected
+```
 
 ### Our null hypothesis and alternative hypothesis
 
-What we call our *null hypothesis* represents what we think of results that are the result of complete random chance.
+What we call our *null hypothesis* represents what we think of results that are the result of complete random chance. In our case, we are saying there is no association between variables.
 
-Our null hypothesis for proportions is there is no difference between our two ratios. To make things concrete:
+Our null hypothesis is that there is no association between variables. To make things concrete:
 
-Null hypothesis (Ho): No difference between proportion of deaths between smokers and non smokers
-
-Alternative hypothesis (Ha): there is a difference between the proportion between smokers and non-smokers.
++ Null hypothesis (Ho): No association between smoking and outcome. 
++ Alternative hypothesis (Ha): there is an association between smoking and outcome.
 
 Remember the case where there was no association between smoking and death?
 
@@ -320,23 +358,23 @@ question("What do you think about the proportions between smokers and non-smoker
 )
 ```
 
-### In statistics we model randomness
-
-Every statistic has an underlying model of randomness. Our random model is based on the case with no association.
-
-For the test of proportions we are asking, how likely is the proportion difference between smokers and non-smokers is due to a completely random process?
-
-In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
-
-For our test of proportions, the appropriate null distribution (or random model) is called a `Chi-Square` Distribution. We won't explore all of the parameters, but it represents a random process for which there is no association between variables.
-
 ### P-values
 
 There is a straightforward interpretation to the p-value, and it has to do with how unique or rare our case is compared to our distribution of randomly generated cases. 
 
 $$\frac{# null}{# Total}$$ 
 
-So the p-value is interpreted as the probability that we will see a random case with the same exact configuration.
+So the *p-value* is interpreted as the probability that we will see a random case with the same exact statistic or higher.
+
+For example, if we had 10,000 random cases, and our p-value was 0.2, that means that of our 10000 cases, we would expect to see 10000 * 0.2 = 2000 random cases with our statistic or greater
+
+### Level of significance
+
+Before we even calculate a p-value, we must decide on a level of significance. Setting this value before we test is important because we specify 
+
+```{r}
+
+```
 
 ### How does our test statistic increase with N?
 
