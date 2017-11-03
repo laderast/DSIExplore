@@ -246,14 +246,32 @@ NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=BMI,color=Weight)) + geom_poi
 What to do here?
 
 ```{r}
-NHANES_adults = NHANES %>% filter( Age >= 20, Age < 80)
-summary(fit1 <- lm(BMI~Age+Gender+Race1+ Smoke100n+PhysActive,data=NHANES_adults))
+
+# show that it is difficult to predict BMI just based on Diabetes alone
+# add in other variabiles does not help prediction much because BMI is a complex trait
+
+nhanes_filtered %>% ggplot(aes(x=Race3,y=BMI))+geom_boxplot()
+
+summary(fit1 <- lm(BMI~Diabetes*Gender,data=nhanes_filtered))
+summary(fit1 <- lm(BMI~PhysActive+SmokeNow+Diabetes*Gender+Race3+BPSysAve+BPDiaAve,data=nhanes_filtered))
+
+
+
+summary(fit1 <- lm(BMI~Diabetes*Gender+Smoke100n+PhysActive+Age+Race3+BPSysAve+BPDiaAve,data=nhanes_filtered))
+
+summary(fit1 <- lm(BMI~Diabetes+Gender+Race3+ Smoke100n+PhysActive,data=nhanes_filtered))
 # throwing in some stuff
 
 # does it make sense to include weight? discuss prediction vs correlation vs causation? independent predictors vs dependent variable, confounders...etc
 
 # talk about putting in smoking vs phys activity, significant but very low coefficients
+
+# talk about terrible adjusted R-squared though significant predictors?
 ```
 
+## Resources and extra practice
 
+To learn more R coding and a bit more about EDA and statistical analysis, try out our Data Camp course:
+
+[R Bootcamp](https://www.datacamp.com/courses/3864)
 
