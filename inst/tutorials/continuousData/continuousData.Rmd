@@ -7,57 +7,204 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE, tidy = TRUE)
 library(tidyverse)
 library(learnr)
 library(gridExtra)
+library(naniar)
+library(DSIExplore)
+library(NHANES)
+library(knitr)
+library(kableExtra)
+```
+
+
+```{r context="server"}
+library(tidyverse)
+library(DSIExplore)
 library(NHANES)
 ```
 
 ## EDA with continuous variables
 
-We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `Height`.
+We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `BMI` as a continuous variables.
 
-(Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration we will ignore this detail.)
+(Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
 
 A common visualization of the distribution of a continuous variable is a histogram: 
 
 ```{r}
 data(NHANES)
 
-NHANES %>% ggplot(aes(x=Height))+geom_histogram() +ggtitle("Histogram of NHANES Height")
+NHANES %>% ggplot(aes(x=BMI))+geom_histogram(binwidth=2.5) + geom_density(aes(y=2.5*..count..,color="red")) + 
+  ggtitle("Histogram and Density of NHANES BMI")+guides(color=FALSE)
 ```
 
-We can also use a boxplot. The `?geom_boxplot` help tells us what all the parts of the boxplot mean:
-"The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.
+This plot shows us the frequency of certain values of `BMI`. We can see the distribution is somewhat "skewed" in that there are a few quite large values on the right tail of the distribution.
 
-The upper whisker extends from the hinge to the largest value no further than 1.5 x IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 x IQR of the hinge. Data beyond the end of the whiskers are called "outlying" points and are plotted individually."
+We can also use a boxplot to see similar patterns. The help from the boxplot R function `?geom_boxplot` tells us what all the parts of the boxplot mean:
+
+>"The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.
+
+>The upper whisker extends from the hinge to the largest value no further than 1.5 x IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 x IQR of the hinge. Data beyond the end of the whiskers are called "outlying" points and are plotted individually."
 
 ```{r}
-NHANES %>% ggplot(aes(x="All Subjects",y=Height))+geom_boxplot() +ggtitle("Boxplot of NHANES Height")
+NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Boxplot of NHANES BMI")+xlab("")
 ```
 
-All those dots piled up on the bottom are people who are outside the 1.5 x IQR, or, in other words, children.
+All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as "outliers" of the population distribution. This also shows the positive skewness of the distribution.
 
-## What is a factor that may influence height?
+## What is a factor that may be associated with BMI?
 
-There are of course many factors that influence someone's height. The first might be age, which is another continuous variable. Can we plot the association of age versus height?
+We learned that good EDA can help us identify associations. How does BMI differ by `Diabetes` status?
 
 ```{r}
-NHANES %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1)
+NHANES %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes)) + geom_boxplot()
 ```
 
-Right away we notice that people under 18 have a rapid increase in height, and then it levels off. Another influence on height is sex. We can separate the data into female and male:
+We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called `NA`. This means the data is missing.
+
+Let's explore the missingness in this data a bit before we move on.
+
+## Missingness and suspicious data elements
+
+We can summarize the data with missing diabetes status:
+
+```{r, echo=TRUE}
+NHANES %>% filter(is.na(Diabetes)) %>% select(ID, Diabetes, BMI, Age) %>% summary
+```
+
+Note that 137 out of 142 subjects with missing diabetes data also have missing BMI data. Also note the Age distribution. Does something look interesting?
 
 ```{r}
-NHANES %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
+NHANES %>% filter(is.na(Diabetes)) %>% select(ID, Diabetes, BMI, Age) %>% janitor::tabyl(Age)
 ```
 
-Is there an association between height and age in adulthood (age >= 20)?
+What about missingness in BMI? How does this relate to age? We can use the `naniar` package in R to visualize this with a scatterplot:
 
 ```{r}
-NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
+NHANES %>% ggplot(aes(x=Age,y=BMI,color=Diabetes))+naniar::geom_miss_point()
 ```
+
+We also might notice something interesting about the age distribution of our population.
+
+```{r ques-a, echo=FALSE}
+question("Why do you think there's a pile up of points at age 80?",
+  answer("Everyone died at age 80.", message="Highly unlikely."),
+  answer("They oversampled from the 80 year olds.", message="Highly unlikely."),
+  answer("The data was truncated.", correct=TRUE, message="Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?")
+)
+```
+
+For future analyses, let's work with subjects older than 20 years of age, and remove subjects with missing `Diabetes` and `BMI` values. Lastly, let's check out the boxplots on this filtered data.
+
+```{r, echo=TRUE}
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
+
+nrow(nhanes_filtered)
+```
+
+
+```{r}
+nhanes_filtered %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
+  ggtitle("Boxplot of NHANES BMI by Diabetes Status")+xlab("")
+```
+
+## BMI ~ Diabetes, Gender, and ?
+
+Gender is another factor that might influence BMI.
+
+```{r}
+nhanes_filtered %>% ggplot(aes(x=Gender,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
+ggtitle("Boxplot of NHANES BMI by Gender and Diabetes")+xlab("") 
+```
+
+How does the effect of diabetes change with gender?
+
+- When the magnitude of the effect of diabetes changes between subgroups of another variable like gender, we put on our epidemiologist hats and call gender an "effect modifier."
+- As a statistician we think "interaction!"
+
+We need to be more careful, though! We also know the pregnancy status of some of our subjects.
+
+```{r}
+nhanes_filtered %>% ggplot(aes(x=PregnantNow,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
+ggtitle("Boxplot of NHANES BMI by Pregnancy Status")+xlab("") 
+```
+
+We should probably remove the pregnant women if we want to look at other factors related to BMI, since they have higher BMI on average.
+
+```{r}
+nhanes_filtered = nhanes_filtered %>% filter((!PregnantNow=="Yes")|(is.na(PregnantNow)))
+nrow(nhanes_filtered)
+```
+
+```{r}
+nhanes_filtered %>% ggplot(aes(x=Gender,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
+ggtitle("Boxplot of NHANES BMI by Gender and Diabetes")+xlab("") 
+```
+
+The change in the effect of diabetes when stratifying by gender is less pronounced, now.
+
+## T Test
+
+The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student's T Test. It is so named because the test statistic---which quantifies how different the means are in relation to the variance---follows a T-distribution. The T-distribution is like the normal bell shaped curve but with "fatter tails".
+
+The T test makes *assumptions* about the distribution of your continuous variable within the two groups:
+
+- The measure (BMI) follows a normal distribution with a certain *mean* and *variance* within each set (group).
+- The two sets (groups) of data are independent. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a "paired T test."
+
+The null hypothesis is that the *two group means are equal.* We are trying to reject this null hypothesis to show the group means are NOT equal.
+
+Let's look at the smoothed histograms (density plots) of the two groups' BMIs.
+
+```{r}
+nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
+```
+
+Do we think the assumptions of the t-test hold?
+
+Let's run a t-test:
+
+```{r}
+broom::tidy(t.test(BMI~Diabetes,data=NHANES)) %>% select(estimate:p.value) %>% mutate(p.value=as.character(signif(p.value,2))) %>%
+  knitr::kable(col.names = c("Difference in Means","Means No","Means Yes", "T Statisitic","P Value"),digits=2)%>%
+  kableExtra::kable_styling("striped", full_width = F)
+```
+
+Note the p-value is extremely small. This is because we have a very large sample size and the difference in means is pretty large.
+
+What happens if we have a much smaller sample size? We can examine the effect of sample size by randomly sampling a subset of the data:
+
+```{r}
+sliderInput("samplesize", label="Total Sample Size",min=10,max=500,value=500)
+actionButton("buttonResample","Resample")
+plotOutput("densityPlot1")
+tableOutput("ttest1")
+```
+
+```{r context="server"}
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
+subsetdata <- reactive({
+  input$buttonResample
+  nhanes_filtered %>% sample(size=input$samplesize)
+})
+
+output$densityPlot1 <- renderPlot(
+ subsetdata() %>% filter(!is.na(Diabetes)) %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
+)
+
+output$ttest1 <- function() {
+  broom::tidy(t.test(BMI~Diabetes,data=subsetdata())) %>% 
+    select(estimate:p.value) %>%
+    mutate(p.value=as.character(signif(p.value,2))) %>%
+    knitr::kable(format = "html",col.names = c("Difference in Means","Means No","Means Yes", "T Statisitic","P Value"), digits=2) %>%
+    kableExtra::kable_styling("striped", full_width = F)
+}
+```
+
+
+## WORKING ON
 
 ## Other factors
 
@@ -72,7 +219,7 @@ plotOutput("boxPlot1")
 
 ```{r context="server"}
   output$pointPlot1 <- renderPlot(
-      NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~get(input$select1))
+      nhanes_filtered %>% ggplot(aes(x=BPSysAve,y=BMI)) + geom_point(alpha=0.1) + facet_wrap(~get(input$select1))
       )
 
   output$boxPlot1 <- renderPlot(
@@ -80,24 +227,6 @@ plotOutput("boxPlot1")
         xlab(input$select1)
       )
 ```
-
-
-## Suspicious data feature
-
-Did you see something strange in those last plots? It's always important to be on the lookout for red flags about data generation and processing.
-
-```{r}
-NHANES %>% filter(Age >= 20) %>% ggplot(aes(x=Age,y=Height)) + geom_point(alpha=0.1) + facet_wrap(~Gender)
-```
-
-```{r ques-a, echo=FALSE}
-question("Why do you think there's a pile up of points at age 80?",
-  answer("Everyone died at age 80.", message="Highly unlikely."),
-  answer("They oversampled from the 80 year olds.", message="Highly unlikely."),
-  answer("The data was truncated.", correct=TRUE, message="Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?")
-)
-```
-
 
 
 ## Prediction
@@ -108,7 +237,7 @@ Predict weight or total cholesterol?
 Factors to color by: Diabetes, PhysActive, Smoke100?
 
 ```{r}
-NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=TotChol,color=Weight)) + geom_point(alpha=0.1) + facet_grid(~Diabetes)
+NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=BMI,color=Weight)) + geom_point(alpha=0.1) + facet_grid(~Diabetes)
 ```
 
 
@@ -118,7 +247,7 @@ What to do here?
 
 ```{r}
 NHANES_adults = NHANES %>% filter( Age >= 20, Age < 80)
-summary(fit1 <- lm(Height~Age+Gender+Race1+ Smoke100n+PhysActive,data=NHANES_adults))
+summary(fit1 <- lm(BMI~Age+Gender+Race1+ Smoke100n+PhysActive,data=NHANES_adults))
 # throwing in some stuff
 
 # does it make sense to include weight? discuss prediction vs correlation vs causation? independent predictors vs dependent variable, confounders...etc
