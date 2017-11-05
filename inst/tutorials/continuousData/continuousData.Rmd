@@ -25,13 +25,22 @@ library(DSIExplore)
 library(NHANES)
 ```
 
+## Learning Objectives for this Session
+
+At the end of this session you should be able to
+
+- Understand statistical associations between continuous variables
+- Understand statistical associations between a continuous and a binary variable
+- Visualize ways to identify associations
+- Basic understanding of correlation and t-tests
+
 ## EDA with continuous variables
 
 We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `BMI` as a continuous variables.
 
 (Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
 
-A common visualization of the distribution of a continuous variable is a histogram: 
+A common visualization of the distribution of a continuous variable is a histogram (or the smoothed version---the density plot): 
 
 ```{r}
 data(NHANES)
@@ -41,6 +50,8 @@ NHANES %>% ggplot(aes(x=BMI))+geom_histogram(binwidth=2.5) + geom_density(aes(y=
 ```
 
 This plot shows us the frequency of certain values of `BMI`. We can see the distribution is somewhat "skewed" in that there are a few quite large values on the right tail of the distribution.
+
+- This is something to think about, data is not always a perfect bell shaped (Normal distribution) curve!
 
 We can also use a boxplot to see similar patterns. The help from the boxplot R function `?geom_boxplot` tells us what all the parts of the boxplot mean:
 
@@ -54,9 +65,92 @@ NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Boxplot 
 
 All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as "outliers" of the population distribution. This also shows the positive skewness of the distribution.
 
+## How do we assess associations between two continuous variables
+
+We learned that good EDA can help us identify associations.
+
+The first visualization you are likely to make when you have two continuous variables is a scatterplot. Let's look at the scatterplots of `Height` and `Weight` vs. `BMI`.
+
+- How would you describe these relationships?
+
+```{r}
+NHANES %>% ggplot(aes(x=Weight,y=BMI,color=Height)) + geom_point()
+NHANES %>% ggplot(aes(x=Height,y=BMI,color=Weight)) + geom_point()
+```
+
+A simple statistical quantification of the association of two continous variables is the **Pearson's Correlation Coefficient** (often labeled *r*). Note that this is quantifying a *linear* relationship. If the relationship is relatively curved or exponential it will not capture this relationship. An alternative might be the Spearman's correlation which basically is the Pearson's correlation of the ranks. This looks for monotone relationships.
+
+- How well does the line "fit" the data?
+
+```{r}
+plot_w_cor = function(df,cont_x,cont_y,color) {
+  enquo_x = enquo(cont_x)
+  enquo_y = enquo(cont_y)
+  enquo_color = enquo(color)
+  tmpdat =  df%>%summarize(x=mean(range(!!enquo_x,na.rm=T)),
+                           y=max(!!enquo_y,na.rm=T),
+                           cortext=paste("Pearson's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs"), digits = 2),
+                                         "\nSpearman's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs",method="spearman"), digits = 2))
+                           )
+  df %>% ggplot(aes_(x=enquo_x,y=enquo_y,color=enquo_color)) + geom_point() + stat_smooth(method="lm",se = FALSE) + 
+    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)
+}
+
+
+NHANES%>%plot_w_cor(Weight,BMI,Weight)
+NHANES%>%plot_w_cor(Height,BMI,Height)
+
+
+```
+
+
+Now you can try to get a feel for what correlation (linear and non-linear) looks like. Try a few pairs:
+
+
+```{r}
+
+cont_vars = c("Age","Weight","Height","BMI","BPSysAve","BPDiaAve","TotChol")
+
+selectInput("select_x", "X-axis", choices = cont_vars,
+            selected = "Weight")
+selectInput("select_y", "Y-axis", choices = cont_vars,
+            selected = "BMI")
+selectInput("select_color", "Color", choices = cont_vars,
+            selected = "Height")
+plotOutput("scatterPlotCont")
+```
+
+```{r context="server"}
+
+# should wrap this into the package and not repeat like this
+# need to figure out better way to get and then use labels as straight strings
+
+plot_w_cor_quotes = function(df,cont_x,cont_y,color,xlab,ylab,colorlab) {
+  enquo_x = enquo(cont_x)
+  enquo_y = enquo(cont_y)
+  enquo_color = enquo(color)
+  tmpdat =  df%>%summarize(x=mean(range(!!enquo_x,na.rm=T)),
+                           y=max(!!enquo_y,na.rm=T),
+                           cortext=paste("Pearson's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs"), digits = 2),
+                                         "\nSpearman's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs",method="spearman"), digits = 2))
+  )
+  df %>% ggplot(aes_(x=enquo_x,y=enquo_y,color=enquo_color)) + geom_point() + stat_smooth(method="lm",se = FALSE) + 
+    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)+xlab(xlab)+ylab(ylab)+
+    scale_color_continuous(name=colorlab)
+}
+
+
+
+  output$scatterPlotCont <- renderPlot(
+      NHANES %>% plot_w_cor_quotes(get(input$select_x),get(input$select_y),get(input$select_color),input$select_x,input$select_y,input$select_color)
+      )
+
+```
+
+
 ## What is a factor that may be associated with BMI?
 
-We learned that good EDA can help us identify associations. How does BMI differ by `Diabetes` status?
+Now let's explore the association of BMI with a binary (yes/no) variable. How does BMI differ by `Diabetes` status?
 
 ```{r}
 NHANES %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes)) + geom_boxplot()

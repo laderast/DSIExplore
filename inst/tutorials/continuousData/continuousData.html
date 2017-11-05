@@ -46,13 +46,26 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 
 <div class="topics">
 
+<div id="section-learning-objectives-for-this-session" class="section level2">
+<h2>Learning Objectives for this Session</h2>
+<p>At the end of this session you should be able to</p>
+<ul>
+<li>Understand statistical associations between continuous variables</li>
+<li>Understand statistical associations between a continuous and a binary variable</li>
+<li>Visualize ways to identify associations</li>
+<li>Basic understanding of correlation and t-tests</li>
+</ul>
+</div>
 <div id="section-eda-with-continuous-variables" class="section level2">
 <h2>EDA with continuous variables</h2>
 <p>We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data? Let’s use the NHANES data set to visualize the variable <code>BMI</code> as a continuous variables.</p>
 <p>(Note info about the NHANES data in the NHANES package can be found <a href="https://cran.r-project.org/web/packages/NHANES/NHANES.pdf">here</a> with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)</p>
-<p>A common visualization of the distribution of a continuous variable is a histogram:</p>
+<p>A common visualization of the distribution of a continuous variable is a histogram (or the smoothed version—the density plot):</p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-2-1.png" width="624" /></p>
 <p>This plot shows us the frequency of certain values of <code>BMI</code>. We can see the distribution is somewhat “skewed” in that there are a few quite large values on the right tail of the distribution.</p>
+<ul>
+<li>This is something to think about, data is not always a perfect bell shaped (Normal distribution) curve!</li>
+</ul>
 <p>We can also use a boxplot to see similar patterns. The help from the boxplot R function <code>?geom_boxplot</code> tells us what all the parts of the boxplot mean:</p>
 <blockquote>
 <p>“The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.</p>
@@ -63,22 +76,76 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p><img src="continuousData_files/figure-html/unnamed-chunk-3-1.png" width="624" /></p>
 <p>All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as “outliers” of the population distribution. This also shows the positive skewness of the distribution.</p>
 </div>
+<div id="section-how-do-we-assess-associations-between-two-continuous-variables" class="section level2">
+<h2>How do we assess associations between two continuous variables</h2>
+<p>We learned that good EDA can help us identify associations.</p>
+<p>The first visualization you are likely to make when you have two continuous variables is a scatterplot. Let’s look at the scatterplots of <code>Height</code> and <code>Weight</code> vs. <code>BMI</code>.</p>
+<ul>
+<li>How would you describe these relationships?</li>
+</ul>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-4-1.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-4-2.png" width="624" /></p>
+<p>A simple statistical quantification of the association of two continous variables is the <strong>Pearson’s Correlation Coefficient</strong> (often labeled <em>r</em>). Note that this is quantifying a <em>linear</em> relationship. If the relationship is relatively curved or exponential it will not capture this relationship. An alternative might be the Spearman’s correlation which basically is the Pearson’s correlation of the ranks. This looks for monotone relationships.</p>
+<ul>
+<li>How well does the line “fit” the data?</li>
+</ul>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-5-1.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-5-2.png" width="624" /></p>
+<p>Now you can try to get a feel for what correlation (linear and non-linear) looks like. Try a few pairs:</p>
+<p><div class="form-group shiny-input-container">
+<label class="control-label" for="select_x">X-axis</label>
+<div>
+<select id="select_x"><option value="Age">Age</option>
+<option value="Weight" selected>Weight</option>
+<option value="Height">Height</option>
+<option value="BMI">BMI</option>
+<option value="BPSysAve">BPSysAve</option>
+<option value="BPDiaAve">BPDiaAve</option>
+<option value="TotChol">TotChol</option></select>
+<script type="application/json" data-for="select_x" data-nonempty="">{}</script>
+</div>
+</div><div class="form-group shiny-input-container">
+<label class="control-label" for="select_y">Y-axis</label>
+<div>
+<select id="select_y"><option value="Age">Age</option>
+<option value="Weight">Weight</option>
+<option value="Height">Height</option>
+<option value="BMI" selected>BMI</option>
+<option value="BPSysAve">BPSysAve</option>
+<option value="BPDiaAve">BPDiaAve</option>
+<option value="TotChol">TotChol</option></select>
+<script type="application/json" data-for="select_y" data-nonempty="">{}</script>
+</div>
+</div><div class="form-group shiny-input-container">
+<label class="control-label" for="select_color">Color</label>
+<div>
+<select id="select_color"><option value="Age">Age</option>
+<option value="Weight">Weight</option>
+<option value="Height" selected>Height</option>
+<option value="BMI">BMI</option>
+<option value="BPSysAve">BPSysAve</option>
+<option value="BPDiaAve">BPDiaAve</option>
+<option value="TotChol">TotChol</option></select>
+<script type="application/json" data-for="select_color" data-nonempty="">{}</script>
+</div>
+</div><div id="scatterPlotCont" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
+</div>
 <div id="section-what-is-a-factor-that-may-be-associated-with-bmi" class="section level2">
 <h2>What is a factor that may be associated with BMI?</h2>
-<p>We learned that good EDA helps us identify associations. How does BMI differ by <code>Diabetes</code> status?</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-4-1.png" width="624" /></p>
+<p>We learned that good EDA can help us identify associations. How does BMI differ by <code>Diabetes</code> status?</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
 <p>We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called <code>NA</code>. This means the data is missing.</p>
+<p>Let’s explore the missingness in this data a bit before we move on.</p>
 </div>
 <div id="section-missingness-and-suspicious-data-elements" class="section level2">
 <h2>Missingness and suspicious data elements</h2>
 <p>We can summarize the data with missing diabetes status:</p>
-<pre><code>##        ID        Diabetes        BMI             Age
-##  Min.   :51962   No  :  0   Min.   :22.20   Min.   : 0.000
-##  1st Qu.:56531   Yes :  0   1st Qu.:22.20   1st Qu.: 0.000
-##  Median :60664   NA&#39;s:142   Median :22.20   Median : 0.000
-##  Mean   :61524              Mean   :29.62   Mean   : 1.197
-##  3rd Qu.:66501              3rd Qu.:40.76   3rd Qu.: 0.000
-##  Max.   :71910              Max.   :40.76   Max.   :67.000
+<pre class="r"><code>NHANES %&gt;% filter(is.na(Diabetes)) %&gt;% select(ID, Diabetes, BMI, Age) %&gt;% summary</code></pre>
+<pre><code>##        ID        Diabetes        BMI             Age        
+##  Min.   :51962   No  :  0   Min.   :22.20   Min.   : 0.000  
+##  1st Qu.:56531   Yes :  0   1st Qu.:22.20   1st Qu.: 0.000  
+##  Median :60664   NA&#39;s:142   Median :22.20   Median : 0.000  
+##  Mean   :61524              Mean   :29.62   Mean   : 1.197  
+##  3rd Qu.:66501              3rd Qu.:40.76   3rd Qu.: 0.000  
+##  Max.   :71910              Max.   :40.76   Max.   :67.000  
 ##                             NA&#39;s   :137</code></pre>
 <p>Note that 137 out of 142 subjects with missing diabetes data also have missing BMI data. Also note the Age distribution. Does something look interesting?</p>
 <div data-pagedtable="false">
@@ -87,7 +154,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
   </script>
 </div>
 <p>What about missingness in BMI? How does this relate to age? We can use the <code>naniar</code> package in R to visualize this with a scatterplot:</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-7-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-11-1.png" width="624" /></p>
 <p>We also might notice something interesting about the age distribution of our population.</p>
 
 <div id="htmlwidget-b8759e5d9191b4cb45d4" style="width:100%;height:auto;", class = "quiz html-widget">
@@ -100,36 +167,42 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <script type="application/json" data-for="htmlwidget-b8759e5d9191b4cb45d4">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p>For future analyses, let’s work with subjects older than 20 years of age, and remove subjects with missing <code>Diabetes</code> and <code>BMI</code> values. Lastly, let’s check out the boxplots on this filtered data.</p>
 <pre class="r"><code>nhanes_filtered = NHANES %&gt;% filter(Age &gt;= 20, !is.na(Diabetes), !is.na(BMI))
+
 nrow(nhanes_filtered)</code></pre>
 <pre><code>## [1] 7170</code></pre>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-13-1.png" width="624" /></p>
 </div>
 <div id="section-bmi-diabetes-gender-and" class="section level2">
 <h2>BMI ~ Diabetes, Gender, and ?</h2>
 <p>Gender is another factor that might influence BMI.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-10-1.png" width="624" /></p>
-<p>How does the effect of diabetes change with gender? When the magnitude of the effect of diabetes changes between subgroups of another variable like gender, we put on our epidemiologist hats and call gender an “effect modifier.” As a statistician we think “interaction!”</p>
-<p>We need to be more careful, though. We also know the pregnancy status of some of our subjects.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-11-1.png" width="624" /></p>
-<p>We should probably remove the pregnant women since they have higher BMI on average.</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-14-1.png" width="624" /></p>
+<p>How does the effect of diabetes change with gender?</p>
+<ul>
+<li>When the magnitude of the effect of diabetes changes between subgroups of another variable like gender, we put on our epidemiologist hats and call gender an “effect modifier.”</li>
+<li>As a statistician we think “interaction!”</li>
+</ul>
+<p>We need to be more careful, though! We also know the pregnancy status of some of our subjects.</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
+<p>We should probably remove the pregnant women if we want to look at other factors related to BMI, since they have higher BMI on average.</p>
 <pre><code>## [1] 7098</code></pre>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-13-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-17-1.png" width="624" /></p>
 <p>The change in the effect of diabetes when stratifying by gender is less pronounced, now.</p>
 </div>
 <div id="section-t-test" class="section level2">
 <h2>T Test</h2>
-<p>The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the Student’s T Test. It is so named because the test statistic—which quantifies how different the means are in relation to the variance—follows a T-distribution.</p>
-<p>The T test makes assumptions about the distribution of your continuous variable within the two groups:</p>
+<p>The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student’s T Test. It is so named because the test statistic—which quantifies how different the means are in relation to the variance—follows a T-distribution. The T-distribution is like the normal bell shaped curve but with “fatter tails”.</p>
+<p>The T test makes <em>assumptions</em> about the distribution of your continuous variable within the two groups:</p>
 <ul>
 <li>The measure (BMI) follows a normal distribution with a certain <em>mean</em> and <em>variance</em> within each set (group).</li>
-<li>The two sets (groups) of data are independent and identically distributed. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a “paired T test.”</li>
+<li>The two sets (groups) of data are independent. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a “paired T test.”</li>
 </ul>
 <p>The null hypothesis is that the <em>two group means are equal.</em> We are trying to reject this null hypothesis to show the group means are NOT equal.</p>
 <p>Let’s look at the smoothed histograms (density plots) of the two groups’ BMIs.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-14-1.png" width="624" /></p>
-<p>Now let’s run a t-test:</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-18-1.png" width="624" /></p>
+<p>Do we think the assumptions of the t-test hold?</p>
+<p>Let’s run a t-test:</p>
 <pre><code>## BMI ~ Diabetes
-## &lt;environment: 0x7fb41c11a630&gt;</code></pre>
+## &lt;environment: 0x7fdccc78f230&gt;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -176,56 +249,132 @@ nrow(nhanes_filtered)</code></pre>
 </div>
 </div><div id="pointPlot1" class="shiny-plot-output" style="width: 100% ; height: 400px"></div><div id="boxPlot1" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
 </div>
-<div id="section-suspicious-data-feature" class="section level2">
-<h2>Suspicious data feature</h2>
-<p>Did you see something strange in those last plots? It’s always important to be on the lookout for red flags about data generation and processing.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
-
-<div id="htmlwidget-bbc819d1edb9b6dcf031" style="width:100%;height:auto;", class = "quiz html-widget">
-<div class="panel panel-default">
-<div class="panel-body quizArea">
-</div>
-</div>
-</div>
-
-<script type="application/json" data-for="htmlwidget-bbc819d1edb9b6dcf031">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
-</div>
 <div id="section-prediction" class="section level2">
 <h2>Prediction</h2>
 <p>We can visualize a other continuous variables similarly. For instance, total cholesterol (<code>TotChol</code>).</p>
 <p>Predict weight or total cholesterol? Factors to color by: Diabetes, PhysActive, Smoke100?</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-20-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-24-1.png" width="624" /></p>
 </div>
 <div id="section-fit-a-model" class="section level2">
 <h2>Fit a model</h2>
 <p>What to do here?</p>
-<pre><code>##
+<p><img src="continuousData_files/figure-html/unnamed-chunk-25-1.png" width="624" /></p>
+<pre><code>## 
 ## Call:
-## lm(formula = BMI ~ Age + Gender + Race1 + Smoke100n + PhysActive,
-##     data = NHANES_adults)
-##
+## lm(formula = BMI ~ Diabetes * Gender, data = nhanes_filtered)
+## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max
-## -15.459  -4.475  -1.118   3.332  51.232
-##
+##     Min      1Q  Median      3Q     Max 
+## -18.190  -4.518  -1.018   3.417  47.200 
+## 
 ## Coefficients:
-##                 Estimate Std. Error t value Pr(&gt;|t|)
-## (Intercept)     30.72677    0.35506  86.540  &lt; 2e-16 ***
-## Age              0.02980    0.00522   5.709 1.19e-08 ***
-## Gendermale       0.24498    0.15992   1.532 0.125590
-## Race1Hispanic   -1.86213    0.39967  -4.659 3.24e-06 ***
-## Race1Mexican    -1.20368    0.35699  -3.372 0.000751 ***
-## Race1White      -2.10422    0.25297  -8.318  &lt; 2e-16 ***
-## Race1Other      -4.23923    0.36730 -11.542  &lt; 2e-16 ***
-## Smoke100nSmoker -0.95564    0.16341  -5.848 5.20e-09 ***
-## PhysActiveYes   -1.84073    0.16324 -11.276  &lt; 2e-16 ***
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             28.1177     0.1136 247.532  &lt; 2e-16 ***
+## DiabetesYes              5.9327     0.3681  16.117  &lt; 2e-16 ***
+## Gendermale               0.3455     0.1621   2.132   0.0331 *  
+## DiabetesYes:Gendermale  -2.8280     0.5058  -5.592 2.33e-08 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-##
-## Residual standard error: 6.825 on 6848 degrees of freedom
-##   (45 observations deleted due to missingness)
-## Multiple R-squared:  0.535,  Adjusted R-squared:  0.5345
-## F-statistic: 984.9 on 8 and 6848 DF,  p-value: &lt; 2.2e-16</code></pre>
+## 
+## Residual standard error: 6.466 on 7094 degrees of freedom
+## Multiple R-squared:  0.04581,    Adjusted R-squared:  0.0454 
+## F-statistic: 113.5 on 3 and 7094 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = BMI ~ PhysActive + SmokeNow + Diabetes * Gender + 
+##     Race3 + BPSysAve + BPDiaAve, data = nhanes_filtered)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -16.7708  -4.1737  -0.7635   3.4081  23.7070 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            23.796992   1.456128  16.343  &lt; 2e-16 ***
+## PhysActiveYes          -1.877109   0.310053  -6.054 1.78e-09 ***
+## SmokeNowYes            -2.038572   0.312892  -6.515 9.89e-11 ***
+## DiabetesYes             6.034177   0.777457   7.761 1.55e-14 ***
+## Gendermale              0.567713   0.324956   1.747 0.080835 .  
+## Race3Black              4.290933   0.973161   4.409 1.11e-05 ***
+## Race3Hispanic           3.630647   1.065898   3.406 0.000676 ***
+## Race3Mexican            5.252442   1.011958   5.190 2.39e-07 ***
+## Race3White              2.969148   0.842142   3.526 0.000435 ***
+## Race3Other              4.319276   1.208549   3.574 0.000363 ***
+## BPSysAve               -0.011454   0.009193  -1.246 0.213008    
+## BPDiaAve                0.054282   0.012688   4.278 2.01e-05 ***
+## DiabetesYes:Gendermale -4.048358   0.964221  -4.199 2.84e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 5.736 on 1493 degrees of freedom
+##   (5592 observations deleted due to missingness)
+## Multiple R-squared:  0.1266, Adjusted R-squared:  0.1196 
+## F-statistic: 18.03 on 12 and 1493 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = BMI ~ Diabetes * Gender + Smoke100n + PhysActive + 
+##     Age + Race3 + BPSysAve + BPDiaAve, data = nhanes_filtered)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -16.219  -4.179  -0.921   3.334  38.562 
+## 
+## Coefficients:
+##                         Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            19.351268   0.959102  20.176  &lt; 2e-16 ***
+## DiabetesYes             6.341165   0.520631  12.180  &lt; 2e-16 ***
+## Gendermale              0.407691   0.224857   1.813 0.069902 .  
+## Smoke100nSmoker        -0.833277   0.218079  -3.821 0.000135 ***
+## PhysActiveYes          -1.299140   0.218181  -5.954 2.88e-09 ***
+## Age                    -0.007238   0.007382  -0.980 0.326940    
+## Race3Black              4.977960   0.542202   9.181  &lt; 2e-16 ***
+## Race3Hispanic           3.932748   0.601803   6.535 7.31e-11 ***
+## Race3Mexican            4.620168   0.585135   7.896 3.86e-15 ***
+## Race3White              3.429644   0.458419   7.481 9.30e-14 ***
+## Race3Other              4.794830   0.797607   6.012 2.03e-09 ***
+## BPSysAve                0.016798   0.007453   2.254 0.024264 *  
+## BPDiaAve                0.062662   0.009685   6.470 1.12e-10 ***
+## DiabetesYes:Gendermale -3.549401   0.694610  -5.110 3.40e-07 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.105 on 3405 degrees of freedom
+##   (3679 observations deleted due to missingness)
+## Multiple R-squared:  0.1137, Adjusted R-squared:  0.1104 
+## F-statistic: 33.62 on 13 and 3405 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = BMI ~ Diabetes + Gender + Race3 + Smoke100n + PhysActive, 
+##     data = nhanes_filtered)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -14.159  -4.206  -0.827   3.119  38.406 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)      25.6831     0.4615  55.653  &lt; 2e-16 ***
+## DiabetesYes       4.3320     0.3477  12.458  &lt; 2e-16 ***
+## Gendermale        0.2961     0.2092   1.416 0.156969    
+## Race3Black        4.9112     0.5315   9.240  &lt; 2e-16 ***
+## Race3Hispanic     3.5352     0.5887   6.005 2.11e-09 ***
+## Race3Mexican      4.3093     0.5738   7.510 7.43e-14 ***
+## Race3White        3.3508     0.4508   7.433 1.33e-13 ***
+## Race3Other        4.3720     0.7823   5.589 2.46e-08 ***
+## Smoke100nSmoker  -0.8069     0.2150  -3.753 0.000177 ***
+## PhysActiveYes    -1.3185     0.2118  -6.225 5.40e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 6.147 on 3522 degrees of freedom
+##   (3566 observations deleted due to missingness)
+## Multiple R-squared:  0.08631,    Adjusted R-squared:  0.08398 
+## F-statistic: 36.97 on 9 and 3522 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<div id="section-resources-and-extra-practice" class="section level2">
+<h2>Resources and extra practice</h2>
+<p>To learn more R coding and a bit more about EDA and statistical analysis, try out our Data Camp course:</p>
+<p><a href="https://www.datacamp.com/courses/3864">R Bootcamp</a></p>
 
 <script type="application/shiny-prerendered" data-context="server-start">
 knitr::opts_chunk$set(echo = FALSE, warning=FALSE, message=FALSE, tidy = TRUE)
@@ -238,17 +387,44 @@ library(NHANES)
 library(knitr)
 library(kableExtra)
 </script>
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::register_http_handlers(session, metadata = NULL)
 </script>
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
 library(tidyverse)
 library(DSIExplore)
 library(NHANES)
 </script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
 
+# should wrap this into the package and not repeat like this
+# need to figure out better way to get and then use labels as straight strings
+
+plot_w_cor_quotes = function(df,cont_x,cont_y,color,xlab,ylab,colorlab) {
+  enquo_x = enquo(cont_x)
+  enquo_y = enquo(cont_y)
+  enquo_color = enquo(color)
+  tmpdat =  df%>%summarize(x=mean(range(!!enquo_x,na.rm=T)),
+                           y=max(!!enquo_y,na.rm=T),
+                           cortext=paste("Pearson's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs"), digits = 2),
+                                         "\nSpearman's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs",method="spearman"), digits = 2))
+  )
+  df %>% ggplot(aes_(x=enquo_x,y=enquo_y,color=enquo_color)) + geom_point() + stat_smooth(method="lm",se = FALSE) + 
+    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)+xlab(xlab)+ylab(ylab)+
+    scale_color_continuous(name=colorlab)
+}
+
+
+
+  output$scatterPlotCont <- renderPlot(
+      NHANES %>% plot_w_cor_quotes(get(input$select_x),get(input$select_y),get(input$select_color),input$select_x,input$select_y,input$select_color)
+      )
+
+</script>
+ 
 <script type="application/shiny-prerendered" data-context="server">
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 subsetdata <- reactive({
@@ -261,27 +437,27 @@ output$densityPlot1 <- renderPlot(
 )
 
 output$ttest1 <- function() {
-  broom::tidy(t.test(BMI~Diabetes,data=subsetdata())) %>%
+  broom::tidy(t.test(BMI~Diabetes,data=subsetdata())) %>% 
     select(estimate:p.value) %>%
     mutate(p.value=as.character(signif(p.value,2))) %>%
     knitr::kable(format = "html",col.names = c("Difference in Means","Means No","Means Yes", "T Statisitic","P Value"), digits=2) %>%
     kableExtra::kable_styling("striped", full_width = F)
 }
 </script>
-
+ 
 <script type="application/shiny-prerendered" data-context="server">
   output$pointPlot1 <- renderPlot(
       nhanes_filtered %>% ggplot(aes(x=BPSysAve,y=BMI)) + geom_point(alpha=0.1) + facet_wrap(~get(input$select1))
       )
 
   output$boxPlot1 <- renderPlot(
-      NHANES %>% filter(Age >= 18) %>% ggplot(aes(x=get(input$select1),y=Height)) + geom_boxplot() +
+      NHANES %>% filter(Age >= 18) %>% ggplot(aes(x=get(input$select1),y=Height)) + geom_boxplot() + 
         xlab(input$select1)
       )
 </script>
  <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="dependencies">
-{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap-3.3.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["4.5.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/font-awesome-4.5.0"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/font-awesome.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["localforage"]},{"type":"character","attributes":{},"value":["1.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/localforage"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["localforage.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["quiz-binding"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["quiz.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap-3.3.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/bootstrap.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["localforage"]},{"type":"character","attributes":{},"value":["1.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/localforage"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["localforage.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["slickquiz"]},{"type":"character","attributes":{},"value":["1.5.20"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets/lib/slickquiz"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/slickQuiz.js"]},{"type":"character","attributes":{},"value":["css/slickQuiz.css","css/slickQuizTutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ionrangeslider"]},{"type":"character","attributes":{},"value":["2.1.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/ionrangeslider"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/ion.rangeSlider.min.js"]},{"type":"character","attributes":{},"value":["css/ion.rangeSlider.css","css/ion.rangeSlider.skinShiny.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["strftime"]},{"type":"character","attributes":{},"value":["0.9.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/strftime"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["strftime-min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.11.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/selectize"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"character","attributes":{},"value":["<!--[if lt IE 9]>\n<script src=\"shared/selectize/js/es5-shim.min.js\"><\/script>\n<![endif]-->\n<script src=\"shared/selectize/js/selectize.min.js\"><\/script>"]},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]}]}
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap-3.3.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["4.5.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/font-awesome-4.5.0"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/font-awesome.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["localforage"]},{"type":"character","attributes":{},"value":["1.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/localforage"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["localforage.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.11.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/selectize"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"character","attributes":{},"value":["<!--[if lt IE 9]>\n<script src=\"shared/selectize/js/es5-shim.min.js\"><\/script>\n<![endif]-->\n<script src=\"shared/selectize/js/selectize.min.js\"><\/script>"]},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.11.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/selectize"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"character","attributes":{},"value":["<!--[if lt IE 9]>\n<script src=\"shared/selectize/js/es5-shim.min.js\"><\/script>\n<![endif]-->\n<script src=\"shared/selectize/js/selectize.min.js\"><\/script>"]},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.11.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/selectize"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"character","attributes":{},"value":["<!--[if lt IE 9]>\n<script src=\"shared/selectize/js/es5-shim.min.js\"><\/script>\n<![endif]-->\n<script src=\"shared/selectize/js/selectize.min.js\"><\/script>"]},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["www"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["htmlwidgets"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["quiz-binding"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["quiz.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery-1.11.3"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap-3.3.5"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/bootstrap.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["localforage"]},{"type":"character","attributes":{},"value":["1.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/localforage"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["localforage.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.9"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["slickquiz"]},{"type":"character","attributes":{},"value":["1.5.20"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["htmlwidgets/lib/slickquiz"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/slickQuiz.js"]},{"type":"character","attributes":{},"value":["css/slickQuiz.css","css/slickQuizTutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ionrangeslider"]},{"type":"character","attributes":{},"value":["2.1.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/ionrangeslider"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/ion.rangeSlider.min.js"]},{"type":"character","attributes":{},"value":["css/ion.rangeSlider.css","css/ion.rangeSlider.skinShiny.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["strftime"]},{"type":"character","attributes":{},"value":["0.9.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/strftime"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["strftime-min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["selectize"]},{"type":"character","attributes":{},"value":["0.11.2"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["href"]}},"value":[{"type":"character","attributes":{},"value":["shared/selectize"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/selectize.bootstrap3.css"]},{"type":"character","attributes":{},"value":["<!--[if lt IE 9]>\n<script src=\"shared/selectize/js/es5-shim.min.js\"><\/script>\n<![endif]-->\n<script src=\"shared/selectize/js/selectize.min.js\"><\/script>"]},{"type":"NULL"},{"type":"NULL"},{"type":"logical","attributes":{},"value":[true]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
