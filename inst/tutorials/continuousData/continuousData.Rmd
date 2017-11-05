@@ -109,7 +109,7 @@ Now you can try to get a feel for what correlation (linear and non-linear) looks
 
 ```{r}
 
-cont_vars = c("Age","Weight","Height","BMI","BPSysAve","BPDiaAve","TotChol")
+cont_vars = c("Age","Weight","Height","BMI","BPSysAve","BPDiaAve","TotChol","Pulse","HHIncomeMid","Testosterone")
 
 selectInput("select_x", "X-axis", choices = cont_vars,
             selected = "Weight")
@@ -161,13 +161,13 @@ Let's explore the missingness in this data a bit before we move on.
 We can summarize the data with missing diabetes status:
 
 ```{r, echo=TRUE}
-NHANES %>% filter(is.na(Diabetes)) %>% select(ID, Diabetes, BMI, Age) %>% summary
+NHANES %>% filter(is.na(Diabetes)) %>% select(Diabetes, BMI, Age) %>% summary
 ```
 
 Note that 137 out of 142 subjects with missing diabetes data also have missing BMI data. Also note the Age distribution. Does something look interesting?
 
 ```{r}
-NHANES %>% filter(is.na(Diabetes)) %>% select(ID, Diabetes, BMI, Age) %>% janitor::tabyl(Age)
+NHANES %>% filter(is.na(Diabetes)) %>% select(Diabetes, BMI, Age) %>% janitor::tabyl(Age)
 ```
 
 What about missingness in BMI? How does this relate to age? We can use the `naniar` package in R to visualize this with a scatterplot:
@@ -217,9 +217,13 @@ Let's look at the smoothed histograms (density plots) of the two groups' BMIs.
 nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
 ```
 
-Do we think the assumptions of the t-test hold?
+**Question: Do we think the assumptions of the t-test hold?**
 
-Let's run a t-test:
+The T-test is pretty robust to slight violations of the normality assumption, especially since we have a large sample size
+
+- statistics side note: thanks to the Central Limit Theorem, our test is still *valid* as in we preserve our type I error; for a nice explanation of this see [this Stats Geek blog post](http://thestatsgeek.com/2013/09/28/the-t-test-and-robustness-to-non-normality/) and [Lumley T, et al 2002](http://rctdesign.org/techreports/arphnonnormality.pdf))
+
+So, let's run a t-test (!!):
 
 ```{r}
 broom::tidy(t.test(BMI~Diabetes,data=NHANES)) %>% select(estimate:p.value) %>% mutate(p.value=as.character(signif(p.value,2))) %>%
@@ -233,7 +237,7 @@ What happens if we have a much smaller sample size? We can examine the effect of
 
 ```{r}
 sliderInput("samplesize", label="Total Sample Size",min=10,max=500,value=500)
-actionButton("buttonResample","Resample")
+actionButton("buttonResample","Take a Sample")
 plotOutput("densityPlot1")
 tableOutput("ttest1")
 ```
@@ -259,69 +263,127 @@ output$ttest1 <- function() {
 ```
 
 
-## WORKING ON
-
 ## Other factors
 
 What other factors might be associated with BMI?
 
+- To assess continuous factors we can make scatterplots
+- We can stratify scatterplots by categorical variables to assess associations of continuous variables with BMI within subcategories defined by categorical or binary variables (i.e. `Diabetes`)
+- To remove the stratification option select `AllSubjects` as your `Factor`
+- **Question: Do any interesting associations arise?**
+
 ```{r}
-selectInput("select1", "Factor", choices = c("Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive"),
+cat_vars = c("AllSubjects","Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive","TVHrsDay","SleepTrouble")
+
+selectInput("select_factor1", "Factor", choices = cat_vars,
             selected = "Gender")
+selectInput("select_cont1", "Continous X-axis", choices = cont_vars)
 plotOutput("pointPlot1")
 plotOutput("boxPlot1")
 ```
 
 ```{r context="server"}
-  output$pointPlot1 <- renderPlot(
-      nhanes_filtered %>% ggplot(aes(x=BPSysAve,y=BMI)) + geom_point(alpha=0.1) + facet_wrap(~get(input$select1))
-      )
+nhanes_filtered$AllSubjects = "All"
 
-  output$boxPlot1 <- renderPlot(
-      nhanes_filtered %>% ggplot(aes_(x=input$select1,y="BMI",color=input$select1)) + geom_boxplot()
-      )
+output$pointPlot1 <- renderPlot(
+  nhanes_filtered %>% ggplot(aes(x=get(input$select_cont1),y=BMI, color=get(input$select_cont1))) + geom_point(alpha=0.1) + facet_wrap(~get(input$select_factor1)) + 
+    xlab(input$select_cont1) + geom_smooth(method="lm")
+)
+
+output$boxPlot1 <- renderPlot(
+  nhanes_filtered %>% ggplot(aes(x=get(input$select_factor1),y=BMI,color=get(input$select_factor1))) + geom_boxplot() + xlab("") + 
+    scale_color_discrete(name=input$select_factor1)
+)
 ```
 
 
-## Prediction
+## Advanced Topic: Linear Models - multiple predictors/associations
 
-We can visualize a other continuous variables similarly. For instance, total cholesterol (`TotChol`).
+Often we believe our measure or ourcome of interest (i.e. BMI) is associated with several other variables at once. For instance, BMI could be associated with diabetes, blood pressure, physical activity, diet, among many other characteristics.
 
-Predict weight or total cholesterol?
-Factors to color by: Diabetes, PhysActive, Smoke100?
+- A common framework for the analysis of these types of associations is **linear regression**.
+- Linear regression attempts to associate a *dependent variable* or *outcome* (i.e. BMI) with one or more *indepedent variables* or *predictors* (i.e. diabetes, blood pressure).
+
+
+Mathematically, we are modeling our outcome as a *linear* combination of our other variables.
+- assumption: plus some random error, call it $\ \epsilon$ that is normally distributed
+
+$$\ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon$$
+
+Suppose we want to determine if systolic blood pressure is associated with BMI after *adjusting for* diabetes status.
+
+- That is, if we look at the subgroup of diabetics, is pulse associated with BMI?
+- Similarly, if we look at the subgroup of non-diabetics, is blood pressure associated with BMI?
+
+We would fit a model:
+
+$$\ BMI = \beta_0 + \beta_1 (Pulse) + \beta_2 (Diabetes = Yes) + \epsilon$$
+and test whether the **coefficient** $\ \beta_1$ is equal to 0 or not.
+
+We can visualize this:
 
 ```{r}
-NHANES %>% filter(Age > 18) %>% ggplot(aes(x=Age,y=BMI,color=Weight)) + geom_point(alpha=0.1) + facet_grid(~Diabetes)
+nhanes_filtered %>% ggplot(aes(x=Pulse,y=BMI,color=Diabetes,alpha=Diabetes)) + geom_point() + geom_smooth(method="lm")
+```
+
+We can run a linear regression ini `R` and view the output:
+
+
+```{r, echo=TRUE}
+summary(fit1 <- lm(BMI~Pulse+Diabetes,data=nhanes_filtered))
+```
+
+- We interpret the coefficient of `Pulse` as: for every one unit (beat per minute) increase in pulse, we expect the average BMI to increase by `r round(fit1$coef[2],3)` kg/m^2.
+- **Question: is this a very strong association?**
+- R-squared is a measure of how well the predictors explain the variation in the outcome, on a scale from 0 to 1. Do you think these predictors as explaining BMI very well? That is, if we are given a subjects pulse and diabetes status, how sure are we that the predicted BMI from this model is correct?
+
+This idea of "how well can we predict our outcome" drives much of statistical modeling, inclduing **machine learning** and **predictive analytics**.
+
+We can include many predictors in our model and still not have a very good R-squared, as BMI is a *very complex trait*:
+
+```{r, echo=TRUE}
+summary(fit1 <- lm(BMI~PhysActive+SmokeNow+Gender+Race3+BPSysAve+BPDiaAve+Pulse+Diabetes,data=nhanes_filtered))
 ```
 
 
-## Fit a model
+What if we tried to predict BMI with weight?
 
-What to do here?
+```{r, echo=TRUE}
+summary(fit1 <- lm(BMI~Weight+Diabetes,data=nhanes_filtered))
+```
+
+- What is the R-squared, now? Why?
+- Does this model make sense in practice?
 
 ```{r}
-
-# show that it is difficult to predict BMI just based on Diabetes alone
-# add in other variabiles does not help prediction much because BMI is a complex trait
-
-nhanes_filtered %>% ggplot(aes(x=Race3,y=BMI))+geom_boxplot()
-
-summary(fit1 <- lm(BMI~Diabetes*Gender,data=nhanes_filtered))
-summary(fit1 <- lm(BMI~PhysActive+SmokeNow+Diabetes*Gender+Race3+BPSysAve+BPDiaAve,data=nhanes_filtered))
-
-
-
-summary(fit1 <- lm(BMI~Diabetes*Gender+Smoke100n+PhysActive+Age+Race3+BPSysAve+BPDiaAve,data=nhanes_filtered))
-
-summary(fit1 <- lm(BMI~Diabetes+Gender+Race3+ Smoke100n+PhysActive,data=nhanes_filtered))
-# throwing in some stuff
-
-# does it make sense to include weight? discuss prediction vs correlation vs causation? independent predictors vs dependent variable, confounders...etc
-
-# talk about putting in smoking vs phys activity, significant but very low coefficients
-
-# talk about terrible adjusted R-squared though significant predictors?
+nhanes_filtered %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes,alpha=Diabetes)) + geom_point() + geom_smooth(method="lm")
 ```
+
+## Your Turn
+
+
+Modify the R code in the `lm()` function to build your own prediction model. Here are the names of the NHANES dataset:
+
+```{r}
+names(nhanes_filtered)
+```
+
+
+```{r lm_ex, exercise = TRUE}
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
+
+# edit the code in the formula by adding in variable names
+summary(fit <- lm(BMI~Pulse+Diabetes,data=nhanes_filtered))
+```
+
+```{r}
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
+
+# edit the ggplot code after x= and y= and color= to change the axes and the color
+nhanes_filtered %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes)) + geom_point() + geom_smooth(method="lm")
+
+```
+
 
 ## Resources and extra practice
 
