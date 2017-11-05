@@ -121,28 +121,24 @@ plotOutput("scatterPlotCont")
 ```
 
 ```{r context="server"}
-
+library(rlang)
 # should wrap this into the package and not repeat like this
-# need to figure out better way to get and then use labels as straight strings
-
-plot_w_cor_quotes = function(df,cont_x,cont_y,color,xlab,ylab,colorlab) {
-  enquo_x = enquo(cont_x)
-  enquo_y = enquo(cont_y)
-  enquo_color = enquo(color)
+# need to figure out a better way to use quoted vs quosures
+plot_w_cor_quotes = function(df,cont_x,cont_y,color) {
+  enquo_x = quo(!! sym(cont_x))
+  enquo_y = quo(!! sym(cont_y))
+  enquo_color = quo(!! sym(color))
   tmpdat =  df%>%summarize(x=mean(range(!!enquo_x,na.rm=T)),
                            y=max(!!enquo_y,na.rm=T),
                            cortext=paste("Pearson's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs"), digits = 2),
                                          "\nSpearman's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs",method="spearman"), digits = 2))
   )
   df %>% ggplot(aes_(x=enquo_x,y=enquo_y,color=enquo_color)) + geom_point() + stat_smooth(method="lm",se = FALSE) + 
-    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)+xlab(xlab)+ylab(ylab)+
-    scale_color_continuous(name=colorlab)
+    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)
 }
 
-
-
   output$scatterPlotCont <- renderPlot(
-      NHANES %>% plot_w_cor_quotes(get(input$select_x),get(input$select_y),get(input$select_color),input$select_x,input$select_y,input$select_color)
+      NHANES %>% plot_w_cor_quotes(input$select_x,input$select_y,input$select_color)
       )
 
 ```

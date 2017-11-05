@@ -130,7 +130,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="section-what-is-a-factor-that-may-be-associated-with-bmi" class="section level2">
 <h2>What is a factor that may be associated with BMI?</h2>
-<p>We learned that good EDA can help us identify associations. How does BMI differ by <code>Diabetes</code> status?</p>
+<p>Now let’s explore the association of BMI with a binary (yes/no) variable. How does BMI differ by <code>Diabetes</code> status?</p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
 <p>We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called <code>NA</code>. This means the data is missing.</p>
 <p>Let’s explore the missingness in this data a bit before we move on.</p>
@@ -202,7 +202,7 @@ nrow(nhanes_filtered)</code></pre>
 <p>Do we think the assumptions of the t-test hold?</p>
 <p>Let’s run a t-test:</p>
 <pre><code>## BMI ~ Diabetes
-## &lt;environment: 0x7fdccc78f230&gt;</code></pre>
+## &lt;environment: 0x7fa6c90dc230&gt;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -399,28 +399,24 @@ library(NHANES)
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-
+library(rlang)
 # should wrap this into the package and not repeat like this
-# need to figure out better way to get and then use labels as straight strings
-
-plot_w_cor_quotes = function(df,cont_x,cont_y,color,xlab,ylab,colorlab) {
-  enquo_x = enquo(cont_x)
-  enquo_y = enquo(cont_y)
-  enquo_color = enquo(color)
+# need to figure out a better way to use quoted vs quosures
+plot_w_cor_quotes = function(df,cont_x,cont_y,color) {
+  enquo_x = quo(!! sym(cont_x))
+  enquo_y = quo(!! sym(cont_y))
+  enquo_color = quo(!! sym(color))
   tmpdat =  df%>%summarize(x=mean(range(!!enquo_x,na.rm=T)),
                            y=max(!!enquo_y,na.rm=T),
                            cortext=paste("Pearson's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs"), digits = 2),
                                          "\nSpearman's r = ", round(cor(!!enquo_x, !!enquo_y,use="complete.obs",method="spearman"), digits = 2))
   )
   df %>% ggplot(aes_(x=enquo_x,y=enquo_y,color=enquo_color)) + geom_point() + stat_smooth(method="lm",se = FALSE) + 
-    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)+xlab(xlab)+ylab(ylab)+
-    scale_color_continuous(name=colorlab)
+    geom_text(data = tmpdat,aes(x=x,y=y,label=cortext),inherit.aes = FALSE,size=4)
 }
 
-
-
   output$scatterPlotCont <- renderPlot(
-      NHANES %>% plot_w_cor_quotes(get(input$select_x),get(input$select_y),get(input$select_color),input$select_x,input$select_y,input$select_color)
+      NHANES %>% plot_w_cor_quotes(input$select_x,input$select_y,input$select_color)
       )
 
 </script>
