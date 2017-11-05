@@ -200,41 +200,6 @@ nhanes_filtered %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes))+geom_boxplot() 
   ggtitle("Boxplot of NHANES BMI by Diabetes Status")+xlab("")
 ```
 
-## BMI ~ Diabetes, Gender, and ?
-
-Gender is another factor that might influence BMI.
-
-```{r}
-nhanes_filtered %>% ggplot(aes(x=Gender,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
-ggtitle("Boxplot of NHANES BMI by Gender and Diabetes")+xlab("") 
-```
-
-How does the effect of diabetes change with gender?
-
-- When the magnitude of the effect of diabetes changes between subgroups of another variable like gender, we put on our epidemiologist hats and call gender an "effect modifier."
-- As a statistician we think "interaction!"
-
-We need to be more careful, though! We also know the pregnancy status of some of our subjects.
-
-```{r}
-nhanes_filtered %>% ggplot(aes(x=PregnantNow,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
-ggtitle("Boxplot of NHANES BMI by Pregnancy Status")+xlab("") 
-```
-
-We should probably remove the pregnant women if we want to look at other factors related to BMI, since they have higher BMI on average.
-
-```{r}
-nhanes_filtered = nhanes_filtered %>% filter((!PregnantNow=="Yes")|(is.na(PregnantNow)))
-nrow(nhanes_filtered)
-```
-
-```{r}
-nhanes_filtered %>% ggplot(aes(x=Gender,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
-ggtitle("Boxplot of NHANES BMI by Gender and Diabetes")+xlab("") 
-```
-
-The change in the effect of diabetes when stratifying by gender is less pronounced, now.
-
 ## T Test
 
 The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student's T Test. It is so named because the test statistic---which quantifies how different the means are in relation to the variance---follows a T-distribution. The T-distribution is like the normal bell shaped curve but with "fatter tails".
@@ -298,7 +263,7 @@ output$ttest1 <- function() {
 
 ## Other factors
 
-What other factors might we separate on? Let's just look at adults (age >= 20):
+What other factors might be associated with BMI?
 
 ```{r}
 selectInput("select1", "Factor", choices = c("Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive"),
@@ -313,8 +278,7 @@ plotOutput("boxPlot1")
       )
 
   output$boxPlot1 <- renderPlot(
-      NHANES %>% filter(Age >= 18) %>% ggplot(aes(x=get(input$select1),y=Height)) + geom_boxplot() + 
-        xlab(input$select1)
+      nhanes_filtered %>% ggplot(aes_(x=input$select1,y="BMI",color=input$select1)) + geom_boxplot()
       )
 ```
 

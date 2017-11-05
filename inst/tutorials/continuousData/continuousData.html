@@ -172,22 +172,6 @@ nrow(nhanes_filtered)</code></pre>
 <pre><code>## [1] 7170</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-13-1.png" width="624" /></p>
 </div>
-<div id="section-bmi-diabetes-gender-and" class="section level2">
-<h2>BMI ~ Diabetes, Gender, and ?</h2>
-<p>Gender is another factor that might influence BMI.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-14-1.png" width="624" /></p>
-<p>How does the effect of diabetes change with gender?</p>
-<ul>
-<li>When the magnitude of the effect of diabetes changes between subgroups of another variable like gender, we put on our epidemiologist hats and call gender an “effect modifier.”</li>
-<li>As a statistician we think “interaction!”</li>
-</ul>
-<p>We need to be more careful, though! We also know the pregnancy status of some of our subjects.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
-<p>We should probably remove the pregnant women if we want to look at other factors related to BMI, since they have higher BMI on average.</p>
-<pre><code>## [1] 7098</code></pre>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-17-1.png" width="624" /></p>
-<p>The change in the effect of diabetes when stratifying by gender is less pronounced, now.</p>
-</div>
 <div id="section-t-test" class="section level2">
 <h2>T Test</h2>
 <p>The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student’s T Test. It is so named because the test statistic—which quantifies how different the means are in relation to the variance—follows a T-distribution. The T-distribution is like the normal bell shaped curve but with “fatter tails”.</p>
@@ -198,11 +182,11 @@ nrow(nhanes_filtered)</code></pre>
 </ul>
 <p>The null hypothesis is that the <em>two group means are equal.</em> We are trying to reject this null hypothesis to show the group means are NOT equal.</p>
 <p>Let’s look at the smoothed histograms (density plots) of the two groups’ BMIs.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-18-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-14-1.png" width="624" /></p>
 <p>Do we think the assumptions of the t-test hold?</p>
 <p>Let’s run a t-test:</p>
 <pre><code>## BMI ~ Diabetes
-## &lt;environment: 0x7fa6c90dc230&gt;</code></pre>
+## &lt;environment: 0x7fcaae8d7c30&gt;</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -235,7 +219,7 @@ nrow(nhanes_filtered)</code></pre>
 </div>
 <div id="section-other-factors" class="section level2">
 <h2>Other factors</h2>
-<p>What other factors might we separate on? Let’s just look at adults (age &gt;= 20):</p>
+<p>What other factors might be associated with BMI?</p>
 <p><div class="form-group shiny-input-container">
 <label class="control-label" for="select1">Factor</label>
 <div>
@@ -253,32 +237,32 @@ nrow(nhanes_filtered)</code></pre>
 <h2>Prediction</h2>
 <p>We can visualize a other continuous variables similarly. For instance, total cholesterol (<code>TotChol</code>).</p>
 <p>Predict weight or total cholesterol? Factors to color by: Diabetes, PhysActive, Smoke100?</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-24-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-20-1.png" width="624" /></p>
 </div>
 <div id="section-fit-a-model" class="section level2">
 <h2>Fit a model</h2>
 <p>What to do here?</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-25-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-21-1.png" width="624" /></p>
 <pre><code>## 
 ## Call:
 ## lm(formula = BMI ~ Diabetes * Gender, data = nhanes_filtered)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -18.190  -4.518  -1.018   3.417  47.200 
+## -18.190  -4.563  -1.034   3.426  52.426 
 ## 
 ## Coefficients:
 ##                        Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)             28.1177     0.1136 247.532  &lt; 2e-16 ***
-## DiabetesYes              5.9327     0.3681  16.117  &lt; 2e-16 ***
-## Gendermale               0.3455     0.1621   2.132   0.0331 *  
-## DiabetesYes:Gendermale  -2.8280     0.5058  -5.592 2.33e-08 ***
+## (Intercept)             28.1741     0.1130 249.344  &lt; 2e-16 ***
+## DiabetesYes              5.8763     0.3698  15.889  &lt; 2e-16 ***
+## Gendermale               0.2891     0.1622   1.783   0.0746 .  
+## DiabetesYes:Gendermale  -2.7716     0.5084  -5.452 5.15e-08 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 6.466 on 7094 degrees of freedom
-## Multiple R-squared:  0.04581,    Adjusted R-squared:  0.0454 
-## F-statistic: 113.5 on 3 and 7094 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 6.503 on 7166 degrees of freedom
+## Multiple R-squared:  0.04428,    Adjusted R-squared:  0.04388 
+## F-statistic: 110.7 on 3 and 7166 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = BMI ~ PhysActive + SmokeNow + Diabetes * Gender + 
@@ -286,30 +270,30 @@ nrow(nhanes_filtered)</code></pre>
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -16.7708  -4.1737  -0.7635   3.4081  23.7070 
+## -16.7845  -4.1563  -0.7588   3.3859  23.7642 
 ## 
 ## Coefficients:
-##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)            23.796992   1.456128  16.343  &lt; 2e-16 ***
-## PhysActiveYes          -1.877109   0.310053  -6.054 1.78e-09 ***
-## SmokeNowYes            -2.038572   0.312892  -6.515 9.89e-11 ***
-## DiabetesYes             6.034177   0.777457   7.761 1.55e-14 ***
-## Gendermale              0.567713   0.324956   1.747 0.080835 .  
-## Race3Black              4.290933   0.973161   4.409 1.11e-05 ***
-## Race3Hispanic           3.630647   1.065898   3.406 0.000676 ***
-## Race3Mexican            5.252442   1.011958   5.190 2.39e-07 ***
-## Race3White              2.969148   0.842142   3.526 0.000435 ***
-## Race3Other              4.319276   1.208549   3.574 0.000363 ***
-## BPSysAve               -0.011454   0.009193  -1.246 0.213008    
-## BPDiaAve                0.054282   0.012688   4.278 2.01e-05 ***
-## DiabetesYes:Gendermale -4.048358   0.964221  -4.199 2.84e-05 ***
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            23.72902    1.45531  16.305  &lt; 2e-16 ***
+## PhysActiveYes          -1.89033    0.30985  -6.101 1.34e-09 ***
+## SmokeNowYes            -2.03277    0.31255  -6.504 1.07e-10 ***
+## DiabetesYes             6.05171    0.77735   7.785 1.29e-14 ***
+## Gendermale              0.58534    0.32467   1.803 0.071609 .  
+## Race3Black              4.23203    0.97202   4.354 1.43e-05 ***
+## Race3Hispanic           3.63327    1.06588   3.409 0.000670 ***
+## Race3Mexican            5.25432    1.01195   5.192 2.36e-07 ***
+## Race3White              2.97136    0.84212   3.528 0.000431 ***
+## Race3Other              4.32183    1.20853   3.576 0.000360 ***
+## BPSysAve               -0.01114    0.00919  -1.212 0.225763    
+## BPDiaAve                0.05453    0.01269   4.298 1.84e-05 ***
+## DiabetesYes:Gendermale -4.06497    0.96412  -4.216 2.63e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 5.736 on 1493 degrees of freedom
-##   (5592 observations deleted due to missingness)
-## Multiple R-squared:  0.1266, Adjusted R-squared:  0.1196 
-## F-statistic: 18.03 on 12 and 1493 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 5.736 on 1495 degrees of freedom
+##   (5662 observations deleted due to missingness)
+## Multiple R-squared:  0.127,  Adjusted R-squared:   0.12 
+## F-statistic: 18.12 on 12 and 1495 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = BMI ~ Diabetes * Gender + Smoke100n + PhysActive + 
@@ -317,31 +301,31 @@ nrow(nhanes_filtered)</code></pre>
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -16.219  -4.179  -0.921   3.334  38.562 
+## -16.212  -4.190  -0.929   3.320  50.637 
 ## 
 ## Coefficients:
 ##                         Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)            19.351268   0.959102  20.176  &lt; 2e-16 ***
-## DiabetesYes             6.341165   0.520631  12.180  &lt; 2e-16 ***
-## Gendermale              0.407691   0.224857   1.813 0.069902 .  
-## Smoke100nSmoker        -0.833277   0.218079  -3.821 0.000135 ***
-## PhysActiveYes          -1.299140   0.218181  -5.954 2.88e-09 ***
-## Age                    -0.007238   0.007382  -0.980 0.326940    
-## Race3Black              4.977960   0.542202   9.181  &lt; 2e-16 ***
-## Race3Hispanic           3.932748   0.601803   6.535 7.31e-11 ***
-## Race3Mexican            4.620168   0.585135   7.896 3.86e-15 ***
-## Race3White              3.429644   0.458419   7.481 9.30e-14 ***
-## Race3Other              4.794830   0.797607   6.012 2.03e-09 ***
-## BPSysAve                0.016798   0.007453   2.254 0.024264 *  
-## BPDiaAve                0.062662   0.009685   6.470 1.12e-10 ***
-## DiabetesYes:Gendermale -3.549401   0.694610  -5.110 3.40e-07 ***
+## (Intercept)            19.265788   0.959789  20.073  &lt; 2e-16 ***
+## DiabetesYes             6.318203   0.524773  12.040  &lt; 2e-16 ***
+## Gendermale              0.380676   0.226033   1.684   0.0922 .  
+## Smoke100nSmoker        -0.867544   0.219336  -3.955 7.80e-05 ***
+## PhysActiveYes          -1.354599   0.218754  -6.192 6.63e-10 ***
+## Age                    -0.008821   0.007419  -1.189   0.2345    
+## Race3Black              4.990512   0.545682   9.145  &lt; 2e-16 ***
+## Race3Hispanic           3.924190   0.606783   6.467 1.14e-10 ***
+## Race3Mexican            4.610872   0.587964   7.842 5.87e-15 ***
+## Race3White              3.450771   0.461933   7.470 1.01e-13 ***
+## Race3Other              4.801225   0.804203   5.970 2.61e-09 ***
+## BPSysAve                0.018149   0.007503   2.419   0.0156 *  
+## BPDiaAve                0.063390   0.009732   6.514 8.41e-11 ***
+## DiabetesYes:Gendermale -3.523619   0.700099  -5.033 5.08e-07 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 6.105 on 3405 degrees of freedom
-##   (3679 observations deleted due to missingness)
-## Multiple R-squared:  0.1137, Adjusted R-squared:  0.1104 
-## F-statistic: 33.62 on 13 and 3405 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 6.156 on 3429 degrees of freedom
+##   (3727 observations deleted due to missingness)
+## Multiple R-squared:  0.1132, Adjusted R-squared:  0.1098 
+## F-statistic: 33.66 on 13 and 3429 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre><code>## 
 ## Call:
 ## lm(formula = BMI ~ Diabetes + Gender + Race3 + Smoke100n + PhysActive, 
@@ -349,27 +333,27 @@ nrow(nhanes_filtered)</code></pre>
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -14.159  -4.206  -0.827   3.119  38.406 
+## -14.166  -4.210  -0.857   3.118  51.520 
 ## 
 ## Coefficients:
 ##                 Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)      25.6831     0.4615  55.653  &lt; 2e-16 ***
-## DiabetesYes       4.3320     0.3477  12.458  &lt; 2e-16 ***
-## Gendermale        0.2961     0.2092   1.416 0.156969    
-## Race3Black        4.9112     0.5315   9.240  &lt; 2e-16 ***
-## Race3Hispanic     3.5352     0.5887   6.005 2.11e-09 ***
-## Race3Mexican      4.3093     0.5738   7.510 7.43e-14 ***
-## Race3White        3.3508     0.4508   7.433 1.33e-13 ***
-## Race3Other        4.3720     0.7823   5.589 2.46e-08 ***
-## Smoke100nSmoker  -0.8069     0.2150  -3.753 0.000177 ***
-## PhysActiveYes    -1.3185     0.2118  -6.225 5.40e-10 ***
+## (Intercept)      25.7179     0.4650  55.313  &lt; 2e-16 ***
+## DiabetesYes       4.3204     0.3505  12.326  &lt; 2e-16 ***
+## Gendermale        0.2907     0.2104   1.382 0.167039    
+## Race3Black        4.9264     0.5351   9.207  &lt; 2e-16 ***
+## Race3Hispanic     3.5328     0.5937   5.950 2.94e-09 ***
+## Race3Mexican      4.3031     0.5767   7.462 1.07e-13 ***
+## Race3White        3.3625     0.4544   7.400 1.69e-13 ***
+## Race3Other        4.3813     0.7889   5.554 3.00e-08 ***
+## Smoke100nSmoker  -0.8347     0.2162  -3.861 0.000115 ***
+## PhysActiveYes    -1.3608     0.2126  -6.399 1.77e-10 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 6.147 on 3522 degrees of freedom
-##   (3566 observations deleted due to missingness)
-## Multiple R-squared:  0.08631,    Adjusted R-squared:  0.08398 
-## F-statistic: 36.97 on 9 and 3522 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 6.199 on 3546 degrees of freedom
+##   (3614 observations deleted due to missingness)
+## Multiple R-squared:  0.08531,    Adjusted R-squared:  0.08299 
+## F-statistic: 36.75 on 9 and 3546 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <div id="section-resources-and-extra-practice" class="section level2">
 <h2>Resources and extra practice</h2>
@@ -447,8 +431,7 @@ output$ttest1 <- function() {
       )
 
   output$boxPlot1 <- renderPlot(
-      NHANES %>% filter(Age >= 18) %>% ggplot(aes(x=get(input$select1),y=Height)) + geom_boxplot() + 
-        xlab(input$select1)
+      nhanes_filtered %>% ggplot(aes_(x=input$select1,y="BMI",color=input$select1)) + geom_boxplot()
       )
 </script>
  <!--html_preserve-->
