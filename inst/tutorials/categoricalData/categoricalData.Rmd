@@ -19,6 +19,16 @@ library(tidyverse)
 library(DSIExplore)
 ```
 
+## Learning Objectives for this Session
+
+At the end of this session you should be able to
+
+- Understand why we need to do Xxploratory Data Analysis (EDA)
+- Understand statistical association between categorical variables
+- Visual ways to identify association
+- Basic understanding of Chi-squared statistics
+- Understand how to assess missing data
+
 ## What is Exploratory Data Analysis?
 
 - Pioneered by Tukey
@@ -68,7 +78,7 @@ We're going to look at some data of from a group study of 1314 female smokers. I
 
 Let's take a look at a summary of the data. 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, echo=TRUE}
 library(tidyverse)
 data("Whickham",package = "DSIExplore")
 summary(Whickham)
@@ -89,7 +99,7 @@ question("What can we learn from this summary table?",
 
 Here are the first 10 rows of the data table. Each row of the data corresponds to a patient.
 
-```{r}
+```{r echo=TRUE}
 Whickham[1:10,]
 ```
 
@@ -106,13 +116,13 @@ question("How many patients are Alive (outcome = 'Alive') and didn't smoke (smok
 
 Our `outcome` in our dataset is death. One tool we often use to explore the data is a table, which counts how much of each category is there. Which group is larger?
 
-```{r}
+```{r echo = TRUE}
 table(Whickham$outcome)
 ```
 
 Here's another way to look at the data, a bar plot. You can instantly see which of the groups is larger.
 
-```{r}
+```{r echo=TRUE}
 Whickham %>% ggplot(aes(x=outcome)) + geom_bar()
 ```
 
@@ -162,13 +172,20 @@ grid.arrange(vis1, vis2, layout_matrix=lay)
 This is harder to detect with two by two tables, but it is easier to detect with the proportional plot. Again we simulate some fake data:
 
 ```{r}
-tabNoAssoc <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(250, 100, 250, 100), key=c("A", "B","C", "D"))
+sampSize <- 997
 
-vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
-  geom_text(aes(label=value))
+noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
+noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
+                          outcome=ifelse(probDeath < .2, "Dead", "Alive"))
 
-vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
-  geom_text(aes(label=key))
+tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, noAssocSmoking$outcome))
+
+colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
+
+vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=value)) 
+
+vis2 <- noAssocSmoking %>% ggplot(aes(x=outcome, fill=smoking)) + geom_bar(color="black",position = "fill") 
 
 lay <- t(as.matrix(c(1,2), nrow=1))
 grid.arrange(vis1, vis2, layout_matrix=lay)
@@ -266,7 +283,7 @@ question("For patients who are under 49, is smoking associated with death?",
 )
 ```
 
-## Statistical Testing on Association: Chi-Squared Test
+## Chi-Squared Test
 
 Now let's talk about statistics. We have discovered that there is a difference in the proportions of alive to dead people between smokers and non-smokers. So how likely is this a random result? 
 
@@ -278,7 +295,9 @@ Our test statistic is known as the *Chi-Squared-statistic*.
 
 Every statistic has an underlying model of randomness. Our random model is based on the case with no association between our two variables, `smoking` and `death`.
 
-In other words, how rare is our outcome compared to a world of random outcomes? This world of outcomes is known as the *null distribution*.
+In other words, how *rare is our outcome compared to a world of random outcomes?* This world of outcomes is known as the *null distribution*.
+
+Our metric of rareness is the statistic. Where it places us on the *null distribution* determines our p-value.
 
 For our test of proportions, the appropriate null distribution (or random model) is called a `Chi-Square` Distribution. We won't explore all of the parameters, but it represents a random process for which there is no association between variables.
 
@@ -292,23 +311,30 @@ We calculate these expected values by looking at the column and row totals for e
 
 The chi-squared statistic summarizes the total deviation from the expected values in each cell. We have 4 cells, so we sum up our calculation over each of these.
 
-We're going to do a little calculation using R. 
+We're going to do a little calculation using R. Try running the code. How have we filtered the data? Change the filtering criteria to age < 40 and see how the table changes.
 
-```{r }
-under60 <- Whickham %>% filter(age < 60) %>%
-  select(smoker, outcome) %>% table
+```{r cohort_filter, exercise = TRUE}
+cohort <- Whickham %>% 
+  ##here is our filtering criteria
+  filter(age < 60) %>%
+  select(smoker, outcome) %>% 
+  table
 
-##these are the observed values  
-under60
+##these are the observed values 
+print("observed values")
+cohort
 
 ##we can calculate expected values using chisq.test()
-chisq60 <- chisq.test(under60)
+cohort <- chisq.test(cohort, correct=FALSE)
 
 ## show expected values
-chisq60$expected
+print("expected values")
+cohort$expected
 
-## show observed - expected
-chisq60$observed - chisq60$expected
+## show chisq = (observed - expected)^2/expected
+print("obs-expected^2/expected")
+chi <- (cohort$observed - cohort$expected)^2/cohort$expected
+chi
 ```
 
 ### Our null hypothesis and alternative hypothesis
@@ -317,14 +343,25 @@ What we call our *null hypothesis* represents what we think of results that are 
 
 Our null hypothesis is that there is no association between variables. To make things concrete:
 
-+ Null hypothesis (Ho): No association between smoking and outcome. 
-+ Alternative hypothesis (Ha): there is an association between smoking and outcome.
++ **Null hypothesis (Ho)**: *No association between smoking and outcome.* 
++ **Alternative hypothesis (Ha)**: *there is an association between smoking and outcome.*
 
 Remember the case where there was no association between smoking and death?
 
 ```{r}
 library(tidyverse)
-sampSize <- 997
+sampSize <- 300
+nTrials <- 10000
+
+chiveq <- rep(NA, nTrials)
+
+for(i in 1:nTrials){
+  smoking = ifelse(rbinom(sampSize, 1, 0.3)==0, "No","Yes")
+  outcome = ifelse(rbinom(sampSize, 1, 0.2)==0, "Alive", "Dead")
+  chiveq[i] <- chisq.test(table(smoking, outcome))$statistic
+}
+
+hist(chiveq,breaks = 30)
 
 noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
 noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
@@ -335,20 +372,14 @@ tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, noAssocSmoking$outcome))
 colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
 
 noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
-  geom_bar(color="black")
+  geom_bar(color="black") + ggtitle("Stacked Barplot of smoking and outcome")
 
 noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
-  geom_bar(position="fill", color="black")
+  geom_bar(position="fill", color="black") + ggtitle("Proportional Barplot of smoking and outcome")
 
-vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + 
+tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + 
   geom_tile(fill="white", colour="black") + 
-  geom_text(aes(label=value))
-
-vis2 <- tabNoAssoc %>% ggplot(aes(x=outcome, fill=smoking, y=value)) + geom_bar(color="black",stat="identity") #+
-  #geom_text(aes(label=key))
-
-lay <- t(as.matrix(c(1,2,3,4), nrow=2))
-grid.arrange(vis1, vis2, layout_matrix=lay)
+  geom_text(aes(label=value)) + ggtitle("Table of smoking versus outcome")
 ```
 
 ```{r letter-q, echo=FALSE}
@@ -366,7 +397,7 @@ $$\frac{# null}{# Total}$$
 
 So the *p-value* is interpreted as the probability that we will see a random case with the same exact statistic or higher.
 
-For example, if we had 10,000 random cases, and our p-value was 0.2, that means that of our 10000 cases, we would expect to see 10000 * 0.2 = 2000 random cases with our statistic or greater
+For example, if we had 10,000 random cases, and our p-value was 0.2, that means that of our 10000 cases, we would expect to see 10000 * 0.2 = 2000 random cases with our statistic or greater. 
 
 ### Level of significance
 
@@ -382,6 +413,7 @@ One thing our test statistic is dependent on is *n*, the total number of subject
 
 ```{r}
 sliderInput(inputId = "samp_n", label = "N in study",min = 10, max=1000, value = 500)
+checkboxInput(inputId = "samp_check", label="Show proportions", value=FALSE)
 plotOutput("plot_n_bar")
 plotOutput("tab_n_out")
 ```
@@ -409,19 +441,26 @@ t_stat_n <- reactive({
 })
 
 output$plot_n_bar <- renderPlot({
+  prop_status <- input$samp_check
+  
+  if(prop_status){
+    pos_val = "fill"
+    lims <- c(0,1)
+  }else{
+    pos_val="stack"
+    lims <- c(0,1000)
+  }
+  
   data_n_example() %>%
+    
     ggplot(aes(x=smoking, fill=outcome)) +
-    geom_bar(color="black")
+    geom_bar(color="black", position=pos_val) + scale_y_continuous(limits=lims)
 })
 
-output$z_dist <- renderPlot({
+output$chi_dist <- renderPlot({
   
 })
 ```
-
-### Alpha value
-
-Talk about chi-square as an extension
 
 ## Your Turn
 
@@ -429,7 +468,51 @@ We're going to look at another dataset called NHANES (National Health and Nutrit
 
 We're going to look at whether a high BMI (30+) is associated with Diabetes status. Additionally, we're going to ask whether there is a gender difference between this association.
 
-[Shiny App]
+```{r}
+data("bmi_diabetes")
+library(tidyverse)
+bmi_diabetes <- bmi_diabetes %>% tidyr::complete(Diabetes, Gender, BMIstatus) 
+  
+bmi_diabetes[1:15,]
+summary(bmi_diabetes)
+
+categoricalVars <- c("BMIstatus", "Gender")
+selectInput(inputId = "condTab", "Select Variable to Calculate Proportions",
+                         choices=categoricalVars, selected=categoricalVars[1])
+verbatimTextOutput("proportionTab")
+plotOutput("proportionBarplot")
+```
+
+```{r context="server"}
+dataOut <- reactive({
+    bmi_diabetes
+  })
+  
+  output$summaryTable <- renderPrint({
+    summary(dataOut())
+  })
+  
+  proportionTable <- reactive({
+    
+    out <- dataOut()[,c(input$condTab, "Diabetes")]
+    #tab <- as.matrix(table(out))
+    out
+  })
+  
+  output$proportionTab <- renderPrint({
+    tab <- table(proportionTable())
+    return(tab[,"Yes"]/(tab[,"No"] + tab[,"Yes"]))
+    
+  })
+  
+  output$proportionBarplot <- renderPlot({
+     proportionTable() %>% 
+      ggplot(aes_string(x=input$condTab, fill="Diabetes")) + 
+      geom_bar(position="fill", color="black")
+  })
+```
+
+
 
 ### Write your results up
 
@@ -439,7 +522,7 @@ We're going to look at whether a high BMI (30+) is associated with Diabetes stat
 
 One thing we haven't talked about is missing values. 
 
-[Missing data explorer]
+[Missing data explorer] <- use proportions to suss out whether there are biases in data.
 
 
 ## Be proud of yourself!
@@ -450,8 +533,6 @@ Association is where we see overlap (mutual information) between two variables.
 
 ## References
 
-[Test on Proportions](https://onlinecourses.science.psu.edu/statprogram/node/164)
-[Null Distribution](https://en.wikipedia.org/wiki/Null_distribution)
-https://en.wikipedia.org/wiki/Chi-squared_test
+[Chi Squared Test](https://en.wikipedia.org/wiki/Chi-squared_test)
 http://www.stat.wmich.edu/s216/book/node115.html
 https://stats.stackexchange.com/questions/2391/what-is-the-relationship-between-a-chi-squared-test-and-test-of-equal-proportion
