@@ -105,7 +105,7 @@ A simple statistical quantification of the association of two continuous variabl
 - Value between -1 and +1, with 0 denoting no linear correlation
 - We can visually represent the linear relationship with a line through the scatter plot.
 - If the relationship is relatively curved or exponential Pearson's correlation will not capture this relationship.
-- An alternative might be the **Spearman's correlation which essentially is the Pearson's correlation of the *ranks.* This evaluates *monotone* relationships.
+- An alternative might be the **Spearman's correlation** which essentially is the Pearson's correlation of the *ranks.* This evaluates *monotone* relationships.
 
 **Question: How well does the line "fit" the data?**
 
@@ -462,6 +462,14 @@ nhanes_filtered %>% ggplot(aes(x=Pulse,y=BMI,color=Diabetes)) + geom_point() + g
 To learn more R coding and a bit more about EDA and statistical analysis, try out our Data Camp course:
 
 [R Bootcamp](https://www.datacamp.com/courses/3864)
+
+### Books for additional learning
+
+[Baumer, Benjamin S., Daniel T. Kaplan, and Nicholas J. Horton. Modern data science with R. CRC Press, 2017.](https://www.crcpress.com/Modern-Data-Science-with-R/Baumer-Kaplan-Horton/p/book/9781498724487)
+
+[Peng, Roger D. Exploratory Data Analysis with R. Leanpub.](https://leanpub.com/exdata)
+
+[Peng, Roger D. and Matsui, E. The Art of Data Science. Leanpub.](https://leanpub.com/artofdatascience)
 
 ## Post-session survey
 
