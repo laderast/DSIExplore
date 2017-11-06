@@ -29,6 +29,8 @@ library(NHANES)
 
 Don't forget! [Please fill out our pre-session survey. (pre-categorical and continuous)](https://goo.gl/forms/08XdUkM3Y34Fjqn12)
 
+Find this session at [https://minnier.shinyapps.io/ODSI_continuousData/](https://minnier.shinyapps.io/ODSI_continuousData/)
+
 At the end of this session you should be able to
 
 - Understand statistical associations between continuous variables
@@ -39,7 +41,7 @@ At the end of this session you should be able to
 
 ## EDA with continuous variables
 
-We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `BMI` as a continuous variables.
+We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `BMI` as a continuous variable.
 
 (Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
 
@@ -62,16 +64,16 @@ This plot shows us the frequency of certain values of `BMI`. We can see the dist
 
 - This is something to think about, data is not always a perfect bell shaped (Normal distribution) curve!
 
-### Boxplots
+### Box plots
 
-We can also use a boxplot to see similar patterns. The help from the boxplot R function `?geom_boxplot` tells us what all the parts of the boxplot mean:
+We can also use a box plot to see similar patterns. The help from the box plot R function `?geom_boxplot` tells us what all the parts of the box plot mean:
 
 >"The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.
 
 >The upper whisker extends from the hinge to the largest value no further than 1.5 x IQR from the hinge (where IQR is the inter-quartile range, or distance between the first and third quartiles). The lower whisker extends from the hinge to the smallest value at most 1.5 x IQR of the hinge. Data beyond the end of the whiskers are called "outlying" points and are plotted individually."
 
 ```{r}
-NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Boxplot of NHANES BMI")+xlab("")
+NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Box plot of NHANES BMI")+xlab("")
 ```
 
 All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as "outliers" of the population distribution. This also shows the positive skewness of the distribution.
@@ -80,9 +82,9 @@ All those dots piled up on the bottom are people who are outside the 1.5 x IQR, 
 
 We learned that good EDA can help us identify associations.
 
-### Scatterplots
+### Scatter plots
 
-The first visualization you are likely to make when you have two continuous variables is a scatterplot. Let's look at the scatterplots of `Height` and `Weight` vs. `BMI`.
+The first visualization you are likely to make when you have two continuous variables is a scatter plot. Let's look at the scatter plots of `Height` and `Weight` vs. `BMI`.
 
 - How would you describe these relationships?
 
@@ -91,11 +93,19 @@ NHANES %>% ggplot(aes(x=Weight,y=BMI,color=Height)) + geom_point()
 NHANES %>% ggplot(aes(x=Height,y=BMI,color=Weight)) + geom_point()
 ```
 
-A simple statistical quantification of the association of two continuous variables is the **Pearson's Correlation Coefficient** (often labeled *r*). 
+### Correlation
+
+A simple statistical quantification of the association of two continuous variables is the **[Pearson's Correlation Coefficient](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient)** (often labeled *r*).
+
+**Correlation = a quantity measuring the extent of interdependence of variable quantities**
+
+**Pearson's correlation coefficient: a measure of the linear correlation between two variables**
+
 - Note that this is quantifying a *linear* relationship.
-- We can visually represent the linear relationship with a line through the scatterplot.
+- Value between -1 and +1, with 0 denoting no linear correlation
+- We can visually represent the linear relationship with a line through the scatter plot.
 - If the relationship is relatively curved or exponential Pearson's correlation will not capture this relationship.
-- An alternative might be the Spearman's correlation which basically is the Pearson's correlation of the ranks. This evaluates *monotone* relationships.
+- An alternative might be the **Spearman's correlation which essentially is the Pearson's correlation of the *ranks.* This evaluates *monotone* relationships.
 
 **Question: How well does the line "fit" the data?**
 
@@ -114,8 +124,8 @@ plot_w_cor = function(df,cont_x,cont_y,color) {
 }
 
 
-NHANES%>%plot_w_cor(Weight,BMI,Weight)
-NHANES%>%plot_w_cor(Height,BMI,Height)
+NHANES%>%plot_w_cor(Weight,BMI,Height)
+NHANES%>%plot_w_cor(Height,BMI,Weight)
 
 
 ```
@@ -196,7 +206,7 @@ Note that 137 out of 142 subjects with missing diabetes data also have missing B
 NHANES %>% filter(is.na(Diabetes)) %>% select(Diabetes, BMI, Age) %>% janitor::tabyl(Age)
 ```
 
-What about missingness in BMI? How does this relate to age? We can use the `naniar` package in R to visualize this with a scatterplot:
+What about missingness in BMI? How does this relate to age? We can use the `naniar` package in R to visualize this with a scatter plot:
 
 ```{r}
 NHANES %>% ggplot(aes(x=Age,y=BMI,color=Diabetes))+naniar::geom_miss_point()
@@ -212,7 +222,7 @@ question("Why do you think there's a pile up of points at age 80?",
 )
 ```
 
-For future analyses, let's work with subjects older than 20 years of age, and remove subjects with missing `Diabetes` and `BMI` values. Lastly, let's check out the boxplots on this filtered data.
+For future analyses, let's work with subjects older than 20 years of age, and remove subjects with missing `Diabetes` and `BMI` values. Lastly, let's check out the box plots on this filtered data.
 
 ```{r, echo=TRUE}
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
@@ -223,17 +233,30 @@ nrow(nhanes_filtered)
 
 ```{r}
 nhanes_filtered %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes))+geom_boxplot() + xlab("Filtered by Age >=20")+
-  ggtitle("Boxplot of NHANES BMI by Diabetes Status")+xlab("")
+  ggtitle("Box plot of NHANES BMI by Diabetes Status")+xlab("")
 ```
 
 ## T Test
 
-The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student's T Test. It is so named because the test statistic---which quantifies how different the means are in relation to the variance---follows a T-distribution. The T-distribution is like the normal bell shaped curve but with "fatter tails".
+The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student's T Test.
+
+**two sample T-statistic = (difference in means)/sqrt(pooled variance)**
+
+The test is is so named because the test statistic---which quantifies how different the means are in relation to the variance---follows a T-distribution. The T-distribution is like the normal bell shaped curve but with "fatter tails". The tails become closer to the Normal distribution as *n* gets larger.
+
+```{r}
+xx = seq(-5,5,by=0.01)
+plot(xx,dnorm(xx),type="l",main="Normal and T distribution functions",xlab="x",ylab="p(x)")
+points(xx,dt(xx,df = 10),type="l",col="red")
+points(xx,dt(xx,df = 3),type="l",col="blue")
+points(xx,dt(xx,df = 100),type="l",col="green")
+legend("topright",c("Normal(0,1)","t df=3","t df=10","t df=100"),lty=1,col=c("black","blue","red","green"))
+```
 
 The T test makes *assumptions* about the distribution of your continuous variable within the two groups:
 
 - The measure (BMI) follows a normal distribution with a certain *mean* and *variance* within each set (group).
-- The two sets (groups) of data are independent. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a "paired T test."
+- The two sets (groups) of data are independent. If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a "paired T test."
 
 
 ### Null vs alternative hypothesis
@@ -307,8 +330,8 @@ output$ttest1 <- function() {
 
 What other factors might be associated with BMI?
 
-- To assess continuous factors we can make scatterplots
-- We can stratify scatterplots by categorical variables
+- To assess continuous factors we can make scatter plots
+- We can stratify scatter plots by categorical variables
       + --> assess associations of continuous variables with BMI within subcategories (i.e. of Diabetes)
 - To remove the stratification option select `AllSubjects` as your `Factor`
 - **Question: Do any interesting associations arise?**
@@ -345,10 +368,12 @@ Often we believe our measure or outcome of interest (i.e. BMI) is associated wit
 - A common framework for the analysis of these types of associations is **linear regression**.
 - Linear regression attempts to associate a *dependent variable* or *outcome* (i.e. BMI) with one or more *indepedent variables* or *predictors* (i.e. diabetes, blood pressure).
 
+**Assumptions and model:**
 
-Mathematically, we are modeling our outcome as a *linear* combination of our other variables.
+Mathematically, we are modeling our outcome $\ Y$
 
-- assumption: plus some random error, call it $\ \epsilon$ that is normally distributed
+- as a *linear* combination of our other variables $\ X_1, X_2, X_3 \ldots$
+- plus some random error $\ \epsilon$ that is normally distributed
 
 $$\ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon$$
 

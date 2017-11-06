@@ -49,6 +49,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="section-learning-objectives-for-this-session" class="section level2">
 <h2>Learning Objectives for this Session</h2>
 <p>Don’t forget! <a href="https://goo.gl/forms/08XdUkM3Y34Fjqn12">Please fill out our pre-session survey. (pre-categorical and continuous)</a></p>
+<p>Find this session at <a href="https://minnier.shinyapps.io/ODSI_continuousData/" class="uri">https://minnier.shinyapps.io/ODSI_continuousData/</a></p>
 <p>At the end of this session you should be able to</p>
 <ul>
 <li>Understand statistical associations between continuous variables</li>
@@ -60,7 +61,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="section-eda-with-continuous-variables" class="section level2">
 <h2>EDA with continuous variables</h2>
-<p>We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data? Let’s use the NHANES data set to visualize the variable <code>BMI</code> as a continuous variables.</p>
+<p>We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data? Let’s use the NHANES data set to visualize the variable <code>BMI</code> as a continuous variable.</p>
 <p>(Note info about the NHANES data in the NHANES package can be found <a href="https://cran.r-project.org/web/packages/NHANES/NHANES.pdf">here</a> with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)</p>
 <div id="section-histogram-and-density-plots" class="section level3">
 <h3>Histogram and density plots</h3>
@@ -74,9 +75,9 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>This is something to think about, data is not always a perfect bell shaped (Normal distribution) curve!</li>
 </ul>
 </div>
-<div id="section-boxplots" class="section level3">
-<h3>Boxplots</h3>
-<p>We can also use a boxplot to see similar patterns. The help from the boxplot R function <code>?geom_boxplot</code> tells us what all the parts of the boxplot mean:</p>
+<div id="section-box-plots" class="section level3">
+<h3>Box plots</h3>
+<p>We can also use a box plot to see similar patterns. The help from the box plot R function <code>?geom_boxplot</code> tells us what all the parts of the box plot mean:</p>
 <blockquote>
 <p>“The lower and upper hinges correspond to the first and third quartiles (the 25th and 75th percentiles). This differs slightly from the method used by the boxplot function, and may be apparent with small samples. See boxplot.stats for for more information on how hinge positions are calculated for boxplot.</p>
 </blockquote>
@@ -90,14 +91,26 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="section-how-do-we-assess-associations-between-two-continuous-variables" class="section level2">
 <h2>How do we assess associations between two continuous variables?</h2>
 <p>We learned that good EDA can help us identify associations.</p>
-<div id="section-scatterplots" class="section level3">
-<h3>Scatterplots</h3>
-<p>The first visualization you are likely to make when you have two continuous variables is a scatterplot. Let’s look at the scatterplots of <code>Height</code> and <code>Weight</code> vs. <code>BMI</code>.</p>
+<div id="section-scatter-plots" class="section level3">
+<h3>Scatter plots</h3>
+<p>The first visualization you are likely to make when you have two continuous variables is a scatter plot. Let’s look at the scatter plots of <code>Height</code> and <code>Weight</code> vs. <code>BMI</code>.</p>
 <ul>
 <li>How would you describe these relationships?</li>
 </ul>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-5-1.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-5-2.png" width="624" /></p>
-<p>A simple statistical quantification of the association of two continuous variables is the <strong>Pearson’s Correlation Coefficient</strong> (often labeled <em>r</em>). - Note that this is quantifying a <em>linear</em> relationship. - We can visually represent the linear relationship with a line through the scatterplot. - If the relationship is relatively curved or exponential Pearson’s correlation will not capture this relationship. - An alternative might be the Spearman’s correlation which basically is the Pearson’s correlation of the ranks. This evaluates <em>monotone</em> relationships.</p>
+</div>
+<div id="section-correlation" class="section level3">
+<h3>Correlation</h3>
+<p>A simple statistical quantification of the association of two continuous variables is the <strong><a href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson’s Correlation Coefficient</a></strong> (often labeled <em>r</em>).</p>
+<p><strong>Correlation = a quantity measuring the extent of interdependence of variable quantities</strong></p>
+<p><strong>Pearson’s correlation coefficient: a measure of the linear correlation between two variables</strong></p>
+<ul>
+<li>Note that this is quantifying a <em>linear</em> relationship.</li>
+<li>Value between -1 and +1, with 0 denoting no linear correlation</li>
+<li>We can visually represent the linear relationship with a line through the scatter plot.</li>
+<li>If the relationship is relatively curved or exponential Pearson’s correlation will not capture this relationship.</li>
+<li>An alternative might be the **Spearman’s correlation which essentially is the Pearson’s correlation of the <em>ranks.</em> This evaluates <em>monotone</em> relationships.</li>
+</ul>
 <p><strong>Question: How well does the line “fit” the data?</strong></p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-6-1.png" width="624" /><img src="continuousData_files/figure-html/unnamed-chunk-6-2.png" width="624" /></p>
 </div>
@@ -158,14 +171,14 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>Now let’s explore the association of BMI with a binary (yes/no) variable. How does BMI differ by <code>Diabetes</code> status?</p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
 
-<div id="htmlwidget-b1d79740a28ffdb489fe" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-99fe444df7c692213fa8" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-b1d79740a28ffdb489fe">{"x":{"question":"Is BMI associated with diabetes status?","answers":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"label":"ques-b","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Is BMI associated with diabetes status?","a":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-99fe444df7c692213fa8">{"x":{"question":"Is BMI associated with diabetes status?","answers":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"label":"ques-b","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Is BMI associated with diabetes status?","a":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p>We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called <code>NA</code>. This means the data is missing.</p>
 <p>Let’s explore the missingness in this data a bit before we move on.</p>
 </div>
@@ -187,19 +200,19 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 {"columns":[{"label":["Age"],"name":[1],"type":["int"],"align":["right"]},{"label":["n"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["percent"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"0","2":"137","3":"0.96478873"},{"1":"12","2":"3","3":"0.02112676"},{"1":"67","2":"2","3":"0.01408451"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<p>What about missingness in BMI? How does this relate to age? We can use the <code>naniar</code> package in R to visualize this with a scatterplot:</p>
+<p>What about missingness in BMI? How does this relate to age? We can use the <code>naniar</code> package in R to visualize this with a scatter plot:</p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-12-1.png" width="624" /></p>
 <p>We also might notice something interesting about the age distribution of our population.</p>
 
-<div id="htmlwidget-a538f809d400f9b9a45f" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-6b8cb6863bace0afe870" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-a538f809d400f9b9a45f">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
-<p>For future analyses, let’s work with subjects older than 20 years of age, and remove subjects with missing <code>Diabetes</code> and <code>BMI</code> values. Lastly, let’s check out the boxplots on this filtered data.</p>
+<script type="application/json" data-for="htmlwidget-6b8cb6863bace0afe870">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<p>For future analyses, let’s work with subjects older than 20 years of age, and remove subjects with missing <code>Diabetes</code> and <code>BMI</code> values. Lastly, let’s check out the box plots on this filtered data.</p>
 <pre class="r"><code>nhanes_filtered = NHANES %&gt;% filter(Age &gt;= 20, !is.na(Diabetes), !is.na(BMI))
 
 nrow(nhanes_filtered)</code></pre>
@@ -208,11 +221,14 @@ nrow(nhanes_filtered)</code></pre>
 </div>
 <div id="section-t-test" class="section level2">
 <h2>T Test</h2>
-<p>The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student’s T Test. It is so named because the test statistic—which quantifies how different the means are in relation to the variance—follows a T-distribution. The T-distribution is like the normal bell shaped curve but with “fatter tails”.</p>
+<p>The most common statistical test to compare the distribution of continuous variables across a binary (Yes/No) variable (like diabetes) is the two sample Student’s T Test.</p>
+<p><strong>two sample T-statistic = (difference in means)/sqrt(pooled variance)</strong></p>
+<p>The test is is so named because the test statistic—which quantifies how different the means are in relation to the variance—follows a T-distribution. The T-distribution is like the normal bell shaped curve but with “fatter tails”. The tails become closer to the Normal distribution as <em>n</em> gets larger.</p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
 <p>The T test makes <em>assumptions</em> about the distribution of your continuous variable within the two groups:</p>
 <ul>
 <li>The measure (BMI) follows a normal distribution with a certain <em>mean</em> and <em>variance</em> within each set (group).</li>
-<li>The two sets (groups) of data are independent. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a “paired T test.”</li>
+<li>The two sets (groups) of data are independent. If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a “paired T test.”</li>
 </ul>
 <div id="section-null-vs-alternative-hypothesis" class="section level3">
 <h3>Null vs alternative hypothesis</h3>
@@ -221,17 +237,17 @@ nrow(nhanes_filtered)</code></pre>
 <li><strong>Alternative hypothesis (Ha):</strong> <em>the two group means are not equal</em></li>
 </ul>
 <p>Let’s look at the smoothed histograms (density plots) of the two groups’ BMIs.</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-16-1.png" width="624" /></p>
 <p><strong>Question: Do we think the assumptions of the t-test hold?</strong></p>
 
-<div id="htmlwidget-0b8a5c3378764ced18df" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-b788a1d8af42c2a656d9" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-0b8a5c3378764ced18df">{"x":{"question":"Do you think the assumptions of the t-test hold?","answers":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"label":"ques-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Do you think the assumptions of the t-test hold?","a":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-b788a1d8af42c2a656d9">{"x":{"question":"Do you think the assumptions of the t-test hold?","answers":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"label":"ques-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Do you think the assumptions of the t-test hold?","a":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p><strong>However!</strong> The T-test is pretty robust to slight violations of the normality assumption, especially since we have a large sample size</p>
 <ul>
 <li>statistics side note: thanks to the Central Limit Theorem, our test is still <em>valid</em> as in we preserve our type I error; for a nice explanation of this see <a href="http://thestatsgeek.com/2013/09/28/the-t-test-and-robustness-to-non-normality/">this Stats Geek blog post</a> and <a href="http://rctdesign.org/techreports/arphnonnormality.pdf">Lumley T, et al 2002</a>)</li>
@@ -272,8 +288,8 @@ nrow(nhanes_filtered)</code></pre>
 <h2>Explore other factors</h2>
 <p>What other factors might be associated with BMI?</p>
 <ul>
-<li>To assess continuous factors we can make scatterplots</li>
-<li>We can stratify scatterplots by categorical variables
+<li>To assess continuous factors we can make scatter plots</li>
+<li>We can stratify scatter plots by categorical variables
 <ul>
 <li>–&gt; assess associations of continuous variables with BMI within subcategories (i.e. of Diabetes)</li>
 </ul></li>
@@ -318,9 +334,11 @@ nrow(nhanes_filtered)</code></pre>
 <li>A common framework for the analysis of these types of associations is <strong>linear regression</strong>.</li>
 <li>Linear regression attempts to associate a <em>dependent variable</em> or <em>outcome</em> (i.e. BMI) with one or more <em>indepedent variables</em> or <em>predictors</em> (i.e. diabetes, blood pressure).</li>
 </ul>
-<p>Mathematically, we are modeling our outcome as a <em>linear</em> combination of our other variables.</p>
+<p><strong>Assumptions and model:</strong></p>
+<p>Mathematically, we are modeling our outcome <span class="math inline">\(\ Y\)</span></p>
 <ul>
-<li>assumption: plus some random error, call it <span class="math inline">\(\ \epsilon\)</span> that is normally distributed</li>
+<li>as a <em>linear</em> combination of our other variables <span class="math inline">\(\ X_1, X_2, X_3 \ldots\)</span></li>
+<li>plus some random error <span class="math inline">\(\ \epsilon\)</span> that is normally distributed</li>
 </ul>
 <p><span class="math display">\[\ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon\]</span></p>
 <p>Suppose we want to determine if systolic blood pressure is associated with BMI after <em>adjusting for</em> diabetes status.</p>
@@ -331,7 +349,7 @@ nrow(nhanes_filtered)</code></pre>
 <p>We would fit a model:</p>
 <p><span class="math display">\[\ BMI = \beta_0 + \beta_1 (Pulse) + \beta_2 (Diabetes = Yes) + \epsilon\]</span> and test whether the <strong>coefficient</strong> <span class="math inline">\(\ \beta_1\)</span> is equal to 0 or not.</p>
 <p>We can visualize this:</p>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-21-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-22-1.png" width="624" /></p>
 <p>We can run a linear regression in <code>R</code> and view the output:</p>
 <pre class="r"><code>summary(fit1 &lt;- lm(BMI ~ Pulse + Diabetes, data = nhanes_filtered))</code></pre>
 <pre><code>## 
@@ -419,7 +437,7 @@ nrow(nhanes_filtered)</code></pre>
 <li>What is the R-squared, now? Why?</li>
 <li>Does this model make sense in practice?</li>
 </ul>
-<p><img src="continuousData_files/figure-html/unnamed-chunk-25-1.png" width="624" /></p>
+<p><img src="continuousData_files/figure-html/unnamed-chunk-26-1.png" width="624" /></p>
 </div>
 <div id="section-your-turn" class="section level2">
 <h2>Your Turn</h2>
