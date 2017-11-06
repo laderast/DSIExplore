@@ -9,7 +9,17 @@ To run this, you'll need to do the following:
 install.packages("devtools")
 library(devtools)
 install_github("laderast/DSIExplore")
+```
+
+To run the tutorials, you will then use the following commands:
+
+```{r}
 learnr::run_tutorial("categoricalData", package = "DSIExplore")
 learnr::run_tutorial("continuousData", package = "DSIExplore")
 ```
-This material is released under an Apache 2.0 License
+
+```{r}
+learnr::run_tutorial("continuousData", package = "DSIExplore")
+```
+
+This material is released under an Apache 2.0 License.

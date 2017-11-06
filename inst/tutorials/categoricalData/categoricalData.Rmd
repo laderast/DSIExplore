@@ -433,7 +433,7 @@ output$chihist <- renderPlot({
                "\n", "p-value: ", pval)
   
   data.frame(chiveq, GT=ifelse(chiveq >= chival, "> chisq", "< chisq")) %>% 
-    ggplot(aes(x=chiveq, fill=GT)) + geom_histogram(bins=60) + geom_density() +
+    ggplot(aes(x=chiveq, fill=GT)) + geom_histogram(bins=60) +
     geom_vline(xintercept = chival) + labs(x="chi-square statistic") + ggtitle(val)
   
 })
@@ -443,9 +443,9 @@ output$chihist <- renderPlot({
 
 Before we even calculate a p-value, we must decide on a level of significance. Setting this value before we test is important because we specify how tolerant we are of false positives.
 
-This value is also known as *alpha*. If we set it to be 0.05, that means that there is 5% probability that our result has arisen due to our random process.
+This value is also known as *alpha*. 
 
-Let's set our alpha at 0.05.
+Let's set our alpha at 0.05. If we set it to be 0.05, that means that there is 5% probability that our result has arisen due to our random process.
 
 ### What is our p-value?
 
@@ -469,13 +469,20 @@ chistat
 length(chiveq[chiveq > chistat]) / length(chiveq)
 ```
 
+```{r letter-r, echo=FALSE}
+question("So for our alpha of 0.05, do we call our statistic significant?",
+  answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to the ."),
+  answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an association", correct=TRUE, message="Go back and look at the proportions.")
+)
+```
+
 ### The chi-square distribution
 
-By doing our simulation of no association with our null model, we have found the probability of our statistic to be less than our alpha. 
+By doing our simulation of no association between `smoking` and `outcome` with our null model, we have found the probability of our statistic to be less than our alpha. 
 
 In reality, we don't simulate these processes, and instead rely on a mathematically derived distribution called the chi-squared distribution, which represents these processes.
 
-Our chi-squared distribution can be calculated
+Our chi-squared distribution can be calculated using the `dchisq` function.
 
 ```{r}
 
@@ -483,7 +490,13 @@ Our chi-squared distribution can be calculated
 
 ### The stability of our test statistic with small n
 
-One thing our test statistic is dependent on is *n*, the total number of subjects in the study. We need to be cautious when our *n* is very small (less than 10), or when we have less than 5 subjects in each cell of our table.
+One thing our test statistic is dependent on is *n*, the total number of subjects in the study. Chi-square statistics work best with larger groups.
+
+We need to be cautious when our *n* is very small (less than 10), or when we have less than 5 subjects in each cell of our table.
+
+For smaller groups
+
+There is also 
 
 ## Your Turn
 
@@ -536,13 +549,6 @@ dataOut <- reactive({
   })
 ```
 
-```{r letter-r, echo=FALSE}
-question("So for our alpha of 0.05, do we call our statistic significant?",
-  answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to the ."),
-  answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an association", correct=TRUE, message="Go back and look at the proportions.")
-)
-```
-
 ### Write your results up
 
 ## Missing Values
@@ -585,6 +591,6 @@ output$missing_val <- renderText({
 
 ## References
 
-[Chi Squared Test](https://en.wikipedia.org/wiki/Chi-squared_test)
-http://www.stat.wmich.edu/s216/book/node115.html
-https://stats.stackexchange.com/questions/2391/what-is-the-relationship-between-a-chi-squared-test-and-test-of-equal-proportion
++ [Chi Squared Test](https://en.wikipedia.org/wiki/Chi-squared_test)
++ http://www.stat.wmich.edu/s216/book/node115.html
++ https://stats.stackexchange.com/questions/2391/what-is-the-relationship-between-a-chi-squared-test-and-test-of-equal-proportion
