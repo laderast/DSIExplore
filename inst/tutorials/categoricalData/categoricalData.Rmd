@@ -40,17 +40,26 @@ Being a good analyst requires you to look at the data and notice the weird thing
 
 ### Why EDA and Visualization?
 
+Visualization is good for exploring data because we are really good at evaluating things visually.
+
 + We need to become aware of patterns in the data.
 + Sometimes these patterns are desirable:
     + Associations
+
+![Broad Street Pump Map](images/broadblock_original.jpg)
+http://www.ph.ucla.edu/epi/snow/mapsbroadstreet.html
+
+### Undesirable Variation
+
 + Sometimes they are not desirable:
     + Experimental Artefacts
 
-Visualization is good for exploring data because we are really good at evaluating things visually.
-
-![Broad street pump map]()
+![Systolic Blood Pressure Reporting](images/F1.large.jpg)
+http://care.diabetesjournals.org/content/30/8/1959
 
 ### Good EDA visualizations tell us something about the data
+
+A good visualization will make certain qualities of the data apparent
 
 + Is there an association between smoking and death?
 + Is this association due to something related to smoking?
@@ -123,7 +132,7 @@ table(Whickham$outcome)
 Here's another way to look at the data, a bar plot. You can instantly see which of the groups is larger.
 
 ```{r echo=TRUE}
-Whickham %>% ggplot(aes(x=outcome)) + geom_bar()
+Whickham %>% ggplot(aes(x=outcome)) + geom_bar() + ggtitle("Outcomes: Alive versus Dead")
 ```
 
 Sometimes it is easier to look at a table, but usually a bar chart will make things more obvious.
@@ -132,14 +141,14 @@ Sometimes it is easier to look at a table, but usually a bar chart will make thi
 
 One way of looking at the data is to make a summary table. 
 
-```{r}
+```{r echo=TRUE}
 table(Whickham$smoker)
 ```
 
 Here's the bar plot. 
 
-```{r}
-Whickham %>% ggplot(aes(x=smoker)) + geom_bar()
+```{r echo=TRUE}
+Whickham %>% ggplot(aes(x=smoker)) + geom_bar() + ggtitle("Number of smokers versus Non Smokers")
 ```
 
 ## Two Variables Walk Into A Bar
@@ -148,50 +157,66 @@ Now that we've seen the variables by themselves, we can consider whether these t
 
 Try to phrase the association in terms of the variables, such as "If you smoke, are you more likely to die?"
 
-Before we start assessing whether our two variables are associated, let's think about what we're looking for. We're going to talk about two cases first: 1) Perfect Association and 2) No association. Our data is probably somewhere in between these.
+Before we start assessing whether our two variables are associated, let's think about what we're looking for. We're going to talk about two cases first: 
+
+1) Perfect Association, and 
+2) No association. 
+
+Our data is probably somewhere in between these two extremes of data.
 
 ### Perfect Association
 
 One case is that `smoking` would perfectly predict `outcome`. That is, if you smoke, you would die. Here we simulate fake data that shows this. The association would look like this:
 
 ```{r}
-tab <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(500, 10, 7, 300), key=c("A", "B","C", "D"))
+tab <- data.frame(outcome=factor(c("Alive", "Dead", "Alive", "Dead"), levels=c("Alive", "Dead")), smoker=factor(c("No", "No", "Yes", "Yes"), levels=c("Yes", "No")), value=c(500, 10, 7, 300))
 
-vis1 <- tab %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
-  geom_text(aes(label=value))
+vis1 <- tab %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + ggtitle("2 x 2 Table of Smoking versus Outcome")  + geom_text(aes(label=value))
 
-vis2 <- tab %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") +
-  geom_text(aes(label=key))
+vis2 <- tab %>% ggplot(aes(x=outcome, fill=smoker, y=value)) + geom_bar(color="black",stat="identity") + ggtitle("Stacked Bar Plot of Smoking versus Outcome")
 
 lay <- t(as.matrix(c(1,2), nrow=1))
 grid.arrange(vis1, vis2, layout_matrix=lay)
 ```
 
+```{r datatable2, echo=FALSE}
+question("Which part of the stacked bar plot corresponds to the top left cell in the table?",
+  answer("Right side, red part", message="Not quite, look at what two conditions the top left cell belongs to."),
+  answer("Left side, blue portion", correct=TRUE, message="Yes, correct. This cell corresponds to people who are alive and who didn't smoke."),
+  answer("Left side, red part", correct=TRUE ,message="Not quite, look at what two conditions the top left cell belongs to."),
+  answer("Right side, blue part.", message="Not quite, look at what two conditions the top left cell belongs to."),
+  allow_retry = TRUE
+)
+```
+
 ### What if there is no association between smoking and death?
 
-This is harder to detect with two by two tables, but it is easier to detect with the proportional plot. Again we simulate some fake data:
+This is harder to detect with two by two tables, but it is easier to detect with the proportional plot. A proportional plot doesn't emphasize the raw frequency of a condition, but its *proportion* within a category.
+
+Again we simulate some fake data:
 
 ```{r}
 sampSize <- 997
 
-noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
-noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
+noAssocsmoker <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
+noAssocsmoker <- noAssocsmoker %>% mutate(smoker=ifelse(probSmok < .3, "Y", "N"), 
                           outcome=ifelse(probDeath < .2, "Dead", "Alive"))
 
-tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, noAssocSmoking$outcome))
+tabNoAssoc <- data.frame(table(noAssocsmoker$smoker, noAssocsmoker$outcome))
 
-colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
+colnames(tabNoAssoc) <- c("smoker", "outcome", "value")
 
-vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + geom_tile(fill="white", colour="black") + 
+vis1 <- tabNoAssoc %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
   geom_text(aes(label=value)) 
 
-vis2 <- noAssocSmoking %>% ggplot(aes(x=outcome, fill=smoking)) + geom_bar(color="black",position = "fill") 
+vis2 <- noAssocsmoker %>% ggplot(aes(x=outcome, fill=smoker)) + geom_bar(color="black",position = "fill") 
 
 lay <- t(as.matrix(c(1,2), nrow=1))
 grid.arrange(vis1, vis2, layout_matrix=lay)
 ```
 
 ```{r letter-b, echo=FALSE}
+
 ```
 
 
@@ -257,7 +282,7 @@ question("What do you notice about the number of deaths as you increase the age 
 
 So as you get older, you're more likely to die. This may be messing up our overall results! 
 
-Let's ask the question again, with a younger group: are smokers under 44 more likely to die than non smokers?
+Let's ask the question again, with a younger group: are smokers under 60 more likely to die than non smokers?
 
 ```{r}
 sliderInput("slidy2", "Age Cutoff", min=min(Whickham$age)+1, max=max(Whickham$age)-1, value=c(18, 83),step = 2)
@@ -277,27 +302,29 @@ plotOutput("distPlot2")
 ```
 
 ```{r letter-e, echo=FALSE}
-question("For patients who are under 49, is smoking associated with death?",
-  answer("Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 49 years.", correct=TRUE, message="Yes, correct."),
-  answer("No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 49 years.", message="Go back and look at the proportions.")
+question("For patients who are under 60, is smoking associated with death?",
+  answer("Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 60 years.", correct=TRUE, message="Yes, correct."),
+  answer("No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 60 years.", message="Go back and look at the proportions.")
 )
 ```
 
 ## Chi-Squared Test
 
-Now let's talk about statistics. We have discovered that there is a difference in the proportions of alive to dead people between smokers and non-smokers. So how likely is this a random result? 
+We have discovered that the appears to be a difference in proportions in smokers who die versus smokers who live in women under 60. 
 
-In other words, how likely is the association between smoking and outcome just something that we could observe by chance?
+Now let's talk about statistics. How likely is this a random result? 
 
-Our test statistic is known as the *Chi-Squared-statistic*. 
+In other words, how likely is the association between `smoking` and `outcome` just something that we could observe by random chance?
+
+We will use a *statistic* to decide this.
 
 ### In statistics we model randomness
 
 Every statistic has an underlying model of randomness. Our random model is based on the case with no association between our two variables, `smoking` and `death`.
 
-In other words, how *rare is our outcome compared to a world of random outcomes?* This world of outcomes is known as the *null distribution*.
+In other words, how *rare is our outcome compared to a world of random outcomes?* This world of outcomes is known as the *null distribution*. 
 
-Our metric of rareness is the statistic. Where it places us on the *null distribution* determines our p-value.
+Our metric of rareness is the *statistic*. Where it places us on the *null distribution* determines our p-value.
 
 For our test of proportions, the appropriate null distribution (or random model) is called a `Chi-Square` Distribution. We won't explore all of the parameters, but it represents a random process for which there is no association between variables.
 
@@ -307,16 +334,18 @@ What are the expected values? They are the values in the cells we expect in the 
 
 We calculate these expected values by looking at the column and row totals for each cell. 
 
+
+
 ### What does Chi-squared represent?
 
 The chi-squared statistic summarizes the total deviation from the expected values in each cell. We have 4 cells, so we sum up our calculation over each of these.
 
-We're going to do a little calculation using R. Try running the code. How have we filtered the data? Change the filtering criteria to age < 40 and see how the table changes.
+We're going to do a little calculation using R. Try running the code. How have we filtered the data? Change the filtering criteria to age < 60 and see how the tables change.
 
 ```{r cohort_filter, exercise = TRUE}
 cohort <- Whickham %>% 
   ##here is our filtering criteria
-  filter(age < 60) %>%
+  filter(age < 40) %>%
   select(smoker, outcome) %>% 
   table
 
@@ -346,22 +375,24 @@ Our null hypothesis is that there is no association between variables. To make t
 + **Null hypothesis (Ho)**: *No association between smoking and outcome.* 
 + **Alternative hypothesis (Ha)**: *there is an association between smoking and outcome.*
 
-Remember the case where there was no association between smoking and death?
+For our null hypothesis, we need to calculate the probability of smoking and the probability of death. Under our null hypothesis, we say these probabilities are *independent* of each other.
 
 ```{r}
 library(tidyverse)
 sampSize <- 300
-nTrials <- 10000
+nTrials <- 500
 
-chiveq <- rep(NA, nTrials)
-
-for(i in 1:nTrials){
-  smoking = ifelse(rbinom(sampSize, 1, 0.3)==0, "No","Yes")
-  outcome = ifelse(rbinom(sampSize, 1, 0.2)==0, "Alive", "Dead")
-  chiveq[i] <- chisq.test(table(smoking, outcome))$statistic
-}
-
-hist(chiveq,breaks = 30)
+ chiveq <- rep(NA, nTrials)
+ 
+ for(i in 1:nTrials){
+   smoking = ifelse(rbinom(sampSize, 1, 0.493)==0, "No","Yes")
+   outcome = ifelse(rbinom(sampSize, 1, 0.885)==0, "Dead", "Alive")
+   chiveq[i] <- chisq.test(table(smoking, outcome))$statistic
+ }
+ 
+ hist(chiveq,breaks = 30)
+ 
+ length(chiveq[chiveq >= 4.6])/length(chiveq)
 
 noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
 noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
@@ -399,17 +430,53 @@ So the *p-value* is interpreted as the probability that we will see a random cas
 
 For example, if we had 10,000 random cases, and our p-value was 0.2, that means that of our 10000 cases, we would expect to see 10000 * 0.2 = 2000 random cases with our statistic or greater. 
 
+```{r}
+data.frame(chiveq, GT=ifelse(chiveq >= 0.8, "> chisq", "< chisq")) %>% ggplot(aes(x=chiveq, fill=GT)) + geom_histogram(bins=60) + geom_vline(xintercept = 0.8) + labs(x="chi-square statistic") + annotate()
+```
+
 ### Level of significance
 
-Before we even calculate a p-value, we must decide on a level of significance. Setting this value before we test is important because we specify 
+Before we even calculate a p-value, we must decide on a level of significance. Setting this value before we test is important because we specify how tolerant we are of false positives.
+
+This value is also known as *alpha*. If we set it to be 0.05, that means that there is 5% probability that our result has arisen due to our random process.
+
+Let's set our alpha at 0.05.
+
+### What is our p-value?
+
+Our chi-square statistic for our cohort of women less than 60 is:
+
+```{r echo=TRUE}
+library(broom)
+
+cohort <- Whickham %>% 
+  ##here is our filtering criteria
+  filter(age < 60) %>%
+  select(smoker, outcome) %>% 
+  table
+
+#show our chi-squared statistic
+chistat <- tidy(chisq.test(cohort))$statistic
+
+#calculate our p-value
+length(chiveq[chiveq > chistat]) / length(chiveq)
+```
+
+### The chi-square distribution
+
+By doing our simulation of no association with our null model, we have found the probability of our statistic to be less than our alpha. 
+
+In reality, we don't simulate these processes, and instead rely on a mathematically derived distribution called the chi-squared distribution.
+
+Our chi-squared distribution
 
 ```{r}
 
 ```
 
-### How does our test statistic increase with N?
+### The stability of our test statistic with small n
 
-One thing our test statistic is dependent on is *n*, the total number of subjects in the study.
+One thing our test statistic is dependent on is *n*, the total number of subjects in the study. We need to be cautious when our 
 
 ```{r}
 sliderInput(inputId = "samp_n", label = "N in study",min = 10, max=1000, value = 500)
@@ -458,9 +525,10 @@ output$plot_n_bar <- renderPlot({
 })
 
 output$chi_dist <- renderPlot({
-  
+   dchisq(c(1:10),1)
 })
 ```
+
 
 ## Your Turn
 
@@ -485,7 +553,8 @@ plotOutput("proportionBarplot")
 
 ```{r context="server"}
 dataOut <- reactive({
-    bmi_diabetes
+    out <- bmi_diabetes  %>% tidyr::complete(Diabetes, Gender, BMIstatus) 
+    out
   })
   
   output$summaryTable <- renderPrint({
@@ -512,24 +581,53 @@ dataOut <- reactive({
   })
 ```
 
+```{r letter-r, echo=FALSE}
+question("So for our alpha of 0.05, do we call our statistic significant?",
+  answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to the ."),
+  answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an associatin", correct=TRUE, message="Go back and look at the proportions.")
+)
+```
 
 
 ### Write your results up
-
-
 
 ## Missing Values
 
 One thing we haven't talked about is missing values. 
 
-[Missing data explorer] <- use proportions to suss out whether there are biases in data.
+```{r asis=TRUE}
+bmicols <- colnames(bmi_diabetes)
+selectInput("missing_col", "Select a Variable", choices = bmicols, selected =bmicols[2])
+verbatimTextOutput("missing_val")
+```
+
+```{r context="server"}
+data(bmi_diabetes)
+bmi2 <- bmi_diabetes
+
+
+missingDat <- reactive({
+  
+  print(input$missing_col)
+  
+  if(is.null(input$missing_col)){
+  miss_col <- "Diabetes"
+} else
+  {miss_col <- input$missing_col}
+
+  var1 <- quote(miss_col)
+  #print(!!var1)
+  out <- bmi2 %>% dplyr::filter_(is.na(miss_col)) 
+  out
+})
+
+output$missing_val <- renderText({
+  print(missingDat())
+})
+```
 
 
 ## Be proud of yourself!
-
-### Association
-
-Association is where we see overlap (mutual information) between two variables.
 
 ## References
 
