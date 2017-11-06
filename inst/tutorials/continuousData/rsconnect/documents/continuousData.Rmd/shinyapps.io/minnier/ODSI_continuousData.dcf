@@ -1,0 +1,12 @@
+name: ODSI_continuousData
+title: ODSI_continuousData
+username:
+account: minnier
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 232245
+bundleId: 1061697
+url: https://minnier.shinyapps.io/ODSI_continuousData/
+when: 1509994858.81106
+asMultiple: FALSE
+asStatic: FALSE
