@@ -12,6 +12,7 @@ library(learnr)
 library(gridExtra)
 library(tidyverse)
 library(DSIExplore)
+library(broom)
 ```
 
 ```{r context="server"}
