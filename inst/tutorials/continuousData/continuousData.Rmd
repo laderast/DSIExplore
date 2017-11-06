@@ -27,6 +27,8 @@ library(NHANES)
 
 ## Learning Objectives for this Session
 
+Don't forget! [Please fill out our pre-session survey. (pre-categorical and continuous)](https://goo.gl/forms/08XdUkM3Y34Fjqn12)
+
 At the end of this session you should be able to
 
 - Understand statistical associations between continuous variables
@@ -41,18 +43,26 @@ We saw bar plots and proportional plots used to visualize binary and categorical
 
 (Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
 
+### Histogram and density plots
+
 A common visualization of the distribution of a continuous variable is a histogram (or the smoothed version---the density plot): 
 
 ```{r}
 data(NHANES)
-
-NHANES %>% ggplot(aes(x=BMI))+geom_histogram(binwidth=2.5) + geom_density(aes(y=2.5*..count..,color="red")) + 
-  ggtitle("Histogram and Density of NHANES BMI")+guides(color=FALSE)
 ```
 
-This plot shows us the frequency of certain values of `BMI`. We can see the distribution is somewhat "skewed" in that there are a few quite large values on the right tail of the distribution.
+```{r, echo=TRUE}
+NHANES %>% ggplot(aes(x=BMI)) +
+  geom_histogram(binwidth=2.5) + 
+  geom_density(aes(y=2.5*..count..,color="red")) + 
+  ggtitle("Histogram and Density of NHANES BMI") + guides(color=FALSE)
+```
+
+This plot shows us the frequency of certain values of `BMI`. We can see the distribution is somewhat "skewed" positively in that there are a few quite large values on the right tail of the distribution.
 
 - This is something to think about, data is not always a perfect bell shaped (Normal distribution) curve!
+
+### Boxplots
 
 We can also use a boxplot to see similar patterns. The help from the boxplot R function `?geom_boxplot` tells us what all the parts of the boxplot mean:
 
@@ -66,9 +76,11 @@ NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Boxplot 
 
 All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as "outliers" of the population distribution. This also shows the positive skewness of the distribution.
 
-## How do we assess associations between two continuous variables
+## How do we assess associations between two continuous variables?
 
 We learned that good EDA can help us identify associations.
+
+### Scatterplots
 
 The first visualization you are likely to make when you have two continuous variables is a scatterplot. Let's look at the scatterplots of `Height` and `Weight` vs. `BMI`.
 
@@ -79,9 +91,13 @@ NHANES %>% ggplot(aes(x=Weight,y=BMI,color=Height)) + geom_point()
 NHANES %>% ggplot(aes(x=Height,y=BMI,color=Weight)) + geom_point()
 ```
 
-A simple statistical quantification of the association of two continous variables is the **Pearson's Correlation Coefficient** (often labeled *r*). Note that this is quantifying a *linear* relationship. If the relationship is relatively curved or exponential it will not capture this relationship. An alternative might be the Spearman's correlation which basically is the Pearson's correlation of the ranks. This looks for monotone relationships.
+A simple statistical quantification of the association of two continuous variables is the **Pearson's Correlation Coefficient** (often labeled *r*). 
+- Note that this is quantifying a *linear* relationship.
+- We can visually represent the linear relationship with a line through the scatterplot.
+- If the relationship is relatively curved or exponential Pearson's correlation will not capture this relationship.
+- An alternative might be the Spearman's correlation which basically is the Pearson's correlation of the ranks. This evaluates *monotone* relationships.
 
-- How well does the line "fit" the data?
+**Question: How well does the line "fit" the data?**
 
 ```{r}
 plot_w_cor = function(df,cont_x,cont_y,color) {
@@ -104,9 +120,11 @@ NHANES%>%plot_w_cor(Height,BMI,Height)
 
 ```
 
+### Correlation explorer
 
 Now you can try to get a feel for what correlation (linear and non-linear) looks like. Try a few pairs:
 
+(For fun sometime, play the "guess the correlation" game at [guessthecorrelation.com](http://guessthecorrelation.com/))
 
 ```{r}
 
@@ -151,6 +169,13 @@ Now let's explore the association of BMI with a binary (yes/no) variable. How do
 
 ```{r}
 NHANES %>% ggplot(aes(x=Diabetes,y=BMI,color=Diabetes)) + geom_boxplot()
+```
+
+```{r ques-b, echo=FALSE}
+question("Is BMI associated with diabetes status?",
+  answer("No, BMI is the same for people with or without diabetes.", message="Not true, look at the average BMI for each group."),
+  answer("Yes, BMI is different depending on diabetes status.", correct=TRUE, message="Yes, BMI is on average higher for subjects with diabetes than without.")
+)
 ```
 
 We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called `NA`. This means the data is missing.
@@ -210,7 +235,11 @@ The T test makes *assumptions* about the distribution of your continuous variabl
 - The measure (BMI) follows a normal distribution with a certain *mean* and *variance* within each set (group).
 - The two sets (groups) of data are independent. (BMI for non-diabetes patients is normally distributed, BMI for yes-diabetes patients is also normally distributed). If we have some kind of relationship (i.e. matching, or measured on the same subjects) we need to use a "paired T test."
 
-The null hypothesis is that the *two group means are equal.* We are trying to reject this null hypothesis to show the group means are NOT equal.
+
+### Null vs alternative hypothesis
+
+- **Null hypothesis (Ho):** *two group means are equal*
+- **Alternative hypothesis (Ha):** *the two group means are not equal*
 
 Let's look at the smoothed histograms (density plots) of the two groups' BMIs.
 
@@ -220,11 +249,18 @@ nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
 
 **Question: Do we think the assumptions of the t-test hold?**
 
-The T-test is pretty robust to slight violations of the normality assumption, especially since we have a large sample size
+```{r ques-c, echo=FALSE}
+question("Do you think the assumptions of the t-test hold?",
+  answer("No, not completely.", correct=TRUE, message="The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"),
+  answer("Yes, completely.", message="Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test.")
+)
+```
+
+**However!** The T-test is pretty robust to slight violations of the normality assumption, especially since we have a large sample size
 
 - statistics side note: thanks to the Central Limit Theorem, our test is still *valid* as in we preserve our type I error; for a nice explanation of this see [this Stats Geek blog post](http://thestatsgeek.com/2013/09/28/the-t-test-and-robustness-to-non-normality/) and [Lumley T, et al 2002](http://rctdesign.org/techreports/arphnonnormality.pdf))
 
-So, let's run a t-test (!!):
+So, let's run a t-test (yay!) to assess the difference in means of BMI comparing diabetics and non-diabetics:
 
 ```{r}
 broom::tidy(t.test(BMI~Diabetes,data=NHANES)) %>% select(estimate:p.value) %>% mutate(p.value=as.character(signif(p.value,2))) %>%
@@ -234,7 +270,9 @@ broom::tidy(t.test(BMI~Diabetes,data=NHANES)) %>% select(estimate:p.value) %>% m
 
 Note the p-value is extremely small. This is because we have a very large sample size and the difference in means is pretty large.
 
-What happens if we have a much smaller sample size? We can examine the effect of sample size by randomly sampling a subset of the data:
+### Smaller sample size
+
+What happens if we have a much smaller sample size? We can examine the effect of sample size by randomly sampling a subset of the data. Look at our test statistic and p-value, as well as the difference in means. 
 
 ```{r}
 sliderInput("samplesize", label="Total Sample Size",min=10,max=500,value=500)
@@ -302,13 +340,14 @@ output$boxPlot1 <- renderPlot(
 
 ## Advanced Topic: Linear Models - multiple predictors/associations
 
-Often we believe our measure or ourcome of interest (i.e. BMI) is associated with several other variables at once. For instance, BMI could be associated with diabetes, blood pressure, physical activity, diet, among many other characteristics.
+Often we believe our measure or outcome of interest (i.e. BMI) is associated with several other variables at once. For instance, BMI could be associated with diabetes, blood pressure, physical activity, diet, among many other characteristics.
 
 - A common framework for the analysis of these types of associations is **linear regression**.
 - Linear regression attempts to associate a *dependent variable* or *outcome* (i.e. BMI) with one or more *indepedent variables* or *predictors* (i.e. diabetes, blood pressure).
 
 
 Mathematically, we are modeling our outcome as a *linear* combination of our other variables.
+
 - assumption: plus some random error, call it $\ \epsilon$ that is normally distributed
 
 $$\ Y = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \epsilon$$
@@ -329,7 +368,7 @@ We can visualize this:
 nhanes_filtered %>% ggplot(aes(x=Pulse,y=BMI,color=Diabetes,alpha=Diabetes)) + geom_point() + geom_smooth(method="lm")
 ```
 
-We can run a linear regression ini `R` and view the output:
+We can run a linear regression in `R` and view the output:
 
 
 ```{r, echo=TRUE}
@@ -340,7 +379,7 @@ summary(fit1 <- lm(BMI~Pulse+Diabetes,data=nhanes_filtered))
 - **Question: is this a very strong association?**
 - R-squared is a measure of how well the predictors explain the variation in the outcome, on a scale from 0 to 1. Do you think these predictors as explaining BMI very well? That is, if we are given a subjects pulse and diabetes status, how sure are we that the predicted BMI from this model is correct?
 
-This idea of "how well can we predict our outcome" drives much of statistical modeling, inclduing **machine learning** and **predictive analytics**.
+This idea of "how well can we predict our outcome" drives much of statistical modeling, including **machine learning** and **predictive analytics**.
 
 We can include many predictors in our model and still not have a very good R-squared, as BMI is a *very complex trait*:
 
@@ -365,7 +404,7 @@ nhanes_filtered %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes,alpha=Diabetes)) + 
 ## Your Turn
 
 
-Modify the R code in the `lm()` function to build your own prediction model. Here are the names of the NHANES dataset:
+Modify the R code in the `lm()` function to build your own prediction model. Here are the names of the NHANES data set:
 
 ```{r}
 names(nhanes_filtered)
@@ -383,7 +422,7 @@ summary(fit <- lm(BMI~Pulse+Diabetes,data=nhanes_filtered))
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 
 # edit the ggplot code after x= and y= and color= to change the axes and the color
-nhanes_filtered %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes)) + geom_point() + geom_smooth(method="lm")
+nhanes_filtered %>% ggplot(aes(x=Pulse,y=BMI,color=Diabetes)) + geom_point() + geom_smooth(method="lm")
 
 ```
 
@@ -394,3 +433,6 @@ To learn more R coding and a bit more about EDA and statistical analysis, try ou
 
 [R Bootcamp](https://www.datacamp.com/courses/3864)
 
+## Post-session survey
+
+[Please fill out our post-session survey.](https://goo.gl/forms/Q6I7bNDbU1x9OOAB2)
