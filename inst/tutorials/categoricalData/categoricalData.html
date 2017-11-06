@@ -48,9 +48,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="section-learning-objectives-for-this-session" class="section level2">
 <h2>Learning Objectives for this Session</h2>
 <p>Please fill out the pre-assessment before you do anything! <a href="https://goo.gl/forms/jRa7TRFWXp5rlF6H3" class="uri">https://goo.gl/forms/jRa7TRFWXp5rlF6H3</a></p>
+<p>Make sure to buddy up, and use your post-its!</p>
 <p>At the end of this session you should be able to</p>
 <ul>
-<li>Understand why we need to do Xxploratory Data Analysis (EDA)</li>
+<li>Understand why we need to do Exploratory Data Analysis (EDA)</li>
 <li>Understand statistical association between categorical variables</li>
 <li>Visual ways to identify association</li>
 <li>Basic understanding of Chi-squared statistics</li>
@@ -106,14 +107,14 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>If we know about whether someone smokes, do we know whether they are more likely to die?</p>
 <p>Compare it to whether someone wears green.</p>
 
-<div id="htmlwidget-68093dc09054fa9f4754" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-4a186849d3a9927dafa8" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-68093dc09054fa9f4754">{"x":{"question":"If someone wears green are they more likely to die?","answers":[{"option":"Yes. Because Lucky the Leprechaun will be angry.","correct":false,"message":"Not correct."},{"option":"No. The two variables are not associated","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"If someone wears green are they more likely to die?","a":[{"option":"Yes. Because Lucky the Leprechaun will be angry.","correct":false,"message":"Not correct."},{"option":"No. The two variables are not associated","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-4a186849d3a9927dafa8">{"x":{"question":"If someone wears green are they more likely to die?","answers":[{"option":"Yes. Because Lucky the Leprechaun will be angry.","correct":false,"message":"Not correct."},{"option":"No. The two variables are not associated","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"If someone wears green are they more likely to die?","a":[{"option":"Yes. Because Lucky the Leprechaun will be angry.","correct":false,"message":"Not correct."},{"option":"No. The two variables are not associated","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-the-data-whickham" class="section level2">
 <h2>The Data (Whickham)</h2>
@@ -130,14 +131,14 @@ summary(Whickham)</code></pre>
 ##                        3rd Qu.:61.00  
 ##                        Max.   :84.00</code></pre>
 
-<div id="htmlwidget-b2b3cefebd0abb53224a" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-0768c5505d49bbd7168d" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-b2b3cefebd0abb53224a">{"x":{"question":"What can we learn from this summary table?","answers":[{"option":"There are more alive people than dead people in the data.","correct":true,"message":"Correct. There are more alive people (945) than dead people (369) in this dataset."},{"option":"There are two variables","correct":false,"message":"Not quite. There&#39;s <code>outcome<\/code>, <code>smoker<\/code>, and <code>age<\/code>."},{"option":"You are either considered either a smoker or a non-smoker","correct":true,"message":"Yes, that&#39;s correct! This dataset doesn&#39;t account for how long you smoked."},{"option":"The age range of the patients includes minors.","correct":false,"message":"Incorrect. Look at the min value for age."},{"option":"The average age of the participant was around 47 years of age","correct":"Yes, the mean age was 46.92 years of age. Yes, you can see it as the mean value for the age","message":null}],"label":"summary","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"What can we learn from this summary table?","a":[{"option":"There are more alive people than dead people in the data.","correct":true,"message":"Correct. There are more alive people (945) than dead people (369) in this dataset."},{"option":"There are two variables","correct":false,"message":"Not quite. There&#39;s <code>outcome<\/code>, <code>smoker<\/code>, and <code>age<\/code>."},{"option":"You are either considered either a smoker or a non-smoker","correct":true,"message":"Yes, that&#39;s correct! This dataset doesn&#39;t account for how long you smoked."},{"option":"The age range of the patients includes minors.","correct":false,"message":"Incorrect. Look at the min value for age."},{"option":"The average age of the participant was around 47 years of age","correct":"Yes, the mean age was 46.92 years of age. Yes, you can see it as the mean value for the age","message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-0768c5505d49bbd7168d">{"x":{"question":"What can we learn from this summary table?","answers":[{"option":"There are more alive people than dead people in the data.","correct":true,"message":"Correct. There are more alive people (945) than dead people (369) in this dataset."},{"option":"There are two variables","correct":false,"message":"Not quite. There&#39;s <code>outcome<\/code>, <code>smoker<\/code>, and <code>age<\/code>."},{"option":"You are either considered either a smoker or a non-smoker","correct":true,"message":"Yes, that&#39;s correct! This dataset doesn&#39;t account for how long you smoked."},{"option":"The age range of the patients includes minors.","correct":false,"message":"Incorrect. Look at the min value for age."},{"option":"The average age of the participant was around 47 years of age","correct":"Yes, the mean age was 46.92 years of age. Yes, you can see it as the mean value for the age","message":null}],"label":"summary","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"What can we learn from this summary table?","a":[{"option":"There are more alive people than dead people in the data.","correct":true,"message":"Correct. There are more alive people (945) than dead people (369) in this dataset."},{"option":"There are two variables","correct":false,"message":"Not quite. There&#39;s <code>outcome<\/code>, <code>smoker<\/code>, and <code>age<\/code>."},{"option":"You are either considered either a smoker or a non-smoker","correct":true,"message":"Yes, that&#39;s correct! This dataset doesn&#39;t account for how long you smoked."},{"option":"The age range of the patients includes minors.","correct":false,"message":"Incorrect. Look at the min value for age."},{"option":"The average age of the participant was around 47 years of age","correct":"Yes, the mean age was 46.92 years of age. Yes, you can see it as the mean value for the age","message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <div id="section-what-does-the-data-actually-look-like" class="section level3">
 <h3>What does the data actually look like?</h3>
 <p>Here are the first 10 rows of the data table. Each row of the data corresponds to a patient.</p>
@@ -148,14 +149,14 @@ summary(Whickham)</code></pre>
   </script>
 </div>
 
-<div id="htmlwidget-863250288af035eb5048" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-ff6c4ae063400f79caed" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-863250288af035eb5048">{"x":{"question":"How many patients are Alive (outcome = &#39;Alive&#39;) and didn&#39;t smoke (smoker = &#39;No&#39;) from these first 10 rows?","answers":[{"option":"There are 4 patients.","correct":true,"message":"Correct. There are 4 patients who are alive and not smokers."},{"option":"There are 5 patients.","correct":false,"message":"Not quite. Go back and count."},{"option":"There are 6 patients.","correct":false,"message":"Not quite. Go back and count.."}],"label":"datatable","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"How many patients are Alive (outcome = &#39;Alive&#39;) and didn&#39;t smoke (smoker = &#39;No&#39;) from these first 10 rows?","a":[{"option":"There are 4 patients.","correct":true,"message":"Correct. There are 4 patients who are alive and not smokers."},{"option":"There are 5 patients.","correct":false,"message":"Not quite. Go back and count."},{"option":"There are 6 patients.","correct":false,"message":"Not quite. Go back and count.."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-ff6c4ae063400f79caed">{"x":{"question":"How many patients are Alive (outcome = &#39;Alive&#39;) and didn&#39;t smoke (smoker = &#39;No&#39;) from these first 10 rows?","answers":[{"option":"There are 4 patients.","correct":true,"message":"Correct. There are 4 patients who are alive and not smokers."},{"option":"There are 5 patients.","correct":false,"message":"Not quite. Go back and count."},{"option":"There are 6 patients.","correct":false,"message":"Not quite. Go back and count.."}],"label":"datatable","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"How many patients are Alive (outcome = &#39;Alive&#39;) and didn&#39;t smoke (smoker = &#39;No&#39;) from these first 10 rows?","a":[{"option":"There are 4 patients.","correct":true,"message":"Correct. There are 4 patients who are alive and not smokers."},{"option":"There are 5 patients.","correct":false,"message":"Not quite. Go back and count."},{"option":"There are 6 patients.","correct":false,"message":"Not quite. Go back and count.."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="section-lets-look-at-our-outcome" class="section level2">
@@ -196,14 +197,14 @@ summary(Whickham)</code></pre>
 <p>One case is that <code>smoking</code> would perfectly predict <code>outcome</code>. That is, if you smoke, you would die. Here we simulate fake data that shows this. The association would look like this:</p>
 <p><img src="categoricalData_files/figure-html/unnamed-chunk-8-1.png" width="624" /></p>
 
-<div id="htmlwidget-d40e688592071b964ccf" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-bce68e548c7adb585767" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-d40e688592071b964ccf">{"x":{"question":"Which part of the stacked bar plot corresponds to the top left cell in the table?","answers":[{"option":"Right side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Left side, blue portion","correct":true,"message":"Yes, correct. This cell corresponds to people who are alive and who didn&#39;t smoke."},{"option":"Left side, red part","correct":true,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Right side, blue part.","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."}],"label":"datatable2","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Which part of the stacked bar plot corresponds to the top left cell in the table?","a":[{"option":"Right side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Left side, blue portion","correct":true,"message":"Yes, correct. This cell corresponds to people who are alive and who didn&#39;t smoke."},{"option":"Left side, red part","correct":true,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Right side, blue part.","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-bce68e548c7adb585767">{"x":{"question":"Which part of the stacked bar plot corresponds to the top left cell in the table?","answers":[{"option":"Right side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Left side, blue portion","correct":true,"message":"Yes, correct. This cell corresponds to people who are alive and who didn&#39;t smoke."},{"option":"Left side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Right side, blue part.","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."}],"label":"datatable2","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":true,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Which part of the stacked bar plot corresponds to the top left cell in the table?","a":[{"option":"Right side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Left side, blue portion","correct":true,"message":"Yes, correct. This cell corresponds to people who are alive and who didn&#39;t smoke."},{"option":"Left side, red part","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."},{"option":"Right side, blue part.","correct":false,"message":"Not quite, look at what two conditions the top left cell belongs to."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-what-if-there-is-no-association-between-smoking-and-death" class="section level3">
 <h3>What if there is no association between smoking and death?</h3>
@@ -219,14 +220,14 @@ summary(Whickham)</code></pre>
 <p><img src="categoricalData_files/figure-html/unnamed-chunk-11-1.png" width="624" /></p>
 <p><img src="categoricalData_files/figure-html/unnamed-chunk-12-1.png" width="624" /></p>
 
-<div id="htmlwidget-e4eb0a3c471c6aea3612" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-b5490dc4222b3a5365d5" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-e4eb0a3c471c6aea3612">{"x":{"question":"Based on this plot, if you smoke will you be more likely to be alive or dead?","answers":[{"option":"Dead, because that&#39;s what makes common sense.","correct":false,"message":"Not correct."},{"option":"Alive, because that&#39;s what the data tells us","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Based on this plot, if you smoke will you be more likely to be alive or dead?","a":[{"option":"Dead, because that&#39;s what makes common sense.","correct":false,"message":"Not correct."},{"option":"Alive, because that&#39;s what the data tells us","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-b5490dc4222b3a5365d5">{"x":{"question":"Based on this plot, if you smoke will you be more likely to be alive or dead?","answers":[{"option":"Dead, because that&#39;s what makes common sense.","correct":false,"message":"Not correct."},{"option":"Alive, because that&#39;s what the data tells us","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Based on this plot, if you smoke will you be more likely to be alive or dead?","a":[{"option":"Dead, because that&#39;s what makes common sense.","correct":false,"message":"Not correct."},{"option":"Alive, because that&#39;s what the data tells us","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-the-effect-of-age-on-the-data" class="section level2">
 <h2>The effect of Age on the Data</h2>
@@ -237,14 +238,14 @@ summary(Whickham)</code></pre>
 <input class="js-range-slider" id="slidy" data-type="double" data-min="19" data-max="83" data-from="23" data-to="83" data-step="5" data-grid="true" data-grid-num="6.4" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-keyboard-step="7.8125" data-drag-interval="true" data-data-type="number"/>
 </div><div id="distPlot" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
 
-<div id="htmlwidget-f9848dd5b8daa30611ef" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-0ae8956e7571875394e8" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-f9848dd5b8daa30611ef">{"x":{"question":"What do you notice about the number of deaths as you increase the age of the subgroup?","answers":[{"option":"The number of deaths decreases, which means that as you get older, you are less likely to die.","correct":false,"message":"Not correct."},{"option":"The number of deaths increases, which means that as you get older, you are more likely to die.","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-d","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"What do you notice about the number of deaths as you increase the age of the subgroup?","a":[{"option":"The number of deaths decreases, which means that as you get older, you are less likely to die.","correct":false,"message":"Not correct."},{"option":"The number of deaths increases, which means that as you get older, you are more likely to die.","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-0ae8956e7571875394e8">{"x":{"question":"What do you notice about the number of deaths as you increase the age of the subgroup?","answers":[{"option":"The number of deaths decreases, which means that as you get older, you are less likely to die.","correct":false,"message":"Not correct."},{"option":"The number of deaths increases, which means that as you get older, you are more likely to die.","correct":true,"message":"Yes, that&#39;s correct!"}],"label":"letter-d","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"What do you notice about the number of deaths as you increase the age of the subgroup?","a":[{"option":"The number of deaths decreases, which means that as you get older, you are less likely to die.","correct":false,"message":"Not correct."},{"option":"The number of deaths increases, which means that as you get older, you are more likely to die.","correct":true,"message":"Yes, that&#39;s correct!"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-not-as-easy-as-we-thought" class="section level2">
 <h2>Not as easy as we thought!</h2>
@@ -255,14 +256,14 @@ summary(Whickham)</code></pre>
 <input class="js-range-slider" id="slidy2" data-type="double" data-min="19" data-max="83" data-from="18" data-to="83" data-step="2" data-grid="true" data-grid-num="8" data-grid-snap="false" data-prettify-separator="," data-prettify-enabled="true" data-keyboard="true" data-keyboard-step="3.125" data-drag-interval="true" data-data-type="number"/>
 </div><div id="distPlot2" class="shiny-plot-output" style="width: 100% ; height: 400px"></div></p>
 
-<div id="htmlwidget-aac8d6f474ceae1c5c4a" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-b2279317ddd9d70fdc57" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-aac8d6f474ceae1c5c4a">{"x":{"question":"For patients who are under 60, is smoking associated with death?","answers":[{"option":"Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 60 years.","correct":true,"message":"Yes, correct."},{"option":"No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 60 years.","correct":false,"message":"Go back and look at the proportions."}],"label":"letter-e","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"For patients who are under 60, is smoking associated with death?","a":[{"option":"Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 60 years.","correct":true,"message":"Yes, correct."},{"option":"No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 60 years.","correct":false,"message":"Go back and look at the proportions."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-b2279317ddd9d70fdc57">{"x":{"question":"For patients who are under 60, is smoking associated with death?","answers":[{"option":"Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 60 years.","correct":true,"message":"Yes, correct."},{"option":"No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 60 years.","correct":false,"message":"Go back and look at the proportions."}],"label":"letter-e","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"For patients who are under 60, is smoking associated with death?","a":[{"option":"Yes, the proportion of smokers who die is greater than the proportion of non-smokers who die for those patients younger than 60 years.","correct":true,"message":"Yes, correct."},{"option":"No, the proportion of smokers who die is smaller than the proportion of non-smokers who die for those patients younger than 60 years.","correct":false,"message":"Go back and look at the proportions."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-chi-squared-test" class="section level2">
 <h2>Chi-Squared Test</h2>
@@ -281,6 +282,7 @@ summary(Whickham)</code></pre>
 <h3>Observed versus Expected</h3>
 <p>What are the expected values? They are the values in the cells we expect in the case of no association between our two variables. In other words, they are the values that we expect if there is no association between <code>smoking</code> and <code>outcome</code>.</p>
 <p>We calculate these expected values by looking at the column and row totals for each cell.</p>
+<p>[]</p>
 </div>
 <div id="section-what-does-chi-squared-represent" class="section level3">
 <h3>What does Chi-squared represent?</h3>
@@ -311,14 +313,14 @@ chi</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 
-<div id="htmlwidget-b0bac6c084c2b85dc9d8" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-c39d961966598484a3dd" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-b0bac6c084c2b85dc9d8">{"x":{"question":"How did the top left cell change for the chi-matrix when you changed the filtering criteria?","answers":[{"option":"It got larger,.","correct":true,"message":"Yes, correct."},{"option":"It got smaller, ","correct":false,"message":null}],"label":"expected-val","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"How did the top left cell change for the chi-matrix when you changed the filtering criteria?","a":[{"option":"It got larger,.","correct":true,"message":"Yes, correct."},{"option":"It got smaller, ","correct":false,"message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-c39d961966598484a3dd">{"x":{"question":"How did the top left cell change for the chi-matrix when you changed the filtering criteria?","answers":[{"option":"It got larger, meaning there is more of a deviation from the expected value.","correct":true,"message":"Yes, correct."},{"option":"It got smaller, ","correct":false,"message":null}],"label":"expected-val","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"How did the top left cell change for the chi-matrix when you changed the filtering criteria?","a":[{"option":"It got larger, meaning there is more of a deviation from the expected value.","correct":true,"message":"Yes, correct."},{"option":"It got smaller, ","correct":false,"message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-our-null-hypothesis-and-alternative-hypothesis" class="section level3">
 <h3>Our null hypothesis and alternative hypothesis</h3>
@@ -362,14 +364,14 @@ pvalue = length(chiveq[chiveq &gt; chistat]) / length(chiveq)
 pvalue</code></pre>
 <pre><code>## [1] 0.022</code></pre>
 
-<div id="htmlwidget-bbdce5cd00308f77ea32" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-d76527d2224838020a52" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-bbdce5cd00308f77ea32">{"x":{"question":"So for our alpha of 0.05, do we call our statistic significant?","answers":[{"option":"No, we do not reject the null hypothesis that there is no association between smoking and outcome","correct":false,"message":"Compare our p-value to our alpha."},{"option":"Yes, we reject the null hypothesis that there is no association and conclude that there is an association","correct":true,"message":"Go back and look at the proportions."}],"label":"letter-z","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"So for our alpha of 0.05, do we call our statistic significant?","a":[{"option":"No, we do not reject the null hypothesis that there is no association between smoking and outcome","correct":false,"message":"Compare our p-value to our alpha."},{"option":"Yes, we reject the null hypothesis that there is no association and conclude that there is an association","correct":true,"message":"Go back and look at the proportions."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-d76527d2224838020a52">{"x":{"question":"So for our alpha of 0.05, do we call our statistic significant?","answers":[{"option":"No, we do not reject the null hypothesis that there is no association between smoking and outcome","correct":false,"message":"Compare our p-value to our alpha."},{"option":"Yes, we reject the null hypothesis that there is no association and conclude that there is an association","correct":true,"message":"Go back and look at the proportions."}],"label":"letter-z","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"So for our alpha of 0.05, do we call our statistic significant?","a":[{"option":"No, we do not reject the null hypothesis that there is no association between smoking and outcome","correct":false,"message":"Compare our p-value to our alpha."},{"option":"Yes, we reject the null hypothesis that there is no association and conclude that there is an association","correct":true,"message":"Go back and look at the proportions."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-the-chi-square-distribution" class="section level3">
 <h3>The chi-square distribution</h3>
@@ -382,14 +384,14 @@ pvalue</code></pre>
 <div id="section-write-your-results-up" class="section level3">
 <h3>Write your results up</h3>
 
-<div id="htmlwidget-0d40bb301f0db03a6875" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-7076b282dfab67f05800" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-0d40bb301f0db03a6875">{"x":{"question":"Write up your results by selecting from the following statements:","answers":[{"option":"For our cohort of under 60 women","correct":true,"message":"Compare our p-value to our alpha."},{"option":"we found an association between wearing colors and death","correct":true,"message":"Go back and look at the proportions."},{"option":"we found an association between smoking and death","correct":true,"message":"Go back and look at the proportions."},{"option":"this association was significant with a p-value of 0.01","correct":false,"message":null}],"label":"letter-r","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Write up your results by selecting from the following statements:","a":[{"option":"For our cohort of under 60 women","correct":true,"message":"Compare our p-value to our alpha."},{"option":"we found an association between wearing colors and death","correct":true,"message":"Go back and look at the proportions."},{"option":"we found an association between smoking and death","correct":true,"message":"Go back and look at the proportions."},{"option":"this association was significant with a p-value of 0.01","correct":false,"message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-7076b282dfab67f05800">{"x":{"question":"Write up your results by selecting from the following statements:","answers":[{"option":"For our cohort of under 60 women","correct":true,"message":"Compare our p-value to our alpha."},{"option":"we found an association between wearing colors and death","correct":true,"message":"Go back and look at the proportions."},{"option":"we found an association between smoking and death","correct":true,"message":"Go back and look at the proportions."},{"option":"this association was significant with a p-value of 0.01","correct":false,"message":null}],"label":"letter-r","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Write up your results by selecting from the following statements:","a":[{"option":"For our cohort of under 60 women","correct":true,"message":"Compare our p-value to our alpha."},{"option":"we found an association between wearing colors and death","correct":true,"message":"Go back and look at the proportions."},{"option":"we found an association between smoking and death","correct":true,"message":"Go back and look at the proportions."},{"option":"this association was significant with a p-value of 0.01","correct":false,"message":null}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="section-the-stability-of-our-test-statistic-with-small-n" class="section level3">
 <h3>The stability of our test statistic with small n</h3>
@@ -446,6 +448,8 @@ chi_calc$p.value</code></pre>
 <div id="section-missing-values" class="section level2">
 <h2>Missing Values</h2>
 <p>One thing we haven’t talked about is missing values. For NHANES, there are actually missing values (encoded as NAs for the dataset).</p>
+<pre class="r"><code>data(&quot;bmi_diabetes_raw&quot;)
+summary(bmi_diabetes_raw)</code></pre>
 <pre><code>##       BMI        Diabetes       Gender          Age        BMIstatus  
 ##  Min.   :15.02   No  :6350   female:3615   Min.   :21.00   High:2544  
 ##  1st Qu.:24.20   Yes : 742   male  :3479   1st Qu.:33.00   Low :4487  
@@ -454,10 +458,18 @@ chi_calc$p.value</code></pre>
 ##  3rd Qu.:32.23                             3rd Qu.:60.00              
 ##  Max.   :81.25                             Max.   :80.00              
 ##  NA&#39;s   :63</code></pre>
+<pre class="r"><code>bmi_diabetes_raw %&gt;%
+  filter(is.na(Diabetes)) %&gt;%
+  dplyr::select(Diabetes, BMIstatus, Gender) %&gt;%
+  summary()</code></pre>
 <pre><code>##  Diabetes BMIstatus    Gender 
 ##  No  :0   High:2    female:2  
 ##  Yes :0   Low :0    male  :0  
 ##  NA&#39;s:2</code></pre>
+<pre class="r"><code>bmi_diabetes_raw %&gt;%
+  filter(is.na(BMIstatus)) %&gt;%
+  dplyr::select(Diabetes, BMIstatus, Gender) %&gt;%
+  summary()</code></pre>
 <pre><code>##  Diabetes BMIstatus    Gender  
 ##  No :52   High: 0   female:28  
 ##  Yes:11   Low : 0   male  :35  

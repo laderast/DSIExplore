@@ -23,9 +23,11 @@ library(DSIExplore)
 
 Please fill out the pre-assessment before you do anything! https://goo.gl/forms/jRa7TRFWXp5rlF6H3 
 
+Make sure to buddy up, and use your post-its!
+
 At the end of this session you should be able to
 
-- Understand why we need to do Xxploratory Data Analysis (EDA)
+- Understand why we need to do Exploratory Data Analysis (EDA)
 - Understand statistical association between categorical variables
 - Visual ways to identify association
 - Basic understanding of Chi-squared statistics
@@ -185,7 +187,7 @@ grid.arrange(vis1, vis2, layout_matrix=lay)
 question("Which part of the stacked bar plot corresponds to the top left cell in the table?",
   answer("Right side, red part", message="Not quite, look at what two conditions the top left cell belongs to."),
   answer("Left side, blue portion", correct=TRUE, message="Yes, correct. This cell corresponds to people who are alive and who didn't smoke."),
-  answer("Left side, red part", correct=TRUE ,message="Not quite, look at what two conditions the top left cell belongs to."),
+  answer("Left side, red part", message="Not quite, look at what two conditions the top left cell belongs to."),
   answer("Right side, blue part.", message="Not quite, look at what two conditions the top left cell belongs to."),
   allow_retry = TRUE
 )
@@ -336,6 +338,8 @@ What are the expected values? They are the values in the cells we expect in the 
 
 We calculate these expected values by looking at the column and row totals for each cell. 
 
+[]
+
 ### What does Chi-squared represent?
 
 The chi-squared statistic summarizes the total deviation from the expected values in each cell. We have 4 cells, so we sum up our calculation over each of these.
@@ -368,7 +372,7 @@ chi
 
 ```{r expected-val, echo=FALSE}
 question("How did the top left cell change for the chi-matrix when you changed the filtering criteria?",
-  answer("It got larger,.", correct=TRUE, message="Yes, correct."),
+  answer("It got larger, meaning there is more of a deviation from the expected value.", correct=TRUE, message="Yes, correct."),
   answer("It got smaller, ")
 )
 ```
