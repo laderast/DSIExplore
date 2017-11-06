@@ -15,7 +15,6 @@ To run the tutorials, you will then use the following commands:
 
 ```{r}
 learnr::run_tutorial("categoricalData", package = "DSIExplore")
-learnr::run_tutorial("continuousData", package = "DSIExplore")
 ```
 
 ```{r}
