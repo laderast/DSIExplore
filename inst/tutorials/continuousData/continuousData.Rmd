@@ -337,7 +337,7 @@ What other factors might be associated with BMI?
 - **Question: Do any interesting associations arise?**
 
 ```{r}
-cat_vars = c("AllSubjects","Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive","TVHrsDay","SleepTrouble")
+cat_vars = c("AllSubjects","Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive","TVHrsDay","SleepTrouble","AgeDecade")
 
 selectInput("select_factor1", "Factor", choices = cat_vars,
             selected = "AllSubjects")
