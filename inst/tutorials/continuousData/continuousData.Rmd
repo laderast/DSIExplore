@@ -388,7 +388,7 @@ output$ttest1 <- function() {
 
 ### Try it yourself
 
-Change the outcome (left hand side of `~` is the continuous outcome) to be `Height` and the right hand side (the binary factor) to be `Gender` to test height differences in males vs females.
+Change the outcome (left hand side of `~` is the continuous outcome) to be `Height` and the binary factor (right hand side)  to be `Gender` to test height differences in males vs females.
 
 ```{r ttest_ex, exercise=TRUE}
 t.test(BMI~Diabetes,data=nhanes_filtered) %>% broom::tidy() %>% kable(digits=3)
