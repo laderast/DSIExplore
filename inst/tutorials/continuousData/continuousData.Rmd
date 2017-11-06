@@ -1,7 +1,7 @@
 ---
 title: "Continuous Data"
 author: "Ted Laderas and Jessica Minnier"
-date: "10/24/2017"
+date: "11/06/2017"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -12,7 +12,7 @@ library(tidyverse)
 library(learnr)
 library(gridExtra)
 library(naniar)
-library(DSIExplore)
+library(DSIExplore) #devtools::install_github("laderast/DSIExplore")
 library(NHANES)
 library(knitr)
 library(kableExtra)
@@ -35,7 +35,7 @@ nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 
 Don't forget! [Please fill out our pre-session survey. (pre-categorical and continuous)](https://goo.gl/forms/08XdUkM3Y34Fjqn12)
 
-Find this session at [https://minnier.shinyapps.io/ODSI_continuousData/](https://minnier.shinyapps.io/ODSI_continuousData/)
+Find this session at [https://minnier.shinyapps.io/ODSI_continuousData/](https://minnier.shinyapps.io/ODSI_continuousData/), with code at [https://github.com/laderast/DSIExplore](https://github.com/laderast/DSIExplore)
 
 At the end of this session you should be able to
 
@@ -388,7 +388,7 @@ output$ttest1 <- function() {
 
 ### Try it yourself
 
-Change the outcome (left hand side) to be `Height` and the right hand side to be `Gender` to test height differences in males vs females.
+Change the outcome (left hand side of `~` is the continuous outcome) to be `Height` and the right hand side (the binary factor) to be `Gender` to test height differences in males vs females.
 
 ```{r ttest_ex, exercise=TRUE}
 t.test(BMI~Diabetes,data=nhanes_filtered) %>% broom::tidy() %>% kable(digits=3)

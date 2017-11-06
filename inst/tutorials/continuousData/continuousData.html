@@ -10,7 +10,7 @@
 
 <meta name="author" content="Ted Laderas and Jessica Minnier" />
 
-<meta name="date" content="2017-10-24" />
+<meta name="date" content="2017-11-06" />
 
 <meta name="progressive" content="false" />
 <meta name="allow-skip" content="false" />
@@ -49,7 +49,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="section-learning-objectives-for-this-session" class="section level2">
 <h2>Learning Objectives for this Session</h2>
 <p>Don’t forget! <a href="https://goo.gl/forms/08XdUkM3Y34Fjqn12">Please fill out our pre-session survey. (pre-categorical and continuous)</a></p>
-<p>Find this session at <a href="https://minnier.shinyapps.io/ODSI_continuousData/" class="uri">https://minnier.shinyapps.io/ODSI_continuousData/</a></p>
+<p>Find this session at <a href="https://minnier.shinyapps.io/ODSI_continuousData/" class="uri">https://minnier.shinyapps.io/ODSI_continuousData/</a>, with code at <a href="https://github.com/laderast/DSIExplore" class="uri">https://github.com/laderast/DSIExplore</a></p>
 <p>At the end of this session you should be able to</p>
 <ul>
 <li>Understand statistical associations between continuous variables</li>
@@ -212,14 +212,14 @@ NHANES %&gt;% ggplot(aes(x = Age, y = Height, color = Gender)) + geom_point(alph
 <p>Now let’s explore the association of BMI with a binary (yes/no) variable. How does BMI differ by <code>Diabetes</code> status?</p>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-9-1.png" width="624" /></p>
 
-<div id="htmlwidget-ffc2f8dbcca3c197c3f4" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-77031d71608ec64c952a" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-ffc2f8dbcca3c197c3f4">{"x":{"question":"Is BMI associated with diabetes status?","answers":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"label":"ques-b","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Is BMI associated with diabetes status?","a":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-77031d71608ec64c952a">{"x":{"question":"Is BMI associated with diabetes status?","answers":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"label":"ques-b","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Is BMI associated with diabetes status?","a":[{"option":"No, BMI is the same for people with or without diabetes.","correct":false,"message":"Not true, look at the average BMI for each group."},{"option":"Yes, BMI is different depending on diabetes status.","correct":true,"message":"Yes, BMI is on average higher for subjects with diabetes than without."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p>We see that BMI is on average higher for subjects with diabetes than without. There is also a third category called <code>NA</code>. This means the data is missing.</p>
 <p>Let’s explore the missingness in this data a bit before we move on.</p>
 </div>
@@ -245,14 +245,14 @@ NHANES %&gt;% ggplot(aes(x = Age, y = Height, color = Gender)) + geom_point(alph
 <p><img src="continuousData_files/figure-html/unnamed-chunk-12-1.png" width="624" /></p>
 <p>We also might notice something interesting about the age distribution of our population.</p>
 
-<div id="htmlwidget-33d8e3ccae4f8641b52e" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-c7b87a082b71e7df2611" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-33d8e3ccae4f8641b52e">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-c7b87a082b71e7df2611">{"x":{"question":"Why do you think there&#39;s a pile up of points at age 80?","answers":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"label":"ques-a","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Why do you think there&#39;s a pile up of points at age 80?","a":[{"option":"Everyone died at age 80.","correct":false,"message":"Highly unlikely."},{"option":"They oversampled from the 80 year olds.","correct":false,"message":"Highly unlikely."},{"option":"The data was truncated.","correct":true,"message":"Correct! But why? Probably to preserve de-identification. If we were to fit a model to find the association of age and height, how do you think those 80 year olds would influence our results?"}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p>For future analyses, let’s work with subjects older than 20 years of age, and remove subjects with missing <code>Diabetes</code> and <code>BMI</code> values. Lastly, let’s check out the box plots on this filtered data.</p>
 <pre class="r"><code>nhanes_filtered = NHANES %&gt;% filter(Age &gt;= 20, !is.na(Diabetes), !is.na(BMI))
 
@@ -281,14 +281,14 @@ nrow(nhanes_filtered)</code></pre>
 <p><img src="continuousData_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
 <p><strong>Question: Do we think the assumptions of the t-test hold?</strong></p>
 
-<div id="htmlwidget-8285b2a05d989eed0235" style="width:100%;height:auto;", class = "quiz html-widget">
+<div id="htmlwidget-f85f7c0fc9eec0e9cab4" style="width:100%;height:auto;", class = "quiz html-widget">
 <div class="panel panel-default">
 <div class="panel-body quizArea">
 </div>
 </div>
 </div>
 
-<script type="application/json" data-for="htmlwidget-8285b2a05d989eed0235">{"x":{"question":"Do you think the assumptions of the t-test hold?","answers":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"label":"ques-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Do you think the assumptions of the t-test hold?","a":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-f85f7c0fc9eec0e9cab4">{"x":{"question":"Do you think the assumptions of the t-test hold?","answers":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"label":"ques-c","skipStartButton":true,"perQuestionResponseAnswers":true,"perQuestionResponseMessaging":true,"preventUnanswered":true,"displayQuestionCount":false,"displayQuestionNumber":false,"disableRanking":true,"nextQuestionText":"","checkAnswerText":"Submit Answer","allowRetry":false,"randomSortAnswers":false,"json":{"info":{"name":"","main":""},"questions":[{"q":"Do you think the assumptions of the t-test hold?","a":[{"option":"No, not completely.","correct":true,"message":"The independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test"},{"option":"Yes, completely.","correct":false,"message":"Not quite: the independence assumption holds, but the fact that our distribution is somewhat positively skewed actually violates the normality assumption of the T-test."}],"correct":"Correct!","incorrect":"Incorrect."}]}},"evals":[],"jsHooks":[]}</script>
 <p><strong>However!</strong> The T-test is pretty robust to slight violations of the normality assumption, especially since we have a large sample size</p>
 <ul>
 <li>statistics side note: thanks to the Central Limit Theorem, our test is still <em>valid</em> as in we preserve our type I error; for a nice explanation of this see <a href="http://thestatsgeek.com/2013/09/28/the-t-test-and-robustness-to-non-normality/">this Stats Geek blog post</a> and <a href="http://rctdesign.org/techreports/arphnonnormality.pdf">Lumley T, et al 2002</a>)</li>
@@ -326,7 +326,7 @@ nrow(nhanes_filtered)</code></pre>
 </div>
 <div id="section-try-it-yourself" class="section level3">
 <h3>Try it yourself</h3>
-<p>Change the outcome (left hand side) to be <code>Height</code> and the right hand side to be <code>Gender</code> to test height differences in males vs females.</p>
+<p>Change the outcome (left hand side of <code>~</code> is the continuous outcome) to be <code>Height</code> and the right hand side (the binary factor) to be <code>Gender</code> to test height differences in males vs females.</p>
 <div class="tutorial-exercise" data-label="ttest_ex" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>t.test(BMI ~ Diabetes, data = nhanes_filtered) %&gt;% broom::tidy() %&gt;% kable(digits = 3)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":false,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -566,7 +566,7 @@ library(tidyverse)
 library(learnr)
 library(gridExtra)
 library(naniar)
-library(DSIExplore)
+library(DSIExplore) #devtools::install_github("laderast/DSIExplore")
 library(NHANES)
 library(knitr)
 library(kableExtra)
@@ -709,7 +709,7 @@ output$`tutorial-exercise-ggplot_ex-output` <- renderUI({
 <div id="doc-metadata">
 <h2 class="title toc-ignore" style="display:none;">Continuous Data</h2>
 <h4 class="author"><em>Ted Laderas and Jessica Minnier</em></h4>
-<h4 class="date"><em>10/24/2017</em></h4>
+<h4 class="date"><em>11/06/2017</em></h4>
 </div>
 <!-- end doc-metadata -->
 
