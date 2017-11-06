@@ -339,7 +339,22 @@ What are the expected values? They are the values in the cells we expect in the 
 
 We calculate these expected values by looking at the column and row totals for each cell. 
 
-[]
+```{r echo=TRUE}
+cohort <- Whickham %>% 
+  ##here is our filtering criteria
+  filter(age < 40) %>%
+  select(smoker, outcome) %>% 
+  table
+
+outcome_count <- colSums(cohort)
+
+smoking_count <- rowSums(cohort)
+
+total <- sum(smoking_count)
+
+expected_value = (outcome_count[1]*smoking_count) / total
+expected_value
+```
 
 ### What does Chi-squared represent?
 
@@ -514,10 +529,10 @@ data.frame(chiveq) %>% ggplot(aes(x = chiveq)) + geom_histogram(binwidth = 0.3) 
 
 ```{r letter-r, echo=FALSE}
 question("Write up your results by selecting from the following statements:",
-  answer("For our cohort of under 60 women", correct=TRUE, message="Compare our p-value to our alpha."),
-  answer("we found an association between wearing colors and death", correct=TRUE, message="Go back and look at the proportions."), 
-    answer("we found an association between smoking and death", correct=TRUE, message="Go back and look at the proportions."),
-  answer("this association was significant with a p-value of 0.01")
+  answer("For our cohort of under 60 women", correct=TRUE),
+  answer("we found an association between wearing colors and death", message="Go back and look at the proportions."), 
+    answer("we found an association between smoking and death", correct=TRUE),
+  answer("this association was significant with a p-value of 0.01", correct=TRUE)
 
 )
 ```
