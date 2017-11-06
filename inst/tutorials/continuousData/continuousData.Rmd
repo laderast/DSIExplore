@@ -429,7 +429,7 @@ nhanes_filtered %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes,alpha=Diabetes)) + 
 ## Your Turn
 
 
-Modify the R code in the `lm()` function to build your own prediction model. Here are the names of the NHANES data set:
+Modify the R code in the `lm()` function to build your own linear regression model. Here are the names of the NHANES data set:
 
 ```{r}
 names(nhanes_filtered)
