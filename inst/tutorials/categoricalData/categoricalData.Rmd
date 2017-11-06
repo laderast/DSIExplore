@@ -36,7 +36,7 @@ At the end of this session you should be able to
 - An attitude towards data, not just techniques
 - 'Find patterns, reveal structure, and make tenative model assessments (Behrens)'
 
-Being a good analyst requires you to look at the data and notice the weird things about it, and follow the thread to the end.
+Being a good analyst requires you to look at the data and notice the weird things about it, and follow the thread to the end. Be a data detective!
 
 ### Why EDA and Visualization?
 
@@ -364,6 +364,13 @@ chi <- (cohort$observed - cohort$expected)^2/cohort$expected
 chi
 ```
 
+```{r expected-val, echo=FALSE}
+question("How did the top left cell change for the chi-matrix when you changed the filtering criteria?",
+  answer("It got larger,.", correct=TRUE, message="Yes, correct."),
+  answer("It got smaller, ")
+)
+```
+
 ### Our null hypothesis and alternative hypothesis
 
 What we call our *null hypothesis* represents what we think of results that are the result of complete random chance. In our case, we are saying there is no association between variables.
@@ -396,9 +403,7 @@ data.frame(chiveq) %>% ggplot(aes(x=chiveq)) + geom_histogram(bins=60)
 
 ### P-values
 
-There is a straightforward interpretation to the p-value, and it has to do with how unique or rare our case is compared to our distribution of randomly generated cases. 
-
-$$\frac{# null}{# Total}$$ 
+There is a straightforward interpretation to the *p-value*, and it has to do with how unique or rare our case is compared to our distribution of randomly generated cases. 
 
 So the *p-value* is interpreted as the probability that we will see a random case with the same exact statistic or higher.
 
@@ -407,7 +412,8 @@ For example, if we had 10,000 random cases, and our p-value was 0.2, that means 
 Try adjusting the value of the chi-square statistic and see how many random cases are expected to have that statistic or higher.
 
 ```{r}
-sliderInput("slide_chi", "slide to adjust statistical cutoff", value=0.8, min = 0.1, max=10)
+sliderInput("slide_chi", "slide to adjust statistical cutoff", 
+            value=0.8, min = 0.1, max=10)
 plotOutput("chihist")
 ```
 
@@ -445,33 +451,37 @@ Before we even calculate a p-value, we must decide on a level of significance. S
 
 This value is also known as *alpha*. 
 
-Let's set our alpha at 0.05. If we set it to be 0.05, that means that there is 5% probability that our result has arisen due to our random process.
+Let's set our alpha at 0.05. If we set it to be 0.05, that means that there is 5% probability that our result has arisen due to our random variables.
 
 ### What is our p-value?
 
+Now that we have set our alpha, we can now find our p-value.
+
 Our chi-square statistic for our cohort of women less than 60 is:
 
-```{r echo=TRUE}
+```{r}
 library(broom)
 
-cohort <- Whickham %>% 
+under60 <- Whickham %>% 
   ##here is our filtering criteria
   filter(age < 60) %>%
   select(smoker, outcome) %>% 
   table
+```
 
+```{r echo=TRUE}
 #show our chi-squared statistic
-chistat <- tidy(chisq.test(cohort))$statistic
-
+chistat <- tidy(chisq.test(under60))$statistic
 chistat
 
 #calculate our p-value
-length(chiveq[chiveq > chistat]) / length(chiveq)
+pvalue = length(chiveq[chiveq > chistat]) / length(chiveq)
+pvalue
 ```
 
-```{r letter-r, echo=FALSE}
+```{r letter-z, echo=FALSE}
 question("So for our alpha of 0.05, do we call our statistic significant?",
-  answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to the ."),
+  answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to our alpha."),
   answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an association", correct=TRUE, message="Go back and look at the proportions.")
 )
 ```
@@ -484,19 +494,32 @@ In reality, we don't simulate these processes, and instead rely on a mathematica
 
 Our chi-squared distribution can be calculated using the `dchisq` function.
 
-```{r}
-
+```{r eval=FALSE}
+library(MASS)
+truehist(chiveq, prob = TRUE)
+x <- seq(min(data), max(data), length=100)
+d <- dchisq(x, df)
+lines(x, d)
 ```
+
+### Write your results up
+
+```{r letter-r, echo=FALSE}
+question("Write up your results by selecting from the following statements:",
+  answer("For our cohort of under 60 women", correct=TRUE, message="Compare our p-value to our alpha."),
+  answer("we found an association between wearing colors and death", correct=TRUE, message="Go back and look at the proportions."), 
+    answer("we found an association between smoking and death", correct=TRUE, message="Go back and look at the proportions."),
+  answer("this association was significant with a p-value of 0.01")
+
+)
+```
+
 
 ### The stability of our test statistic with small n
 
 One thing our test statistic is dependent on is *n*, the total number of subjects in the study. Chi-square statistics work best with larger groups.
 
 We need to be cautious when our *n* is very small (less than 10), or when we have less than 5 subjects in each cell of our table.
-
-For smaller groups
-
-There is also 
 
 ## Your Turn
 
@@ -521,8 +544,10 @@ plotOutput("proportionBarplot")
 
 ```{r context="server"}
 dataOut <- reactive({
-    out <- bmi_diabetes  %>% tidyr::complete(Diabetes, Gender, BMIstatus) 
-    out
+    out <- bmi_diabetes %>% 
+      #tidyr::complete(Diabetes, Gender, BMIstatus) %>%
+      droplevels()
+    na.omit(out)
   })
   
   output$summaryTable <- renderPrint({
@@ -530,7 +555,6 @@ dataOut <- reactive({
   })
   
   proportionTable <- reactive({
-    
     out <- dataOut()[,c(input$condTab, "Diabetes")]
     #tab <- as.matrix(table(out))
     out
@@ -549,43 +573,23 @@ dataOut <- reactive({
   })
 ```
 
-### Write your results up
+###Decide on your alpha
+
+Decide on your alpha now!
+
+###Calculate your p-value
+
+```{r pvalue-calc, exercise=TRUE}
+
+```
 
 ## Missing Values
 
 One thing we haven't talked about is missing values. 
 
-```{r asis=TRUE}
-bmicols <- colnames(bmi_diabetes)
-selectInput("missing_col", "Select a Variable", choices = bmicols, selected =bmicols[2])
-verbatimTextOutput("missing_val")
+```{r}
+summary(is.)
 ```
-
-```{r context="server"}
-data(bmi_diabetes)
-bmi2 <- bmi_diabetes
-
-
-missingDat <- reactive({
-  
-  print(input$missing_col)
-  
-  if(is.null(input$missing_col)){
-  miss_col <- "Diabetes"
-} else
-  {miss_col <- input$missing_col}
-
-  var1 <- quote(miss_col)
-  #print(!!var1)
-  out <- bmi2 %>% dplyr::filter_(is.na(miss_col)) 
-  out
-})
-
-output$missing_val <- renderText({
-  print(missingDat())
-})
-```
-
 
 ## Be proud of yourself!
 
