@@ -16,6 +16,9 @@ library(DSIExplore)
 library(NHANES)
 library(knitr)
 library(kableExtra)
+
+# FOR EXERCISES
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 ```
 
 
@@ -23,6 +26,9 @@ library(kableExtra)
 library(tidyverse)
 library(DSIExplore)
 library(NHANES)
+
+# FOR SERVER
+nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 ```
 
 ## Learning Objectives for this Session
@@ -41,9 +47,11 @@ At the end of this session you should be able to
 
 ## EDA with continuous variables
 
-We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?  Let's use the NHANES data set to visualize the variable `BMI` as a continuous variable.
+We saw bar plots and proportional plots used to visualize binary and categorical variables in the previous section. What are some good ways of visualizing continuous (quantitative) data?
 
-(Note info about the NHANES data in the NHANES package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
+Let's use the NHANES (National Health and Nutrition Examination Survey)  data set to visualize the variable `BMI` as a continuous variable.
+
+(Note: info about the NHANES data in the `NHANES` R package can be found [here](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf) with the disclaimer that NHANES are survey data so to do proper analyses we should use sampling weights. For illustration of more straightforward analyses we will ignore this detail.)
 
 ### Histogram and density plots
 
@@ -78,6 +86,36 @@ NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Box plot
 
 All those dots piled up on the bottom are people who are outside the 1.5 x IQR, often though of as "outliers" of the population distribution. This also shows the positive skewness of the distribution.
 
+### Practice Coding
+
+If you want to practice coding a histogram and density plot or boxplot, try editing `ggplot2` code below to show a histogram of `Age`:
+
+```{r histogram_ex, exercise = TRUE}
+
+# edit the ggplot code after x= 
+NHANES %>% ggplot(aes(x=BMI)) +
+  geom_histogram(binwidth=2.5) + 
+  geom_density(aes(y=2.5*..count..,color="red")) + 
+  ggtitle("Histogram and Density of Age") + guides(color=FALSE)
+
+# edit the ggplot code after y= 
+NHANES %>% ggplot(aes(x="All Subjects",y=BMI))+geom_boxplot() +ggtitle("Box plot of NHANES Age")+xlab("")
+
+```
+
+```{r histogram_ex-solution}
+
+# edit the ggplot code after x= 
+NHANES %>% ggplot(aes(x=Age)) +
+  geom_histogram(binwidth=2.5) + 
+  geom_density(aes(y=2.5*..count..,color="red")) + 
+  ggtitle("Histogram and Density of Age") + guides(color=FALSE)
+
+# edit the ggplot code after y= 
+NHANES %>% ggplot(aes(x="All Subjects",y=Age))+geom_boxplot() +ggtitle("Box plot of NHANES Age")+xlab("")
+
+```
+
 ## How do we assess associations between two continuous variables?
 
 We learned that good EDA can help us identify associations.
@@ -105,7 +143,7 @@ A simple statistical quantification of the association of two continuous variabl
 - Value between -1 and +1, with 0 denoting no linear correlation
 - We can visually represent the linear relationship with a line through the scatter plot.
 - If the relationship is relatively curved or exponential Pearson's correlation will not capture this relationship.
-- An alternative might be the **Spearman's correlation** which essentially is the Pearson's correlation of the *ranks.* This evaluates *monotone* relationships.
+- An alternative might be the **[Spearman's correlation](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient)** which essentially is the Pearson's correlation of the *ranks.* This evaluates *monotone* relationships.
 
 **Question: How well does the line "fit" the data?**
 
@@ -173,6 +211,24 @@ plot_w_cor_quotes = function(df,cont_x,cont_y,color) {
 ```
 
 
+### Practice Coding
+
+If you want to practice coding a scatter plot, try editing `ggplot2` code below to show a scatter plot of `Age` vs `Height`, colored by `Gender`:
+
+```{r scatterplot_ex, exercise = TRUE}
+
+# edit the ggplot code after x= and y= and color= to change the axes and the color
+NHANES %>% ggplot(aes(x=Weight,y=BMI,color=Diabetes)) + geom_point(alpha=0.5) + stat_smooth(method="lm",se = FALSE)
+
+```
+
+```{r scatterplot_ex-solution}
+
+# edit the ggplot code after x= and y= and color= to change the axes and the color
+NHANES %>% ggplot(aes(x=Age,y=Height,color=Gender)) + geom_point(alpha=0.5) + stat_smooth(method="lm",se = FALSE)
+
+```
+
 ## What is a factor that may be associated with BMI?
 
 Now let's explore the association of BMI with a binary (yes/no) variable. How does BMI differ by `Diabetes` status?
@@ -224,7 +280,7 @@ question("Why do you think there's a pile up of points at age 80?",
 
 For future analyses, let's work with subjects older than 20 years of age, and remove subjects with missing `Diabetes` and `BMI` values. Lastly, let's check out the box plots on this filtered data.
 
-```{r, echo=TRUE}
+```{r nhanesfilter, echo=TRUE}
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 
 nrow(nhanes_filtered)
@@ -328,6 +384,28 @@ output$ttest1 <- function() {
     knitr::kable(format = "html",col.names = c("Difference in Means","Means No","Means Yes", "T Statisitic","P Value"), digits=2) %>%
     kableExtra::kable_styling("striped", full_width = F)
 }
+```
+
+### Try it yourself
+
+Change the outcome (left hand side) to be `Height` and the right hand side to be `Gender` to test height differences in males vs females.
+
+```{r ttest_ex, exercise=TRUE}
+t.test(BMI~Diabetes,data=nhanes_filtered) %>% broom::tidy() %>% kable(digits=3)
+```
+
+```{r ttest_ex-solution}
+t.test(Height~Gender,data=nhanes_filtered) %>% broom::tidy() %>% kable(digits=3)
+```
+
+Also examine the histogram of `Height` by `Gender` (or try your own hypothesis!). Also see what happens when you change the data set from `nhanes_filtered` to `NHANES` (not filtered).
+
+```{r ttest_boxplot_ex, exercise=TRUE}
+nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
+```
+
+```{r ttest_boxplot_ex-solution}
+nhanes_filtered %>% ggplot(aes(x=Height,color=Gender)) + geom_density()
 ```
 
 
