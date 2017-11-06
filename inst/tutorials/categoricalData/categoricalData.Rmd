@@ -1,7 +1,7 @@
 ---
 title: "Categorical Data"
 author: "Ted Laderas and Jessica Minnier"
-date: "9/28/2017"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: learnr::tutorial
 runtime: shiny_prerendered
 ---
@@ -20,6 +20,8 @@ library(DSIExplore)
 ```
 
 ## Learning Objectives for this Session
+
+Please fill out the pre-assessment before you do anything! https://goo.gl/forms/jRa7TRFWXp5rlF6H3 
 
 At the end of this session you should be able to
 
@@ -599,9 +601,20 @@ So, is there an association between `BMIstatus` and `Diabetes`?
 
 One thing we haven't talked about is missing values. For NHANES, there are actually missing values (encoded as NAs for the dataset).
 
-```{r}
+```{r echo=TRUE}
 data("bmi_diabetes_raw")
 summary(bmi_diabetes_raw)
+
+bmi_diabetes_raw %>%
+  filter(is.na(Diabetes)) %>%
+  dplyr::select(Diabetes, BMIstatus, Gender) %>%
+  summary()
+
+bmi_diabetes_raw %>%
+  filter(is.na(BMIstatus)) %>%
+  dplyr::select(Diabetes, BMIstatus, Gender) %>%
+  summary()
+
 ```
 
 ## Be proud of yourself!
@@ -610,8 +623,11 @@ These concepts are not easy!
 
 If you have a basic understanding of how associations work in categorical data and how we calculate statistics on them, be happy!
 
+Make sure to fill out the post-assessment. We'll use it to make this course better:
+https://goo.gl/forms/loIbHGxUqOE2Jv263 
+
 ## References
 
 + [Chi Squared Test](https://en.wikipedia.org/wiki/Chi-squared_test)
 + http://www.stat.wmich.edu/s216/book/node115.html
-+ https://stats.stackexchange.com/questions/2391/what-is-the-relationship-between-a-chi-squared-test-and-test-of-equal-proportion
+
