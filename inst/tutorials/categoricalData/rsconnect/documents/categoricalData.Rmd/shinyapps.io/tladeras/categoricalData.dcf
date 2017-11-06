@@ -1,0 +1,12 @@
+name: categoricalData
+title: categoricalData
+username:
+account: tladeras
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 231175
+bundleId: 1055080
+url: https://tladeras.shinyapps.io/categoricalData/
+when: 1509554108.58643
+asMultiple: FALSE
+asStatic: FALSE

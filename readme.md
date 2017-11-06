@@ -21,4 +21,4 @@ learnr::run_tutorial("categoricalData", package = "DSIExplore")
 learnr::run_tutorial("continuousData", package = "DSIExplore")
 ```
 
-This material is released under an Apache 2.0 License
+This material is released under an Apache 2.0 License.
