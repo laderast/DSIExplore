@@ -267,7 +267,8 @@ The T test makes *assumptions* about the distribution of your continuous variabl
 Let's look at the smoothed histograms (density plots) of the two groups' BMIs.
 
 ```{r}
-nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
+tmp_summarydat = nhanes_filtered %>% group_by(Diabetes) %>% summarize(mean=mean(BMI))
+nhanes_filtered %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density() + geom_vline(data = tmp_summarydat,aes(xintercept=mean,color=Diabetes),lty=2)
 ```
 
 **Question: Do we think the assumptions of the t-test hold?**
@@ -308,12 +309,16 @@ tableOutput("ttest1")
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 subsetdata <- reactive({
   input$buttonResample
-  print(input$samplesize)
   nhanes_filtered %>% dplyr::sample_n(size=input$samplesize)
 })
 
+subsetdata_summary <- reactive({
+  subsetdata() %>% group_by(Diabetes) %>% summarize(mean=mean(BMI))
+})
+
 output$densityPlot1 <- renderPlot(
- subsetdata() %>% filter(!is.na(Diabetes)) %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density()
+ subsetdata() %>% filter(!is.na(Diabetes)) %>% ggplot(aes(x=BMI,color=Diabetes)) + geom_density() + 
+   geom_vline(data = subsetdata_summary(),aes(xintercept=mean,color=Diabetes),lty=2)
 )
 
 output$ttest1 <- function() {
