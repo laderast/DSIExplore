@@ -588,7 +588,8 @@ Decide on your alpha now!
 One thing we haven't talked about is missing values. 
 
 ```{r}
-summary(is.)
+data("bmi_diabetes_raw")
+summary(is.na(bmi_diabetes_raw))
 ```
 
 ## Be proud of yourself!
