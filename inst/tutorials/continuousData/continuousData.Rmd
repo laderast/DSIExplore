@@ -33,6 +33,7 @@ At the end of this session you should be able to
 - Understand statistical associations between a continuous and a binary variable
 - Visualize ways to identify associations
 - Basic understanding of correlation and t-tests
+- If time allows, basic understanding of linear regression modeling
 
 ## EDA with continuous variables
 
@@ -246,7 +247,8 @@ tableOutput("ttest1")
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 subsetdata <- reactive({
   input$buttonResample
-  nhanes_filtered %>% sample(size=input$samplesize)
+  print(input$samplesize)
+  nhanes_filtered %>% dplyr::sample_n(size=input$samplesize)
 })
 
 output$densityPlot1 <- renderPlot(
@@ -263,12 +265,13 @@ output$ttest1 <- function() {
 ```
 
 
-## Other factors
+## Explore other factors
 
 What other factors might be associated with BMI?
 
 - To assess continuous factors we can make scatterplots
-- We can stratify scatterplots by categorical variables to assess associations of continuous variables with BMI within subcategories defined by categorical or binary variables (i.e. `Diabetes`)
+- We can stratify scatterplots by categorical variables
+      + --> assess associations of continuous variables with BMI within subcategories (i.e. of Diabetes)
 - To remove the stratification option select `AllSubjects` as your `Factor`
 - **Question: Do any interesting associations arise?**
 
@@ -276,7 +279,7 @@ What other factors might be associated with BMI?
 cat_vars = c("AllSubjects","Gender","Diabetes","Smoke100n","Race1","Race3","PhysActive","TVHrsDay","SleepTrouble")
 
 selectInput("select_factor1", "Factor", choices = cat_vars,
-            selected = "Gender")
+            selected = "AllSubjects")
 selectInput("select_cont1", "Continous X-axis", choices = cont_vars)
 plotOutput("pointPlot1")
 plotOutput("boxPlot1")
@@ -286,8 +289,8 @@ plotOutput("boxPlot1")
 nhanes_filtered$AllSubjects = "All"
 
 output$pointPlot1 <- renderPlot(
-  nhanes_filtered %>% ggplot(aes(x=get(input$select_cont1),y=BMI, color=get(input$select_cont1))) + geom_point(alpha=0.1) + facet_wrap(~get(input$select_factor1)) + 
-    xlab(input$select_cont1) + geom_smooth(method="lm")
+  nhanes_filtered %>% ggplot(aes(x=get(input$select_cont1),y=BMI, color=get(input$select_factor1))) + geom_point(alpha=0.1) + facet_wrap(~get(input$select_factor1)) + 
+    xlab(input$select_cont1) + geom_smooth(method="lm")+scale_color_discrete(name=input$select_factor1)
 )
 
 output$boxPlot1 <- renderPlot(
@@ -376,7 +379,7 @@ nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 summary(fit <- lm(BMI~Pulse+Diabetes,data=nhanes_filtered))
 ```
 
-```{r}
+```{r ggplot_ex, exercise = TRUE}
 nhanes_filtered = NHANES %>% filter(Age >=20, !is.na(Diabetes), !is.na(BMI))
 
 # edit the ggplot code after x= and y= and color= to change the axes and the color
