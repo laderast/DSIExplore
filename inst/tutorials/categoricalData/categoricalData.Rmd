@@ -334,8 +334,6 @@ What are the expected values? They are the values in the cells we expect in the 
 
 We calculate these expected values by looking at the column and row totals for each cell. 
 
-
-
 ### What does Chi-squared represent?
 
 The chi-squared statistic summarizes the total deviation from the expected values in each cell. We have 4 cells, so we sum up our calculation over each of these.
@@ -375,12 +373,15 @@ Our null hypothesis is that there is no association between variables. To make t
 + **Null hypothesis (Ho)**: *No association between smoking and outcome.* 
 + **Alternative hypothesis (Ha)**: *there is an association between smoking and outcome.*
 
-For our null hypothesis, we need to calculate the probability of smoking and the probability of death. Under our null hypothesis, we say these probabilities are *independent* of each other.
+For our null hypothesis, we need to calculate the probability of smoking and the probability of death. Under our null hypothesis, we say these probabilities are *independent* of each other. 
+
+So we can look at how our chi-squared statistic is distributed for our null model.
 
 ```{r}
 library(tidyverse)
 sampSize <- 300
 nTrials <- 500
+set.seed(111)
 
  chiveq <- rep(NA, nTrials)
  
@@ -390,34 +391,7 @@ nTrials <- 500
    chiveq[i] <- chisq.test(table(smoking, outcome))$statistic
  }
  
- hist(chiveq,breaks = 30)
- 
- length(chiveq[chiveq >= 4.6])/length(chiveq)
-
-noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
-noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
-                          outcome=ifelse(probDeath < .2, "Dead", "Alive"))
-
-tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, noAssocSmoking$outcome))
-
-colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
-
-noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
-  geom_bar(color="black") + ggtitle("Stacked Barplot of smoking and outcome")
-
-noAssocSmoking %>% ggplot(aes(x=smoking, fill=outcome)) + 
-  geom_bar(position="fill", color="black") + ggtitle("Proportional Barplot of smoking and outcome")
-
-tabNoAssoc %>% ggplot(aes(x=outcome, y=smoking)) + 
-  geom_tile(fill="white", colour="black") + 
-  geom_text(aes(label=value)) + ggtitle("Table of smoking versus outcome")
-```
-
-```{r letter-q, echo=FALSE}
-question("What do you think about the proportions between smokers and non-smokers? Are they the same?",
-  answer("No, they are not the same.", message="Look at the proportions."),
-  answer("Yes, they look very similar.", correct=TRUE, message="Go back and look at the proportions.")
-)
+data.frame(chiveq) %>% ggplot(aes(x=chiveq)) + geom_histogram(bins=60)
 ```
 
 ### P-values
@@ -430,8 +404,39 @@ So the *p-value* is interpreted as the probability that we will see a random cas
 
 For example, if we had 10,000 random cases, and our p-value was 0.2, that means that of our 10000 cases, we would expect to see 10000 * 0.2 = 2000 random cases with our statistic or greater. 
 
+Try adjusting the value of the chi-square statistic and see how many random cases are expected to have that statistic or higher.
+
 ```{r}
-data.frame(chiveq, GT=ifelse(chiveq >= 0.8, "> chisq", "< chisq")) %>% ggplot(aes(x=chiveq, fill=GT)) + geom_histogram(bins=60) + geom_vline(xintercept = 0.8) + labs(x="chi-square statistic") + annotate()
+sliderInput("slide_chi", "slide to adjust statistical cutoff", value=0.8, min = 0.1, max=10)
+plotOutput("chihist")
+```
+
+```{r context="server"}
+library(tidyverse)
+sampSize <- 300
+nTrials <- 500
+set.seed(111)
+
+ chiveq <- rep(NA, nTrials)
+ 
+ for(i in 1:nTrials){
+   smoking = ifelse(rbinom(sampSize, 1, 0.493)==0, "No","Yes")
+   outcome = ifelse(rbinom(sampSize, 1, 0.885)==0, "Dead", "Alive")
+   chiveq[i] <- chisq.test(table(smoking, outcome))$statistic
+ }
+ 
+output$chihist <- renderPlot({
+  chival <- input$slide_chi
+  pval <- length(chiveq[chiveq >= chival]) / length(chiveq) 
+  
+  val <- paste("Chi-square statistic:", chival, "\n", "% above chi-square:", pval * 100,
+               "\n", "p-value: ", pval)
+  
+  data.frame(chiveq, GT=ifelse(chiveq >= chival, "> chisq", "< chisq")) %>% 
+    ggplot(aes(x=chiveq, fill=GT)) + geom_histogram(bins=60) + geom_density() +
+    geom_vline(xintercept = chival) + labs(x="chi-square statistic") + ggtitle(val)
+  
+})
 ```
 
 ### Level of significance
@@ -458,6 +463,8 @@ cohort <- Whickham %>%
 #show our chi-squared statistic
 chistat <- tidy(chisq.test(cohort))$statistic
 
+chistat
+
 #calculate our p-value
 length(chiveq[chiveq > chistat]) / length(chiveq)
 ```
@@ -466,9 +473,9 @@ length(chiveq[chiveq > chistat]) / length(chiveq)
 
 By doing our simulation of no association with our null model, we have found the probability of our statistic to be less than our alpha. 
 
-In reality, we don't simulate these processes, and instead rely on a mathematically derived distribution called the chi-squared distribution.
+In reality, we don't simulate these processes, and instead rely on a mathematically derived distribution called the chi-squared distribution, which represents these processes.
 
-Our chi-squared distribution
+Our chi-squared distribution can be calculated
 
 ```{r}
 
@@ -476,59 +483,7 @@ Our chi-squared distribution
 
 ### The stability of our test statistic with small n
 
-One thing our test statistic is dependent on is *n*, the total number of subjects in the study. We need to be cautious when our 
-
-```{r}
-sliderInput(inputId = "samp_n", label = "N in study",min = 10, max=1000, value = 500)
-checkboxInput(inputId = "samp_check", label="Show proportions", value=FALSE)
-plotOutput("plot_n_bar")
-plotOutput("tab_n_out")
-```
-
-```{r context="server"}
-data_n_example <- reactive({
-  sampSize <- input$samp_n
-  noAssocSmoking <- data.frame(probSmok = runif(n=sampSize), probDeath = runif(n=sampSize))
-  noAssocSmoking <- noAssocSmoking %>% mutate(smoking=ifelse(probSmok < .3, "Y", "N"), 
-                          outcome=ifelse(probDeath < .2, "Dead", "Alive"))
-
-  return(noAssocSmoking)
-})
-
-tab_assoc <- reactive({
-  noAssocSmoking <- data_n_example()
-  tabNoAssoc <- data.frame(table(noAssocSmoking$smoking, 
-                                 noAssocSmoking$outcome))
-  colnames(tabNoAssoc) <- c("smoking", "outcome", "value")
-  tabNoAssoc
-})
-
-t_stat_n <- reactive({
-  tt <- tidy(prop.test(tab_assoc()))
-})
-
-output$plot_n_bar <- renderPlot({
-  prop_status <- input$samp_check
-  
-  if(prop_status){
-    pos_val = "fill"
-    lims <- c(0,1)
-  }else{
-    pos_val="stack"
-    lims <- c(0,1000)
-  }
-  
-  data_n_example() %>%
-    
-    ggplot(aes(x=smoking, fill=outcome)) +
-    geom_bar(color="black", position=pos_val) + scale_y_continuous(limits=lims)
-})
-
-output$chi_dist <- renderPlot({
-   dchisq(c(1:10),1)
-})
-```
-
+One thing our test statistic is dependent on is *n*, the total number of subjects in the study. We need to be cautious when our *n* is very small (less than 10), or when we have less than 5 subjects in each cell of our table.
 
 ## Your Turn
 
@@ -584,10 +539,9 @@ dataOut <- reactive({
 ```{r letter-r, echo=FALSE}
 question("So for our alpha of 0.05, do we call our statistic significant?",
   answer("No, we do not reject the null hypothesis that there is no association between smoking and outcome", message="Compare our p-value to the ."),
-  answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an associatin", correct=TRUE, message="Go back and look at the proportions.")
+  answer("Yes, we reject the null hypothesis that there is no association and conclude that there is an association", correct=TRUE, message="Go back and look at the proportions.")
 )
 ```
-
 
 ### Write your results up
 
