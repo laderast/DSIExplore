@@ -10,5 +10,6 @@ install.packages("devtools")
 library(devtools)
 install_github("laderast/DSIExplore")
 learnr::run_tutorial("categoricalData", package = "DSIExplore")
+learnr::run_tutorial("continuousData", package = "DSIExplore")
 ```
 This material is released under an Apache 2.0 License
