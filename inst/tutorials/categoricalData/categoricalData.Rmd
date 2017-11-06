@@ -605,6 +605,10 @@ summary(bmi_diabetes_raw)
 
 ## Be proud of yourself!
 
+These concepts are not easy! 
+
+If you have a basic understanding of how associations work in categorical data and how we calculate statistics on them, be happy!
+
 ## References
 
 + [Chi Squared Test](https://en.wikipedia.org/wiki/Chi-squared_test)
