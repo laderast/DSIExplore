@@ -492,14 +492,15 @@ By doing our simulation of no association between `smoking` and `outcome` with o
 
 In reality, we don't simulate these processes, and instead rely on a mathematically derived distribution called the chi-squared distribution, which represents these processes.
 
-Our chi-squared distribution can be calculated using the `dchisq` function.
+Our chi-squared distribution can be calculated using the `dchisq()` function. 
 
-```{r eval=FALSE}
-library(MASS)
-truehist(chiveq, prob = TRUE)
-x <- seq(min(data), max(data), length=100)
-d <- dchisq(x, df)
-lines(x, d)
+There is an additional parameter known as *degrees of freedom* that is based on the number of categories for your two variables.
+
+```{r echo=FALSE}
+bb <- 0.3
+data.frame(chiveq) %>% ggplot(aes(x = chiveq)) + geom_histogram(binwidth = 0.3) + geom_density(aes(y = 0.3 * 
+    ..count.., color = "red")) + ggtitle("Empirical versus derived chi-square") + 
+    guides(color = FALSE)
 ```
 
 ### Write your results up
@@ -579,7 +580,7 @@ Decide on your alpha now!
 
 ## Your Turn: Calculate your p-value
 
-Run the following code.
+Run the following code to find your p-value.
 
 ```{r pvalue-calc, exercise=TRUE}
 tab <- table(bmi_diabetes$Diabetes,bmi_diabetes$BMIstatus)
