@@ -342,17 +342,18 @@ We calculate these expected values by looking at the column and row totals for e
 ```{r echo=TRUE}
 cohort <- Whickham %>% 
   ##here is our filtering criteria
-  filter(age < 40) %>%
+  filter(age < 60) %>%
   select(smoker, outcome) %>% 
   table
+cohort
 
 outcome_count <- colSums(cohort)
-
+outcome_count
 smoking_count <- rowSums(cohort)
-
+smoking_count
 total <- sum(smoking_count)
 
-expected_value = (outcome_count[1]*smoking_count) / total
+expected_value = (outcome_count[1]*smoking_count[1]) / total
 expected_value
 ```
 
@@ -389,7 +390,7 @@ chi
 ```{r expected-val, echo=FALSE}
 question("How did the top left cell change for the chi-matrix when you changed the filtering criteria?",
   answer("It got larger, meaning there is more of a deviation from the expected value.", correct=TRUE, message="Yes, correct."),
-  answer("It got smaller, ")
+  answer("It got smaller, meaning there is less of a deviation from the expected value. ")
 )
 ```
 
