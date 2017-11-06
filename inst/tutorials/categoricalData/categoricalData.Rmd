@@ -577,19 +577,30 @@ dataOut <- reactive({
 
 Decide on your alpha now!
 
-###Calculate your p-value
+## Your Turn: Calculate your p-value
+
+Run the following code.
 
 ```{r pvalue-calc, exercise=TRUE}
+tab <- table(bmi_diabetes$Diabetes,bmi_diabetes$BMIstatus)
+tab
 
+chi_calc <- tidy(chisq.test(tab))
+##show chi-square statistic
+chi_calc$statistic
+##show p-value
+chi_calc$p.value
 ```
+
+So, is there an association between `BMIstatus` and `Diabetes`?
 
 ## Missing Values
 
-One thing we haven't talked about is missing values. 
+One thing we haven't talked about is missing values. For NHANES, there are actually missing values (encoded as NAs for the dataset).
 
 ```{r}
 data("bmi_diabetes_raw")
-summary(is.na(bmi_diabetes_raw))
+summary(bmi_diabetes_raw)
 ```
 
 ## Be proud of yourself!
