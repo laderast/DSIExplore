@@ -3,7 +3,9 @@ title: "Categorical Data"
 author: "Ted Laderas and Jessica Minnier"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: learnr::tutorial
+#output: html_document
 runtime: shiny_prerendered
+#runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -392,6 +394,54 @@ question("How did the top left cell change for the chi-matrix when you changed t
   answer("It got larger, meaning there is more of a deviation from the expected value.", correct=TRUE, message="Yes, correct."),
   answer("It got smaller, meaning there is less of a deviation from the expected value. ")
 )
+```
+
+### Generating our null universe
+
+```{r}
+actionButton("gen_data", "Generate random data")
+plotOutput("chi_tab")
+plotOutput("chi_dist")
+```
+
+```{r context="server"}
+null_data <- function(samp_size){
+   smoking = ifelse(rbinom(samp_size, 1, 0.493)==0, "No","Yes")
+   outcome = ifelse(rbinom(samp_size, 1, 0.885)==0, "Dead", "Alive")
+   out <- table(smoking, outcome)
+   out
+}
+
+set.seed(111)
+samp_size <- 500
+initial_tab <- null_data(samp_size)
+chistat <- tidy(chisq.test(initial_tab))$statistic
+chiveq <- reactiveValues(vec=rep(NA,500), tab=initial_tab)
+##really only need last generated table and chi-square statistic
+
+observeEvent(input$gen_data, {
+  out_data <- null_data(samp_size)
+  chistat <- tidy(chisq.test(out_data, correct=FALSE))$statistic
+  iter <- 1
+  if(!is.null(input$gen_data)){
+      iter = input$gen_data
+  }
+  isolate({
+  #chiveq$vec[iter] <- chistat 
+  chiveq$tab <- out_data
+  })
+  print(out_data)
+})
+
+chi_tab <- renderPlot({
+  chiveq$tab %>% ggplot(aes(x=outcome, y=smoker)) + geom_tile(fill="white", colour="black") + 
+  geom_text(aes(label=Freq)) + ggtitle("New data")
+})
+
+chi_dist <- renderPlot({
+  data.frame(chiveq$vec) %>% ggplot(aes(x=chiveq)) + geom_histogram(bins =40)
+})
+
 ```
 
 ### Our null hypothesis and alternative hypothesis
