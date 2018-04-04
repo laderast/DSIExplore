@@ -64,6 +64,13 @@ knitr::opts_chunk$set(fig.width = 16, fig.height = 4)
 - Requires programming skills
 - Visualizations must be tested for effectiveness
 
+
+### Results
+
+- Students were empowered to learn more
+- Students liked the visualizations
+- Students felt more engaged with the subject
+
 This poster you are viewing now is produced by `R bookdownplus`.
 
 <!--
