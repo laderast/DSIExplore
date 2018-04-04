@@ -22,3 +22,5 @@ learnr::run_tutorial("continuousData", package = "DSIExplore")
 ```
 
 This material is released under an Apache 2.0 License.
+
+This material was partially funded from a NLM T15 Training Grant supplement: T15-LM007088-23
