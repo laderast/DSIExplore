@@ -49,6 +49,32 @@ knitr::opts_chunk$set(fig.width = 16, fig.height = 4)
 - Understand relationships in data
 - Static plots: 2 way, but interactive 3 way or more!
 
+### Not a Substitute for Teaching!
+
+Lectures are combination of didactic and active learning
+
+- Demonstrate the Concept (Didactic)
+- Ask a Question ()
+- Invite students to interact with the data
+- Discuss observations
+- Reach consensus about questions
+
+
+### One Example
+
+- Simpson's Paradox - group of older women with outcomes
+
+Ask A Question: Why are you more likely to live if you have smoked?
+Interaction: examine the relationship between age/death and age/smoking
+Discuss Observations: Age is confounded with smoking status, and death is high
+Reach Consensus: Relationship holds for those under 59
+
+### Methods
+
+- LearnR - R Package for developing interactive tutorials
+- Shiny - R package for developing interactive visualizations
+
+
 
 ### Pros/Cons to Interactive Visualization
 
@@ -71,32 +97,6 @@ knitr::opts_chunk$set(fig.width = 16, fig.height = 4)
 - Students liked the visualizations
 - Students felt more engaged with the subject
 
-This poster you are viewing now is produced by `R bookdownplus`.
-
-<!--
-
-- Standard abreviations \\eg and \\ie for \eg and \ie
-- Units like \pps{900}
-- **Highlights** and *highlights*
-
--->
-
-# Quick start
-
-Before starting, you have to install R, RStudio, bookdown package, and other software and packages (\ie `Pandoc`, \LaTeX, `rmarkdown`, `rticle`, `knitr`, etc.) which bookdown depends on. See the official manual of [bookdown](https://bookdown.org/yihui/bookdown/) for details.
-
-Installation:
-
-`devtools::install_github("pzhaonet/bookdownplus")`
-
-Run the following codes, and you will get some files (e.g. index.Rmd and body.Rmd) and folders in your working directory.
-
-`bookdownplus::bookdownplus()`
-
-Now press `ctrl+shift+b` to compile it. Your will get a book file named `index.pdf` in `_book/`  folder.
-
-Write your own text in `index.Rmd` and `body.Rmd`, and build your own lovely book. Have fun!
-
 
 # Graphs
 
@@ -105,7 +105,7 @@ Using `bookdown` or `rmarkdown`, users can insert figures into a document in a f
 <!--
 
 ```{r co2, cache = TRUE, echo = FALSE, fig.cap='Carbon dioxide concentration, observed at Mauna Loa.'}
-plot(co2)
+#plot(co2)
 ```
 
 -->
